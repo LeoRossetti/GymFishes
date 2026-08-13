@@ -93,6 +93,7 @@ Every decision below was explicitly settled during design. Recorded so we don't 
 | Register input | Bottle chips + quick pills + numeric keypad | Fastest path; a draggable dial fights you at exactly 250 ml |
 | Theme | **Dark only**, deep-sea | Chosen over light-only or both |
 | Visual tone | Flat solid fills, 1px borders, solid bottom edge on buttons | Duolingo-like; no gradients, no glow |
+| Water surface | Continuously drifting sine waves, paused when hidden | The signature of a water app; it's shape rather than light, so it stays inside the no-glow rule |
 | Fish art | SVG components animated with GSAP | Rive's advantage is invisible at 20px and its WASM runtime outweighs the art |
 | Rive | Optional future upgrade for **one** large moment | ~$9/mo for `.riv` export, plus a learning and illustration project |
 | Component base | shadcn/ui | React Bits Pro ships via the shadcn registry protocol |
@@ -180,9 +181,10 @@ The default screen. Answers *how are we doing right now*.
 avatar on the right (tap → Perfil).
 
 **Progress card** — a horizontally scrollable strip of member columns. Each column is a
-tube: flat dark base, 2px border, flat blue fill whose height is that member's total for
-today, a 3px lighter band marking the surface, and the member's fish sitting at the
-surface line. Below the tube: the total ("1,8 L") and the name ("VOCÊ", "ELA").
+tube: flat dark base, 2px border, and a flat blue fill whose height is that member's total
+for today. The top of the fill is a **live wave surface**, not a straight edge — see
+[Water surface](#water-surface). The member's fish rides at that surface. Below the tube:
+the total ("1,8 L") and the name ("VOCÊ", "ELA").
 
 The tube's full height is scaled to `max(3000, highestTotalToday)` ml, so the columns stay
 comparable and nobody's ever pinned at 100%. Since there are no goals, the scale is
@@ -421,7 +423,7 @@ Tailwind v4's `@theme`. Dark only — there is no light palette to maintain.
 | `--ink-3` | `#6C838F` | labels, disabled |
 | `--water` | `#1CB0F6` | water, primary action, totals |
 | `--water-edge` | `#1899D6` | button bottom edge |
-| `--water-hi` | `#4FC3F9` | 3px surface band on the water |
+| `--water-hi` | `#4FC3F9` | wave crest / surface highlight |
 | `--ok` | `#58CC02` | confirmation, set-state chips |
 | `--streak` | `#FFC800` | streak chip, first place |
 | `--danger` | `#FF4B4B` | delete |
@@ -453,10 +455,36 @@ distinguishable from each other in the tubes.
 | Sheet in/out | 280 ms | spring, low bounce |
 | Water level change | 600 ms | spring |
 | Number count-up | 500 ms | ease-out |
+| Water surface wave | continuous loop | linear, see below |
 | Celebration timeline | 900–1400 ms | GSAP timeline |
 
 `motion` handles component and layout transitions; GSAP handles choreographed celebration
 sequences and the fish. `prefers-reduced-motion` collapses everything to a 120ms crossfade.
+
+### Water surface
+
+The water's top edge is never a straight line. Two SVG sine paths sit inside the tube's
+clip region and drift horizontally at different speeds, so the crest never visibly repeats:
+
+| | Back crest | Front crest |
+|---|---|---|
+| Amplitude | 3 px | 2 px |
+| Period | 1.4 × tube width | 1.0 × tube width |
+| Drift | 7 s per cycle | 4.5 s per cycle, opposite direction |
+| Fill | `--water-hi` | `--water` |
+
+Both are CSS `translateX` keyframe loops — GPU-composited, with no per-frame JavaScript.
+The animation pauses when the document is hidden (`visibilitychange`) and when the tube
+scrolls out of view (`IntersectionObserver`), so an idle app costs nothing.
+
+This is **shape, not light**: flat fills and a wavy edge, no gradients and no glow.
+
+When a register lands, the level springs to its new height over 600 ms while the wave
+amplitude briefly doubles and settles back over ~900 ms, so new water reads as a splash
+rather than a rectangle getting taller. The fish is displaced upward by the same spring.
+
+Under `prefers-reduced-motion` the wave is replaced by a static 3px `--water-hi` band and
+the level change becomes a 120 ms crossfade.
 
 ---
 
