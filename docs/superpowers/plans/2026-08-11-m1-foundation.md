@@ -1013,11 +1013,13 @@ create trigger entries_set_day
 
 - [ ] **Step 6: Apply the migration to the cloud project**
 
+The database password lives in the git-ignored `.env.local` as a `supabase_password=` line (user-provided). Source it into the variable the CLI reads, in the same command, and never echo it:
+
 ```bash
-npx supabase db push
+export SUPABASE_DB_PASSWORD="$(grep '^supabase_password=' .env.local | cut -d= -f2-)" && npx supabase db push
 ```
 
-The database password comes from the `SUPABASE_DB_PASSWORD` environment variable (set by the user; never echo it). Expected: the CLI reports the migration applied with no errors. If it fails on authentication, report BLOCKED — do not retry with guessed credentials.
+Expected: the CLI reports the migration applied with no errors. If it fails on authentication, report BLOCKED — do not retry with guessed credentials, and never print the password in any form.
 
 - [ ] **Step 7: Verify the tables and trigger exist**
 
@@ -1159,10 +1161,10 @@ end $$;
 - [ ] **Step 3: Apply the migration to the cloud project**
 
 ```bash
-npx supabase db push
+export SUPABASE_DB_PASSWORD="$(grep '^supabase_password=' .env.local | cut -d= -f2-)" && npx supabase db push
 ```
 
-Password from `SUPABASE_DB_PASSWORD` as in Task 5. Expected: the rls migration applies with no errors and `npx supabase migration list` now shows both migrations.
+Password sourced from `.env.local` exactly as in Task 5 — never echoed. Expected: the rls migration applies with no errors and `npx supabase migration list` now shows both migrations.
 
 - [ ] **Step 4: Verify RLS is on and the policies exist**
 
@@ -1318,13 +1320,16 @@ export const supabase = createClient<Database>(url, anonKey, {
 })
 ```
 
-- [ ] **Step 8: Write `.env.example` and `.env.local`**
+- [ ] **Step 8: Write `.env.example` and extend `.env.local`**
+
+**`.env.local` already exists and contains a `supabase_password=` line that MUST be preserved** — it is the `db push` credential. Append the two VITE_ lines; never overwrite the file, never print its contents.
 
 `.env.example` (committed):
 
 ```
 VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
+supabase_password=
 ```
 
 `.env.local` (not committed) — the cloud project's URL and anon key
@@ -2723,8 +2728,9 @@ The technical commands removed from the README (`supabase db push`, `gen types
 never-edit-applied-migrations) move into `CLAUDE.md`'s Código/Banco sections in Step 2 —
 they are conventions for whoever codes, not for the README's reader. CLAUDE.md must also
 state the cloud-only workflow: there is no local Supabase stack and no Docker; migrations
-apply straight to the linked cloud project (password via `SUPABASE_DB_PASSWORD`), so
-schema changes deserve extra care — the "sandbox" is the real database.
+apply straight to the linked cloud project (password sourced from the `supabase_password`
+line of the git-ignored `.env.local`), so schema changes deserve extra care — the
+"sandbox" is the real database.
 
 - [ ] **Step 2: Write `CLAUDE.md`**
 
