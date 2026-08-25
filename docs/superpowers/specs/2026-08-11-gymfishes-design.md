@@ -135,6 +135,12 @@ Six characters from the unambiguous alphabet `ABCDEFGHJKLMNPQRSTUVWXYZ23456789` 
 handles collisions. Codes do not expire and are not single-use — the group owner can see
 and re-share the code from **Perfil** at any time.
 
+**Accepted risk, decided deliberately (security review 2026-08-25):** a leaked code lets
+anyone join, there is no member-eviction mechanism in v1, and leaving is voluntary. The
+creator can rotate the invite code to stop *new* joins, but cannot remove someone already
+inside. For a two-person household app this is fine; if a third member ever becomes a real
+feature, an eviction policy (creator-may-delete-members) must ship with it.
+
 Joining someone else's group happens through a `join_group(code)` RPC, because RLS must
 not let a user insert themselves into an arbitrary group. See
 [Security](#11-security-rls).
@@ -673,9 +679,12 @@ create trigger entries_set_day
 ```sql
 create or replace function join_group(code text)
 returns uuid
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare gid uuid;
 begin
+  if auth.uid() is null then
+    raise exception 'invalid_code';
+  end if;
   select id into gid from groups where invite_code = upper(code);
   if gid is null then
     raise exception 'invalid_code';
@@ -699,7 +708,7 @@ A `security definer` helper avoids the classic recursive-RLS trap, where a polic
 
 ```sql
 create or replace function is_group_member(gid uuid) returns boolean
-language sql security definer stable set search_path = public as $$
+language sql security definer stable set search_path = public, pg_temp as $$
   select exists (
     select 1 from group_members
     where group_id = gid and profile_id = auth.uid()
@@ -707,13 +716,17 @@ language sql security definer stable set search_path = public as $$
 $$;
 ```
 
+`pg_temp` is pinned last deliberately: Postgres otherwise resolves temporary relations
+*before* `pg_catalog`, so an unpinned definer function could be shadowed by a temp table.
+Every `security definer` function in the project carries the same setting.
+
 | Table | select | insert | update | delete |
 |---|---|---|---|---|
 | `profiles` | self, or shares a group with me | self only (`id = auth.uid()`) | self only | — |
 | `groups` | `is_group_member(id)` | `created_by = auth.uid()` | creator only | — |
 | `group_members` | `is_group_member(group_id)` | self, and only into a group I created (otherwise use `join_group`) | — | self only (leave group) |
 | `bottles` | `profile_id = auth.uid()` | self | self | self |
-| `entries` | `is_group_member(group_id)` | `profile_id = auth.uid()` and `is_group_member(group_id)` | self only | **not granted** — deletion is always a soft delete, i.e. an update setting `deleted_at` |
+| `entries` | `is_group_member(group_id)` | `profile_id = auth.uid()` and `is_group_member(group_id)` | self only, and the row must remain in a group the author belongs to — `is_group_member(group_id)` in both USING and WITH CHECK, or an author could move an entry into a group they never joined | **not granted** — deletion is always a soft delete, i.e. an update setting `deleted_at` |
 
 Bottles are strictly private — the partner never needs to read them, because every entry
 carries its own snapshot. That keeps the policy trivial.
