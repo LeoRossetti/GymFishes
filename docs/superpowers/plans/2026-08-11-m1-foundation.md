@@ -1168,16 +1168,14 @@ Password sourced from `.env.local` exactly as in Task 5 — never echoed. Expect
 
 - [ ] **Step 4: Verify RLS is on and the policies exist**
 
-Dump the remote schema and inspect it:
+(`db dump` needs Docker, so verification runs through `db query --linked`, which uses the Management API — the approach Task 5 validated.)
 
 ```bash
-npx supabase db dump --linked -f "$SCRATCH/rls-dump.sql"
-grep -c "ENABLE ROW LEVEL SECURITY" "$SCRATCH/rls-dump.sql"
-grep -c "CREATE POLICY" "$SCRATCH/rls-dump.sql"
-grep -iE "create policy .* on .*entries.*for delete" "$SCRATCH/rls-dump.sql" || echo "OK: no DELETE policy on entries"
+npx supabase db query --linked "select relname, relrowsecurity from pg_class where relname in ('profiles','groups','group_members','bottles','entries')"
+npx supabase db query --linked "select tablename, policyname, cmd from pg_policies where schemaname = 'public' order by tablename, policyname"
 ```
 
-Expected: 5 `ENABLE ROW LEVEL SECURITY` statements, 13 `CREATE POLICY` statements, and the final grep prints the OK line (no DELETE policy on `entries`). Delete the dump afterwards.
+Expected: `relrowsecurity` true for all five tables; 13 policies; **no** policy with `cmd = 'DELETE'` on `entries`.
 
 - [ ] **Step 5: Verify the RPC rejects a bad code**
 
