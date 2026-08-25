@@ -6,7 +6,7 @@
 
 **Architecture:** A static Vite SPA (no server runtime) talking directly to Supabase for auth and Postgres. Row Level Security is the only authorization boundary, so it is written and hand-verified in this milestone rather than later. All date, period and formatting logic lives in pure, fully-tested modules under `src/lib/`, because every ranking in later milestones derives from them. The app shell drives its tab bar from a route table, so later milestones add screens by registering routes instead of editing navigation.
 
-**Tech Stack:** Vite 6, React 19, TypeScript (strict), Tailwind v4, Vitest + React Testing Library, React Router v7, TanStack Query, `@supabase/supabase-js`, Supabase CLI for local Postgres and migrations, Vercel static hosting.
+**Tech Stack:** Vite 6, React 19, TypeScript (strict), Tailwind v4, Vitest + React Testing Library, React Router v7, TanStack Query, `@supabase/supabase-js`, Supabase CLI running migrations against the linked cloud project (ref `jqhzqkfqifkhxzthbolb`, sa-east-1 — no local stack, no Docker), Vercel static hosting.
 
 **Spec:** [`../specs/2026-08-11-gymfishes-design.md`](../specs/2026-08-11-gymfishes-design.md)
 
@@ -908,14 +908,13 @@ git commit -m "feat: add Sao Paulo calendar primitives and calendar period range
 - Consumes: nothing from earlier tasks.
 - Produces: tables `profiles`, `groups`, `group_members`, `bottles`, `entries`; the `set_entry_day()` trigger function; indexes `entries_group_updated_idx` and `entries_group_day_idx`. Column names and types are relied on by Tasks 7–10 and by every later milestone.
 
-- [ ] **Step 1: Install the Supabase CLI and initialise**
+- [ ] **Step 1: Install the Supabase CLI as a dev dependency**
 
 ```bash
 npm install -D supabase
-npx supabase init
 ```
 
-Answer "no" if asked to generate VS Code or IntelliJ settings.
+`npx supabase init` and `npx supabase link --project-ref jqhzqkfqifkhxzthbolb` were already run by the controller — `supabase/config.toml` exists and the repo is linked to the cloud project. Do not re-run either.
 
 - [ ] **Step 2: Ignore CLI scratch directories**
 
@@ -927,13 +926,13 @@ supabase/.temp/
 supabase/.branches/
 ```
 
-- [ ] **Step 3: Start the local stack**
+- [ ] **Step 3: Confirm the link is healthy**
 
 ```bash
-npx supabase start
+npx supabase migration list
 ```
 
-Docker Desktop must be running. Note the printed `API URL`, `anon key` and `Studio URL` — Tasks 7 and 11 need them.
+Expected: the command reaches the cloud project and lists no applied migrations yet (empty table). This confirms auth and the link before any push. The project's API URL is `https://jqhzqkfqifkhxzthbolb.supabase.co`; Task 7 fetches the anon key via `npx supabase projects api-keys --project-ref jqhzqkfqifkhxzthbolb`.
 
 - [ ] **Step 4: Create the migration file**
 
@@ -1012,35 +1011,34 @@ create trigger entries_set_day
   for each row execute function set_entry_day();
 ```
 
-- [ ] **Step 6: Apply the migration**
+- [ ] **Step 6: Apply the migration to the cloud project**
 
 ```bash
-npx supabase db reset
+npx supabase db push
 ```
 
-Expected: the CLI reports the migration applied with no errors.
+The database password comes from the `SUPABASE_DB_PASSWORD` environment variable (set by the user; never echo it). Expected: the CLI reports the migration applied with no errors. If it fails on authentication, report BLOCKED — do not retry with guessed credentials.
 
 - [ ] **Step 7: Verify the tables and trigger exist**
 
-Open the Studio URL from Step 3, go to the SQL editor, and run:
+Dump the remote schema to the scratch area and inspect it:
 
-```sql
-select table_name from information_schema.tables
-where table_schema = 'public' order by table_name;
-
-select tgname from pg_trigger where tgrelid = 'entries'::regclass and not tgisinternal;
+```bash
+npx supabase db dump --linked -f "$SCRATCH/schema-dump.sql"
+grep -E "CREATE TABLE.*(profiles|groups|group_members|bottles|entries)" "$SCRATCH/schema-dump.sql"
+grep -c "CREATE TABLE" "$SCRATCH/schema-dump.sql"
+grep "entries_set_day" "$SCRATCH/schema-dump.sql"
 ```
 
-Expected: five tables (`bottles`, `entries`, `group_members`, `groups`, `profiles`) and the trigger `entries_set_day`.
+Expected: all five tables present (count 5, plus the trigger definition naming `entries_set_day` on `entries`). Delete the dump afterwards — it must not be committed.
 
-- [ ] **Step 8: Verify the trigger derives the right local day**
+- [ ] **Step 8: Verify the trigger's day expression**
 
-```sql
-select (timestamptz '2026-08-11T02:00:00Z' at time zone 'America/Sao_Paulo')::date as late_night,
-       (timestamptz '2026-08-11T04:00:00Z' at time zone 'America/Sao_Paulo')::date as after_midnight;
-```
-
-Expected: `2026-08-10` and `2026-08-11` — matching the `dayKey` tests in Task 4.
+In the same dump, locate the `set_entry_day` function body and confirm it contains exactly
+`at time zone 'America/Sao_Paulo'` casting to date. The boundary arithmetic itself
+(02:00Z → previous day, 04:00Z → same day) is already pinned by the `dayKey` unit tests
+of Task 4, which use the identical expression semantics — the runtime behaviour gets
+exercised end-to-end in M2 when the first real entries are inserted.
 
 - [ ] **Step 9: Commit**
 
@@ -1158,35 +1156,39 @@ begin
 end $$;
 ```
 
-- [ ] **Step 3: Apply the migration**
+- [ ] **Step 3: Apply the migration to the cloud project**
 
 ```bash
-npx supabase db reset
+npx supabase db push
 ```
 
-Expected: both migrations apply with no errors.
+Password from `SUPABASE_DB_PASSWORD` as in Task 5. Expected: the rls migration applies with no errors and `npx supabase migration list` now shows both migrations.
 
 - [ ] **Step 4: Verify RLS is on and the policies exist**
 
-In the Studio SQL editor:
+Dump the remote schema and inspect it:
 
-```sql
-select relname, relrowsecurity from pg_class
-where relname in ('profiles','groups','group_members','bottles','entries');
-
-select tablename, policyname, cmd from pg_policies
-where schemaname = 'public' order by tablename, policyname;
+```bash
+npx supabase db dump --linked -f "$SCRATCH/rls-dump.sql"
+grep -c "ENABLE ROW LEVEL SECURITY" "$SCRATCH/rls-dump.sql"
+grep -c "CREATE POLICY" "$SCRATCH/rls-dump.sql"
+grep -iE "create policy .* on .*entries.*for delete" "$SCRATCH/rls-dump.sql" || echo "OK: no DELETE policy on entries"
 ```
 
-Expected: `relrowsecurity` true for all five tables; 13 policies; **no** policy with `cmd = 'DELETE'` on `entries`.
+Expected: 5 `ENABLE ROW LEVEL SECURITY` statements, 13 `CREATE POLICY` statements, and the final grep prints the OK line (no DELETE policy on `entries`). Delete the dump afterwards.
 
 - [ ] **Step 5: Verify the RPC rejects a bad code**
 
-```sql
-select join_group('ZZZZZZ');
+Call the RPC through the project's REST API with the anon key (no user session — the invalid-code check fires before anything touches `auth.uid()`):
+
+```bash
+ANON=$(npx supabase projects api-keys --project-ref jqhzqkfqifkhxzthbolb -o json | grep -o '"api_key":"[^"]*"' | head -1 | cut -d'"' -f4)
+curl -s -X POST "https://jqhzqkfqifkhxzthbolb.supabase.co/rest/v1/rpc/join_group" \
+  -H "apikey: $ANON" -H "Content-Type: application/json" \
+  -d '{"code":"ZZZZZZ"}'
 ```
 
-Expected: an error containing `invalid_code`.
+Expected: an error response whose message contains `invalid_code`. (If the api-keys JSON shape differs, extract the `anon` key by eye from the command's plain output instead — do not guess.)
 
 - [ ] **Step 6: Commit**
 
@@ -1289,7 +1291,7 @@ Expected: PASS, 4 tests.
 - [ ] **Step 6: Generate the database types**
 
 ```bash
-npx supabase gen types typescript --local > src/lib/database.types.ts
+npx supabase gen types typescript --project-id jqhzqkfqifkhxzthbolb > src/lib/database.types.ts
 ```
 
 Verify the file contains `profiles`, `groups`, `group_members`, `bottles` and `entries` under `Tables`.
@@ -1325,11 +1327,12 @@ VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
 ```
 
-`.env.local` (not committed) — use the API URL and anon key printed by `npx supabase start`:
+`.env.local` (not committed) — the cloud project's URL and anon key
+(`npx supabase projects api-keys --project-ref jqhzqkfqifkhxzthbolb` prints the anon key):
 
 ```
-VITE_SUPABASE_URL=http://127.0.0.1:54321
-VITE_SUPABASE_ANON_KEY=<anon key from supabase start>
+VITE_SUPABASE_URL=https://jqhzqkfqifkhxzthbolb.supabase.co
+VITE_SUPABASE_ANON_KEY=<anon key from the api-keys command>
 ```
 
 - [ ] **Step 9: Verify the client connects**
@@ -1673,15 +1676,9 @@ export function SignUp() {
 }
 ```
 
-- [ ] **Step 11: Disable email confirmation locally**
+- [ ] **Step 11: Disable email confirmation on the cloud project**
 
-In `supabase/config.toml`, under `[auth.email]`, set:
-
-```toml
-enable_confirmations = false
-```
-
-Then `npx supabase stop && npx supabase start`. Without this, local sign-ups produce no session and Task 9 cannot proceed.
+This is a dashboard toggle only the user can flip: **Authentication → Sign In / Providers → Email → turn "Confirm email" off**. Report DONE_WITH_CONCERNS naming this as the outstanding user action if it cannot be confirmed — without it, sign-ups produce no session and Tasks 9–10's manual verification cannot proceed. (There is no password-reset or confirmation UI in v1, so the toggle is required, not optional.)
 
 - [ ] **Step 12: Commit**
 
@@ -2557,16 +2554,15 @@ If `sharp-cli` is unavailable, open `public/icon.svg` in a browser at 512×512 a
 <title>GymFishes</title>
 ```
 
-- [ ] **Step 6: Create the cloud Supabase project and push migrations**
+- [ ] **Step 6: Confirm the cloud project state**
 
-Create a project at supabase.com, note its reference id, then:
+The project (`jqhzqkfqifkhxzthbolb`) was created, linked, and migrated during Tasks 5–6. Confirm:
 
 ```bash
-npx supabase link --project-ref <project-ref>
-npx supabase db push
+npx supabase migration list
 ```
 
-Expected: both migrations apply. In the cloud dashboard, confirm the five tables and 13 policies exist, and set **Authentication → Providers → Email → Confirm email** to off (there is no password-reset or confirmation UI in v1).
+Expected: both migrations (`schema`, `rls`) listed as applied remotely. Email confirmation should already be off from Task 8's dashboard step — re-confirm with the user if sign-up in Step 8 below fails silently.
 
 - [ ] **Step 7: Deploy to Vercel**
 
@@ -2685,15 +2681,16 @@ e desde o início — com peixinhos que sobem conforme a água enche. 🐠
 
 ## 🚀 Como rodar no computador
 
-Você vai precisar do [Node.js](https://nodejs.org) (versão 20 ou mais nova) e do
-[Docker Desktop](https://www.docker.com/products/docker-desktop/) aberto.
+Você só precisa do [Node.js](https://nodejs.org) (versão 20 ou mais nova).
 
 ```bash
 npm install                 # baixa as dependências
-npx supabase start          # liga o banco de dados local
-cp .env.example .env.local  # cole a "API URL" e a "anon key" que aparecem acima
+cp .env.example .env.local  # preencha com a URL e a chave do projeto no Supabase
 npm run dev                 # abre o app em http://localhost:5173
 ```
+
+As duas chaves ficam no painel do projeto em [supabase.com](https://supabase.com)
+(Settings → API): a "Project URL" e a chave "anon public".
 
 ## 🗂️ Como o projeto é organizado
 
@@ -2721,10 +2718,13 @@ Detalhes técnicos (banco de dados, convenções de código) estão em
 [especificação](docs/superpowers/specs/2026-08-11-gymfishes-design.md).
 ```
 
-The technical commands removed from the README (`supabase db reset`, `db push`,
-`gen types`, `typecheck`, watch-mode tests, never-edit-applied-migrations) move into
-`CLAUDE.md`'s Código/Banco sections in Step 2 — they are conventions for whoever codes,
-not for the README's reader.
+The technical commands removed from the README (`supabase db push`, `gen types
+--project-id jqhzqkfqifkhxzthbolb`, `typecheck`, watch-mode tests,
+never-edit-applied-migrations) move into `CLAUDE.md`'s Código/Banco sections in Step 2 —
+they are conventions for whoever codes, not for the README's reader. CLAUDE.md must also
+state the cloud-only workflow: there is no local Supabase stack and no Docker; migrations
+apply straight to the linked cloud project (password via `SUPABASE_DB_PASSWORD`), so
+schema changes deserve extra care — the "sandbox" is the real database.
 
 - [ ] **Step 2: Write `CLAUDE.md`**
 
