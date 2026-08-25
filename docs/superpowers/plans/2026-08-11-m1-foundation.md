@@ -2652,49 +2652,79 @@ git commit -m "feat: add PWA manifest, icons and Vercel SPA config; verify RLS i
 
 - [ ] **Step 1: Rewrite `README.md`**
 
+Binding style requirements (user-mandated): Portuguese only, simple and straightforward
+language, not technical — a reader who doesn't program should follow it. Follow common
+good-README conventions: centered logo, one-line description, what-it-is, how-to-run,
+folder structure, useful commands. Emoji section icons are welcome. Deep technical detail
+(migrations workflow, type generation, conventions) lives in `CLAUDE.md`, not here.
+Screenshots are added in M2 when real screens exist — leave the logo as the only image
+for now.
+
 ```markdown
-# GymFishes
+<p align="center">
+  <img src="public/icon.svg" width="96" alt="GymFishes" />
+</p>
 
-Aplicativo de métrica de ingestão de água diária com sistema parecido com o do "Gym Rats".
-PWA mobile-only em português, para duas pessoas.
+<h1 align="center">GymFishes 🐟</h1>
 
-- **Spec:** `docs/superpowers/specs/2026-08-11-gymfishes-design.md`
-- **Roadmap:** `docs/superpowers/plans/ROADMAP.md`
+<p align="center">
+  Competição de beber água entre duas pessoas — registre, compare e vença o mês.
+</p>
 
-## Stack
+## 💧 O que é
 
-Vite · React 19 · TypeScript · Tailwind v4 · Supabase (auth, Postgres, realtime, storage) ·
-Vercel (estático).
+Você e sua parceira registram a água que bebem durante o dia (garrafas, copos ou uma
+quantidade exata). O app mostra em tempo real quem está na frente hoje, na semana, no mês
+e desde o início — com peixinhos que sobem conforme a água enche. 🐠
 
-## Rodando localmente
+- 📱 Feito para celular — instala direto na tela de início do iPhone
+- 🇧🇷 Todo em português
+- 🏆 Ranking diário, semanal, mensal e total
+- 🐡 Peixes novos desbloqueados com sequências e recordes
+- ✈️ Funciona até sem internet — sincroniza quando a conexão voltar
 
-Requer Node 20+ e Docker Desktop.
+## 🚀 Como rodar no computador
+
+Você vai precisar do [Node.js](https://nodejs.org) (versão 20 ou mais nova) e do
+[Docker Desktop](https://www.docker.com/products/docker-desktop/) aberto.
 
 ```bash
-npm install
-npx supabase start          # Postgres + Auth locais
-cp .env.example .env.local  # preencha com a API URL e a anon key impressas acima
-npm run dev
+npm install                 # baixa as dependências
+npx supabase start          # liga o banco de dados local
+cp .env.example .env.local  # cole a "API URL" e a "anon key" que aparecem acima
+npm run dev                 # abre o app em http://localhost:5173
 ```
 
-## Comandos
+## 🗂️ Como o projeto é organizado
+
+```
+src/
+  screens/    as telas do app (Hoje, Ranking, Histórico, Perfil…)
+  features/   cada funcionalidade (registros, garrafas, grupo, peixes…)
+  lib/        lógica pura: datas, períodos, formatação
+  ui/         botões e componentes visuais básicos
+  styles/     cores e estilos do tema
+supabase/     banco de dados (migrations)
+docs/         especificação e planos do projeto
+```
+
+## 🧰 Comandos úteis
 
 | Comando | O que faz |
 |---|---|
-| `npm run dev` | servidor de desenvolvimento |
-| `npm run test` | testes em watch |
-| `npm run test:run` | testes uma vez |
-| `npm run typecheck` | checagem de tipos |
-| `npm run build` | build de produção |
-| `npx supabase db reset` | recria o banco local e aplica as migrations |
-| `npx supabase db push` | aplica as migrations no projeto na nuvem |
-| `npx supabase gen types typescript --local > src/lib/database.types.ts` | regenera os tipos |
+| `npm run dev` | abre o app para desenvolver |
+| `npm run test:run` | roda os testes |
+| `npm run build` | gera a versão final |
 
-## Banco de dados
-
-Migrations em `supabase/migrations/`. Nunca edite uma migration já aplicada — crie outra
-com `npx supabase migration new <nome>`. Depois de mudar o schema, regenere os tipos.
+Detalhes técnicos (banco de dados, convenções de código) estão em
+[`CLAUDE.md`](CLAUDE.md) e na
+[especificação](docs/superpowers/specs/2026-08-11-gymfishes-design.md).
 ```
+
+The technical commands removed from the README (`supabase db reset`, `db push`,
+`gen types`, `typecheck`, watch-mode tests, never-edit-applied-migrations) move into
+`CLAUDE.md`'s Código/Banco sections in Step 2 — they are conventions for whoever codes,
+not for the README's reader.
 
 - [ ] **Step 2: Write `CLAUDE.md`**
 
