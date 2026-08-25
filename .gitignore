@@ -17,3 +17,7 @@ build/
 # OS / editor
 .DS_Store
 Thumbs.db
+
+# Supabase CLI
+supabase/.temp/
+supabase/.branches/
