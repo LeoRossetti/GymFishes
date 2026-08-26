@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router'
 import { TAB_ROUTES } from './routes'
+import { STRINGS } from '@/lib/strings'
 
 export function TabBar() {
   return (
@@ -23,7 +24,7 @@ export function TabBar() {
       <div className="flex-1 text-center">
         <button
           type="button"
-          aria-label="Registrar água"
+          aria-label={STRINGS.nav.registrarAgua}
           className="mx-auto -mt-3.5 block h-10 w-10 rounded-full border-b-[3px]
                      border-water-edge bg-water text-[19px] font-extrabold text-[#0A2A3A]"
         >

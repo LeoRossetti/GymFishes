@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Hoje } from '@/screens/hoje/Hoje'
+import { STRINGS } from '@/lib/strings'
 
 export type TabRoute = {
   path: string
@@ -13,5 +14,5 @@ export type TabRoute = {
  * Later milestones add Ranking, Historico and Perfil by appending here.
  */
 export const TAB_ROUTES: TabRoute[] = [
-  { path: '/hoje', label: 'Hoje', icon: '💧', element: <Hoje /> },
+  { path: '/hoje', label: STRINGS.nav.hoje, icon: '💧', element: <Hoje /> },
 ]

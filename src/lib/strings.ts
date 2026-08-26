@@ -33,6 +33,10 @@ export const STRINGS = {
     titulo: 'Hoje',
     vazio: 'Nenhum registro hoje. Bora beber água. 💧',
   },
+  nav: {
+    hoje: 'Hoje',
+    registrarAgua: 'Registrar água',
+  },
   erro: {
     abaQuebrou: 'Algo quebrou nesta aba',
     recarregar: 'Recarregar',
