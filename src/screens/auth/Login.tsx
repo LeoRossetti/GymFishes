@@ -21,12 +21,17 @@ export function Login() {
     if (found.email || found.password) return
 
     setBusy(true)
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    })
-    setBusy(false)
-    if (error) setFailure(STRINGS.auth.credenciaisInvalidas)
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      })
+      if (error) setFailure(STRINGS.auth.credenciaisInvalidas)
+    } catch {
+      setFailure(STRINGS.erro.generico)
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
