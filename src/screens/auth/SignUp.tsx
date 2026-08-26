@@ -27,7 +27,7 @@ export function SignUp() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="px-4 pt-16">
+    <form onSubmit={onSubmit} noValidate className="px-4 pt-16">
       <h1 className="mb-8 text-[24px] font-extrabold tracking-tight">{STRINGS.app.nome}</h1>
       <Field
         label={STRINGS.auth.email}
