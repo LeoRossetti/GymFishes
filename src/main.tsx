@@ -7,6 +7,7 @@ import './styles/globals.css'
 import { AuthProvider } from '@/features/auth/AuthProvider'
 import { AppShell } from '@/app/AppShell'
 import { Guard } from '@/app/Guard'
+import { RedirectIfAuthed } from '@/app/RedirectIfAuthed'
 import { TAB_ROUTES } from '@/app/routes'
 import { Login } from '@/screens/auth/Login'
 import { SignUp } from '@/screens/auth/SignUp'
@@ -35,8 +36,22 @@ createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            <Route path="/entrar" element={<Login />} />
-            <Route path="/criar-conta" element={<SignUp />} />
+            <Route
+              path="/entrar"
+              element={
+                <RedirectIfAuthed>
+                  <Login />
+                </RedirectIfAuthed>
+              }
+            />
+            <Route
+              path="/criar-conta"
+              element={
+                <RedirectIfAuthed>
+                  <SignUp />
+                </RedirectIfAuthed>
+              }
+            />
             <Route
               path="/inicio"
               element={

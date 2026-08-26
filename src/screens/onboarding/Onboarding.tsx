@@ -6,7 +6,7 @@ import { useSession } from '@/features/auth/AuthProvider'
 import { createProfile } from '@/features/profile/mutations'
 import { createGroup, joinGroup } from '@/features/group/mutations'
 
-type Stage = 'nome' | 'grupo' | 'criar' | 'entrar'
+type Stage = 'nome' | 'grupo' | 'criar' | 'entrar' | 'codigo'
 
 export function Onboarding({ onDone }: { onDone: () => void }) {
   const { session } = useSession()
@@ -15,6 +15,8 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
   const [nome, setNome] = useState('')
   const [grupo, setGrupo] = useState('')
   const [codigo, setCodigo] = useState('')
+  const [inviteCode, setInviteCode] = useState('')
+  const [copiado, setCopiado] = useState(false)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -41,8 +43,9 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
     if (grupo.trim().length < 1 || !userId) return setError(STRINGS.erro.generico)
     setBusy(true)
     try {
-      await createGroup(grupo, userId)
-      onDone()
+      const group = await createGroup(grupo, userId)
+      setInviteCode(group.inviteCode)
+      setStage('codigo')
     } catch {
       setError(STRINGS.erro.generico)
     } finally {
@@ -135,6 +138,31 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           <Button onClick={submitEntrar} disabled={busy}>
             {STRINGS.onboarding.continuar}
           </Button>
+        </>
+      ) : null}
+
+      {stage === 'codigo' ? (
+        <>
+          <h1 className="mb-8 text-[24px] font-extrabold tracking-tight">
+            {STRINGS.grupo.codigoDoConvite}
+          </h1>
+          <p className="mb-2 text-center text-[38px] font-extrabold tracking-[6px]">
+            {inviteCode}
+          </p>
+          <p className="mb-8 text-center text-[13px] text-ink-3">
+            {STRINGS.grupo.mostreEsteCodigo}
+          </p>
+          <Button
+            className="mb-3"
+            variant="ghost"
+            onClick={() => {
+              navigator.clipboard.writeText(inviteCode).catch(() => {})
+              setCopiado(true)
+            }}
+          >
+            {copiado ? STRINGS.grupo.copiado : STRINGS.grupo.copiarCodigo}
+          </Button>
+          <Button onClick={onDone}>{STRINGS.onboarding.continuar}</Button>
         </>
       ) : null}
     </div>

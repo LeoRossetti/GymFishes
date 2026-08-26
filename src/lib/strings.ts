@@ -28,6 +28,9 @@ export const STRINGS = {
   grupo: {
     codigoDoConvite: 'Código do convite',
     codigoFalhou: 'Não foi possível gerar um código. Tente de novo.',
+    copiarCodigo: 'Copiar código',
+    copiado: 'Copiado!',
+    mostreEsteCodigo: 'Mostre este código para quem vai entrar no grupo',
   },
   hoje: {
     titulo: 'Hoje',

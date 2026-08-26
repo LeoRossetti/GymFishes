@@ -21,7 +21,7 @@ vi.mock('@/features/auth/AuthProvider', () => ({
 describe('Onboarding', () => {
   beforeEach(() => {
     createProfile.mockReset().mockResolvedValue(undefined)
-    createGroup.mockReset().mockResolvedValue('group-1')
+    createGroup.mockReset().mockResolvedValue({ id: 'group-1', inviteCode: 'ABC234' })
     joinGroup.mockReset().mockResolvedValue('group-1')
   })
 
@@ -42,6 +42,23 @@ describe('Onboarding', () => {
     expect(createProfile).toHaveBeenCalledWith('user-1', 'Leo')
     expect(await screen.findByRole('button', { name: 'Criar grupo' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Entrar com código' })).toBeInTheDocument()
+  })
+
+  it('creates a group, shows the invite code, then finishes on Continuar', async () => {
+    const onDone = vi.fn()
+    render(<Onboarding onDone={onDone} />)
+    await userEvent.type(screen.getByLabelText('Seu nome'), 'Leo')
+    await userEvent.click(screen.getByRole('button', { name: 'Continuar' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Criar grupo' }))
+    await userEvent.type(screen.getByLabelText('Nome do grupo'), 'Fitness Fishes')
+    await userEvent.click(screen.getByRole('button', { name: 'Continuar' }))
+
+    expect(createGroup).toHaveBeenCalledWith('Fitness Fishes', 'user-1')
+    expect(await screen.findByText('ABC234')).toBeInTheDocument()
+    expect(onDone).not.toHaveBeenCalled()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Continuar' }))
+    expect(onDone).toHaveBeenCalled()
   })
 
   it('joins with a code and finishes', async () => {
