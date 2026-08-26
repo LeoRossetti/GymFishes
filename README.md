@@ -42,7 +42,7 @@ src/
   lib/        lógica pura: datas, períodos, formatação
   ui/         botões e componentes visuais básicos
   styles/     cores e estilos do tema
-supabase/     banco de dados (migrations)
+supabase/     banco de dados (mudanças no banco)
 docs/         especificação e planos do projeto
 ```
 

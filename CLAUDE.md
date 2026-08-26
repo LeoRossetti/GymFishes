@@ -57,15 +57,18 @@ Migrations aplicam direto ao projeto na nuvem (a senha vem de `supabase_password
 **Comandos de banco:**
 
 ```bash
-supabase db push                              # aplica migrations locais ao projeto em nuvem
-supabase gen types --project-id jqhzqkfqifkhxzthbolb  # regenera src/lib/database.types.ts
+export SUPABASE_DB_PASSWORD="$(grep '^supabase_password=' .env.local | cut -d= -f2-)" && npx supabase db push
+# aplica migrations locais ao projeto em nuvem (rodar no Git Bash)
+
+npx supabase gen types typescript --project-id jqhzqkfqifkhxzthbolb > src/lib/database.types.ts
+# regenera src/lib/database.types.ts
 ```
 
 **Tipo-check e build:**
 
 ```bash
 npm run typecheck                             # verifica tipos TypeScript
-npm run watch:test                            # roda testes em modo watch
+npm run test                                  # roda testes em modo watch
 ```
 
 Nunca edite migrations já aplicadas — crie novas.
