@@ -723,7 +723,7 @@ Every `security definer` function in the project carries the same setting.
 | Table | select | insert | update | delete |
 |---|---|---|---|---|
 | `profiles` | self, or shares a group with me | self only (`id = auth.uid()`) | self only | — |
-| `groups` | `is_group_member(id)` | `created_by = auth.uid()` | creator only | — |
+| `groups` | `is_group_member(id)` or `created_by = auth.uid()` — the creator disjunct exists because `createGroup` uses `insert … returning` before the creator's membership row exists | `created_by = auth.uid()` | creator only | — |
 | `group_members` | `is_group_member(group_id)` | self, and only into a group I created (otherwise use `join_group`) | — | self only (leave group) |
 | `bottles` | `profile_id = auth.uid()` | self | self | self |
 | `entries` | `is_group_member(group_id)` | `profile_id = auth.uid()` and `is_group_member(group_id)` | self only, and the row must remain in a group the author belongs to — `is_group_member(group_id)` in both USING and WITH CHECK, or an author could move an entry into a group they never joined | **not granted** — deletion is always a soft delete, i.e. an update setting `deleted_at` |
