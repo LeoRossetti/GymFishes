@@ -10,7 +10,7 @@ codebase rather than an imagined one.
 
 | # | Milestone | Plan | Status |
 |---|---|---|---|
-| M1 | Foundation | [`2026-08-11-m1-foundation.md`](2026-08-11-m1-foundation.md) | ready |
+| M1 | Foundation | [`2026-08-11-m1-foundation.md`](2026-08-11-m1-foundation.md) | **code-complete** — pending user handoff: Vercel deploy, two-phone install, cloud RLS behavioral checklist |
 | M2 | Core loop — registrar e ver água | not written yet | blocked by M1 |
 | M3 | Offline e sync | not written yet | blocked by M2 |
 | M4 | Competição — Ranking e Histórico | not written yet | blocked by M3 |
@@ -46,6 +46,21 @@ spec exactly; this only avoids building a throwaway fish renderer in M1.
 
 **Done when:** both people log water from their phones and see each other's
 registers appear live, without refreshing.
+
+**Carry-ins from M1's reviews (address while touching the relevant code):**
+
+- `entries` Insert type requires `drank_on` even though the trigger overwrites it —
+  add a DB default in an M2 migration or pass a derived value
+- Entry rows must degrade gracefully when the author's profile is unreadable
+  (a member who left the group)
+- `ErrorBoundary` needs a route-keyed reset once multiple tabs exist
+- Promote the hardcoded `#0A2A3A` ink-on-water color to a token on next touch
+  (Button, TabBar plus-button)
+- `Field` should link its error via `aria-invalid`/`aria-describedby`
+- Login maps every auth failure to "E-mail ou senha incorretos" — distinguish
+  network errors when touching that screen
+- `navigator.clipboard` is assumed present in the invite-code copy button
+  (fine over HTTPS; guard if contexts change)
 
 - `bottles` CRUD and the bottle manager in Perfil
 - Perfil basics: nome, cor, código do grupo, sair
