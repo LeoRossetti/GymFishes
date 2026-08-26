@@ -56,8 +56,12 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
     try {
       await joinGroup(codigo)
       onDone()
-    } catch {
-      setError(STRINGS.onboarding.codigoInvalido)
+    } catch (err) {
+      setError(
+        err instanceof Error && err.message.includes('invalid_code')
+          ? STRINGS.onboarding.codigoInvalido
+          : STRINGS.erro.generico,
+      )
     } finally {
       setBusy(false)
     }
