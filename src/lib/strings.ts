@@ -85,6 +85,11 @@ export const STRINGS = {
     semConexao: 'Sem conexão',
     generico: 'Algo deu errado. Tente de novo.',
   },
+  registros: {
+    editar: 'Editar',
+    excluir: 'Excluir',
+    excluirMesmo: 'Excluir mesmo?',
+  },
   registrar: {
     minhasGarrafas: 'Minhas garrafas',
     menosUm: (nome: string) => `${nome} menos um`,

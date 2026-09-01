@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
+import { Outlet, Route, Routes } from 'react-router'
 import { renderWithProviders } from '@/test/utils'
 import { dayKey } from '@/lib/dates'
 import { Hoje } from './Hoje'
@@ -18,6 +19,9 @@ vi.mock('@/features/group/queries', () => ({
     ],
   }),
 }))
+vi.mock('@/features/entries/mutations', () => ({
+  useUpdateEntry: () => ({ mutate: vi.fn() }),
+}))
 
 const hoje = new Date().toISOString()
 const hojeDia = dayKey(new Date())
@@ -30,16 +34,35 @@ vi.mock('@/features/entries/queries', () => ({
   }),
 }))
 
+function renderHoje() {
+  return renderWithProviders(
+    <Routes>
+      <Route element={<Outlet context={{ openRegister: vi.fn() }} />}>
+        <Route path="/" element={<Hoje />} />
+      </Route>
+    </Routes>,
+  )
+}
+
 describe('Hoje', () => {
   it('shows both tubes with totals and labels', () => {
-    renderWithProviders(<Hoje />)
-    expect(screen.getByText('1,8 L')).toBeInTheDocument()
-    expect(screen.getByText('2,3 L')).toBeInTheDocument()
+    renderHoje()
+    // each total shows twice: once on the tube, once on today's register row
+    expect(screen.getAllByText('1,8 L')).toHaveLength(2)
+    expect(screen.getAllByText('2,3 L')).toHaveLength(2)
     expect(screen.getByText('Você')).toBeInTheDocument()
     expect(screen.getByText('Ana')).toBeInTheDocument()
   })
   it('shows the gap line', () => {
-    renderWithProviders(<Hoje />)
+    renderHoje()
     expect(screen.getByText('Ana está 500 ml na frente')).toBeInTheDocument()
+  })
+  it('shows the registers header with the count', () => {
+    renderHoje()
+    expect(screen.getByText('Registros de hoje · 2')).toBeInTheDocument()
+  })
+  it('shows a partner row with their name', () => {
+    renderHoje()
+    expect(screen.getByText(/Ana ·/)).toBeInTheDocument()
   })
 })

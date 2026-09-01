@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router'
+import { useNavigate, useOutletContext } from 'react-router'
+import type { ShellContext } from '@/app/AppShell'
 import { useSession } from '@/features/auth/AuthProvider'
 import { useBootstrap } from '@/features/profile/useBootstrap'
 import { useMembers } from '@/features/group/queries'
@@ -6,6 +7,7 @@ import { useEntries } from '@/features/entries/queries'
 import { STRINGS } from '@/lib/strings'
 import { formatDateLong } from '@/lib/format'
 import { ProgressStrip } from './ProgressStrip'
+import { RegistersCard } from './RegistersCard'
 
 export function Hoje() {
   const { session } = useSession()
@@ -15,6 +17,7 @@ export function Hoje() {
   const members = useMembers(groupId)
   const entries = useEntries(groupId)
   const navigate = useNavigate()
+  const { openRegister } = useOutletContext<ShellContext>()
 
   return (
     <div className="px-3 pt-2">
@@ -35,9 +38,15 @@ export function Hoje() {
       {userId ? (
         <ProgressStrip userId={userId} members={members.data ?? []} entries={entries.data ?? []} />
       ) : null}
-      <div className="mt-3 rounded-card border border-line bg-surface p-5 text-center">
-        <p className="text-[13px] text-ink-2">{STRINGS.hoje.vazio}</p>
-      </div>
+      {userId && groupId ? (
+        <RegistersCard
+          userId={userId}
+          groupId={groupId}
+          members={members.data ?? []}
+          entries={entries.data ?? []}
+          openRegister={openRegister}
+        />
+      ) : null}
     </div>
   )
 }
