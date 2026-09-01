@@ -21,3 +21,7 @@ Thumbs.db
 # Supabase CLI
 supabase/.temp/
 supabase/.branches/
+
+# Claude (local AI tooling — not part of the app)
+CLAUDE.md
+.claude/
