@@ -910,7 +910,8 @@ src/
     auth/                 Login, SignUp
     onboarding/           Nome, Peixe, Grupo
     hoje/                 Hoje, ProgressStrip, MemberTube, EntryRow, EntryRowExpanded
-    registrar/            RegisterSheet, BottleGrid, Keypad, OptionalChips
+    registrar/            RegisterSheet, BottleGrid, LooseAmount, OptionalChips,
+                           draft, submit, useCountUp
     ranking/              Ranking, PeriodControl, Standings, StatsCompare, MonthWrapUp
     historico/            Historico, CalendarGrid, DayDetail
     perfil/               Perfil, FishGallery, BottleManager, GroupCard
@@ -925,7 +926,7 @@ src/
     streaks.ts  composition.ts  format.ts  image.ts  strings.ts
   styles/
     tokens.css  globals.css
-  ui/                     shadcn primitives + Button, Card, Sheet, Segmented, Toast
+  ui/                     shadcn primitives + Button, Field, Card, Sheet, Segmented, Toast
 docs/
   superpowers/specs/      this document
 ```
