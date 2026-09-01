@@ -900,7 +900,9 @@ too much.
 src/
   main.tsx
   app/
-    router.tsx            routes: /hoje /ranking /historico /perfil + /registrar modal
+    router.tsx            routes: /hoje /ranking /historico /perfil
+                           (register sheet is an AppShell overlay, not a route —
+                           deep-linking a modal buys nothing here)
     providers.tsx         query client, persister, auth, realtime
     TabBar.tsx
     ErrorBoundary.tsx

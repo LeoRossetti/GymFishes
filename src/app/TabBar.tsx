@@ -16,7 +16,7 @@ function Tab({ route }: { route: TabRoute }) {
   )
 }
 
-export function TabBar() {
+export function TabBar({ onRegister }: { onRegister: () => void }) {
   const half = Math.ceil(TAB_ROUTES.length / 2)
   const left = TAB_ROUTES.slice(0, half)
   const right = TAB_ROUTES.slice(half)
@@ -34,7 +34,8 @@ export function TabBar() {
         <button
           type="button"
           aria-label={STRINGS.nav.registrarAgua}
-          className="mx-auto -mt-3.5 block h-10 w-10 rounded-full border-b-[3px]
+          onClick={onRegister}
+          className="mx-auto -mt-3.5 block h-11 w-11 rounded-full border-b-[3px]
                      border-water-edge bg-water text-[19px] font-extrabold text-ink-on-water"
         >
           +

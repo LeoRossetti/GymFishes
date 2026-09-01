@@ -78,4 +78,18 @@ export const STRINGS = {
     semConexao: 'Sem conexão',
     generico: 'Algo deu errado. Tente de novo.',
   },
+  registrar: {
+    minhasGarrafas: 'Minhas garrafas',
+    valorAvulso: 'Valor avulso',
+    registrar: (volume: string) => `Registrar ${volume}`,
+    registrarVazio: 'Registrar',
+    salvarAlteracoes: 'Salvar alterações',
+    foto: '📷 foto',
+    nota: '📝 nota',
+    agora: '🕐 agora',
+    fotoErro: 'Não foi possível usar essa imagem.',
+    removerFoto: 'Remover foto',
+    falhou: 'Não foi possível salvar. Tente de novo.',
+    fechar: 'Fechar',
+  },
 } as const
