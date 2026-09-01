@@ -86,6 +86,16 @@ describe('useUpdateEntry', () => {
     api.updateEntry.mockReset().mockResolvedValue(undefined)
   })
 
+  it('recomputes drank_on when the patch changes drank_at', async () => {
+    const { client, wrapper } = harness()
+    const { result } = renderHook(() => useUpdateEntry('g1'), { wrapper })
+    result.current.mutate({ id: 'e1', patch: { drank_at: '2026-08-30T15:00:00Z' } })
+    await waitFor(() => {
+      const list = client.getQueryData<Entry[]>(entriesKey('g1'))
+      expect(list?.[0]?.drank_on).toBe('2026-08-30')
+    })
+  })
+
   it('removes the row optimistically when the patch soft-deletes', async () => {
     const { client, wrapper } = harness()
     const { result } = renderHook(() => useUpdateEntry('g1'), { wrapper })

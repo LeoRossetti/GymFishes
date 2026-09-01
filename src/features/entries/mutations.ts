@@ -77,7 +77,12 @@ export function useUpdateEntry(groupId: string) {
       const before = await snapshot(client, groupId)
       const row = before.find((e) => e.id === id)
       if (row) {
-        const merged = { ...row, ...patch, updated_at: new Date().toISOString() }
+        const merged = {
+          ...row,
+          ...patch,
+          drank_on: patch.drank_at ? dayKey(new Date(patch.drank_at)) : row.drank_on,
+          updated_at: new Date().toISOString(),
+        }
         client.setQueryData(entriesKey(groupId), upsertEntry(before, merged))
       }
       return { before }
