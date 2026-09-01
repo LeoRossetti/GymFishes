@@ -67,4 +67,24 @@ describe('BottleManager', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Arquivar mesmo?' }))
     expect(archiveBottle).toHaveBeenCalledWith('b1')
   })
+
+  it('resets the archive confirmation when the row is closed and reopened', async () => {
+    renderWithProviders(<BottleManager userId="u1" />)
+    await userEvent.click(screen.getByText('Garrafa azul'))
+    await userEvent.click(screen.getByRole('button', { name: 'Arquivar' }))
+    await userEvent.click(screen.getByText('Garrafa azul')) // collapse
+    await userEvent.click(screen.getByText('Garrafa azul')) // reopen
+    expect(screen.getByRole('button', { name: 'Arquivar' })).toBeInTheDocument()
+    expect(archiveBottle).not.toHaveBeenCalled()
+  })
+
+  it('shows a pt-BR error when a mutation fails', async () => {
+    createBottle.mockRejectedValueOnce(new Error('boom'))
+    renderWithProviders(<BottleManager userId="u1" />)
+    await userEvent.click(screen.getByRole('button', { name: 'Adicionar garrafa' }))
+    await userEvent.type(screen.getByLabelText('Nome da garrafa'), 'Copo')
+    await userEvent.type(screen.getByLabelText('Volume (ml)'), '300')
+    await userEvent.click(screen.getByRole('button', { name: 'Salvar' }))
+    expect(await screen.findByText('Algo deu errado. Tente de novo.')).toBeInTheDocument()
+  })
 })

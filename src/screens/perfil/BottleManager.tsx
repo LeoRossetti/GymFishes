@@ -13,6 +13,13 @@ export function BottleManager({ userId }: { userId: string | undefined }) {
   const [editing, setEditing] = useState<string | 'nova' | null>(null)
   const [confirmando, setConfirmando] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  function selectEditing(target: string | 'nova' | null) {
+    setEditing(target)
+    setConfirmando(null)
+    setError(null)
+  }
 
   async function run(op: () => Promise<unknown>) {
     setBusy(true)
@@ -21,6 +28,9 @@ export function BottleManager({ userId }: { userId: string | undefined }) {
       await client.invalidateQueries({ queryKey: ['bottles'] })
       setEditing(null)
       setConfirmando(null)
+      setError(null)
+    } catch {
+      setError(STRINGS.erro.generico)
     } finally {
       setBusy(false)
     }
@@ -34,6 +44,8 @@ export function BottleManager({ userId }: { userId: string | undefined }) {
         {STRINGS.garrafas.titulo}
       </h2>
 
+      {error ? <p className="mb-2 text-[13px] text-danger">{error}</p> : null}
+
       {list.length === 0 ? (
         <p className="py-2 text-[15px] text-ink-2">{STRINGS.garrafas.vazio}</p>
       ) : (
@@ -43,7 +55,7 @@ export function BottleManager({ userId }: { userId: string | undefined }) {
               <button
                 type="button"
                 className="flex min-h-[44px] w-full items-center gap-2 py-2 text-left text-[15px] text-ink"
-                onClick={() => setEditing(editing === bottle.id ? null : bottle.id)}
+                onClick={() => selectEditing(editing === bottle.id ? null : bottle.id)}
               >
                 {bottle.emoji ? <span>{bottle.emoji}</span> : null}
                 <span className="flex-1">{bottle.name}</span>
@@ -84,11 +96,7 @@ export function BottleManager({ userId }: { userId: string | undefined }) {
           />
         </div>
       ) : (
-        <Button
-          variant="ghost"
-          className="mt-3"
-          onClick={() => setEditing('nova')}
-        >
+        <Button variant="ghost" className="mt-3" onClick={() => selectEditing('nova')}>
           {STRINGS.garrafas.adicionar}
         </Button>
       )}
