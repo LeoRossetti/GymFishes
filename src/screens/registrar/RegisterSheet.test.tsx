@@ -39,6 +39,10 @@ vi.mock('@/features/entries/mutations', () => ({
   useInsertEntry: () => ({ mutate: insertMutate }),
   useUpdateEntry: () => ({ mutate: updateMutate }),
 }))
+vi.mock('@/features/entries/photos', () => ({
+  uploadEntryPhoto: vi.fn(),
+  removeEntryPhotos: vi.fn(),
+}))
 
 describe('RegisterSheet', () => {
   beforeEach(() => {
@@ -120,6 +124,34 @@ describe('RegisterSheet', () => {
     const call = updateMutate.mock.calls[0]?.[0]
     expect(call.id).toBe('e1')
     expect(call.patch.total_ml).toBe(1800)
+  })
+
+  it('removing an existing photo in edit mode clears the paths on save', async () => {
+    const entry = {
+      id: 'e1',
+      profile_id: 'u1',
+      group_id: 'g1',
+      total_ml: 1800,
+      composition: [
+        { kind: 'bottle', name: 'Garrafa azul', volume_ml: 1500, qty: 1 },
+        { kind: 'loose', amount_ml: 300 },
+      ],
+      note: null,
+      photo_path: 'g1/u1/e1.jpg',
+      thumb_path: 'g1/u1/e1_thumb.jpg',
+      drank_at: '2026-09-01T11:00:00+00:00',
+      drank_on: '2026-09-01',
+      created_at: '2026-09-01T11:00:00+00:00',
+      updated_at: '2026-09-01T11:00:00+00:00',
+      deleted_at: null,
+    } as Entry
+    renderWithProviders(<RegisterSheet entry={entry} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Remover foto' }))
+    await userEvent.click(screen.getByRole('button', { name: /Salvar alterações/ }))
+    expect(updateMutate).toHaveBeenCalledTimes(1)
+    const call = updateMutate.mock.calls[0]?.[0]
+    expect(call.patch.photo_path).toBeNull()
+    expect(call.patch.thumb_path).toBeNull()
   })
 
   it('surfaces a toast and keeps the form open when creating a bottle fails', async () => {

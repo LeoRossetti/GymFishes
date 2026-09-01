@@ -9,7 +9,10 @@ export type SubmitDeps = {
   userId: string
   groupId: string
   insert: (input: NewEntry, opts: { onError: () => void }) => void
-  update: (vars: { id: string; patch: EntryPatch }, opts: { onError: () => void }) => void
+  update: (
+    vars: { id: string; patch: EntryPatch },
+    opts: { onError: () => void; onSuccess?: () => void },
+  ) => void
   toast: (msg: string) => void
 }
 
@@ -44,10 +47,11 @@ export function submitDraft(deps: SubmitDeps, draft: Draft, entry: Entry | undef
           deps.update({ id: entry.id, patch: base }, { onError })
         })
     } else if (draft.photoRemoved) {
-      removeEntryPhotos(entry.photo_path, entry.thumb_path)
+      // row wins: only drop the storage objects once the patch actually lands
+      // (spec §13 step 7 — mirrors RegistersCard's delete-then-cleanup ordering)
       deps.update(
         { id: entry.id, patch: { ...base, photo_path: null, thumb_path: null } },
-        { onError },
+        { onError, onSuccess: () => removeEntryPhotos(entry.photo_path, entry.thumb_path) },
       )
     } else {
       deps.update({ id: entry.id, patch: base }, { onError })

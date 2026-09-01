@@ -65,11 +65,52 @@ describe('submitDraft', () => {
     expect(d.toast).toHaveBeenCalledWith('Não foi possível usar essa imagem.')
   })
 
-  it('clears paths and removes objects when the photo was removed in edit', () => {
+  it('clears paths in the patch when the photo was removed in edit', () => {
     const entry = { id: 'e1', photo_path: 'g1/u1/e1.jpg', thumb_path: 'g1/u1/e1_thumb.jpg' } as Entry
     const d = deps()
     submitDraft(d, { ...withLoose(300), photoRemoved: true }, entry)
-    expect(photos.removeEntryPhotos).toHaveBeenCalledWith('g1/u1/e1.jpg', 'g1/u1/e1_thumb.jpg')
     expect(d.update.mock.calls[0]?.[0].patch.photo_path).toBeNull()
+    expect(d.update.mock.calls[0]?.[0].patch.thumb_path).toBeNull()
+  })
+
+  it('removes storage objects only once the row update succeeds (row wins)', () => {
+    const entry = { id: 'e1', photo_path: 'g1/u1/e1.jpg', thumb_path: 'g1/u1/e1_thumb.jpg' } as Entry
+    const d = deps()
+    submitDraft(d, { ...withLoose(300), photoRemoved: true }, entry)
+    expect(photos.removeEntryPhotos).not.toHaveBeenCalled()
+    d.update.mock.calls[0]?.[1].onSuccess?.()
+    expect(photos.removeEntryPhotos).toHaveBeenCalledWith('g1/u1/e1.jpg', 'g1/u1/e1_thumb.jpg')
+  })
+
+  it('edit with a new photo uploads first, then updates with the returned paths', async () => {
+    photos.uploadEntryPhoto.mockResolvedValue({ photoPath: 'g1/u1/e1.jpg', thumbPath: 'g1/u1/e1_thumb.jpg' })
+    const entry = { id: 'e1', photo_path: null, thumb_path: null } as Entry
+    const d = deps()
+    submitDraft(d, photoDraft, entry)
+    await waitFor(() => expect(d.update).toHaveBeenCalled())
+    expect(d.update.mock.calls[0]?.[0].patch.photo_path).toBe('g1/u1/e1.jpg')
+    expect(d.update.mock.calls[0]?.[0].patch.thumb_path).toBe('g1/u1/e1_thumb.jpg')
+  })
+
+  it('edit with a failing photo upload updates without touching photo fields', async () => {
+    photos.uploadEntryPhoto.mockRejectedValue(new Error('down'))
+    const entry = { id: 'e1', photo_path: 'g1/u1/old.jpg', thumb_path: 'g1/u1/old_thumb.jpg' } as Entry
+    const d = deps()
+    submitDraft(d, photoDraft, entry)
+    await waitFor(() => expect(d.update).toHaveBeenCalled())
+    expect(d.toast).toHaveBeenCalledWith('Não foi possível usar essa imagem.')
+    const patch = d.update.mock.calls[0]?.[0].patch
+    expect(patch).not.toHaveProperty('photo_path')
+    expect(patch).not.toHaveProperty('thumb_path')
+  })
+
+  it('a plain edit leaves photo fields out of the patch entirely', () => {
+    const entry = { id: 'e1', photo_path: 'g1/u1/e1.jpg', thumb_path: 'g1/u1/e1_thumb.jpg' } as Entry
+    const d = deps()
+    submitDraft(d, withLoose(300), entry)
+    expect(d.update).toHaveBeenCalledTimes(1)
+    const patch = d.update.mock.calls[0]?.[0].patch
+    expect(patch).not.toHaveProperty('photo_path')
+    expect(patch).not.toHaveProperty('thumb_path')
   })
 })

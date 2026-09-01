@@ -18,6 +18,25 @@ const CHIP = 'min-h-[44px] rounded-[99px] border px-4 text-[13px] font-bold'
 const CHIP_OFF = `${CHIP} border-dashed border-line text-ink-3`
 const CHIP_ON = `${CHIP} border-ok text-ok`
 
+/** 44px hit area around a visually compact badge — mirrors BottleGrid's decrement badge. */
+function RemoveBadge({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label={STRINGS.registrar.removerFoto}
+      onClick={onClick}
+      className="absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center"
+    >
+      <span
+        className="flex h-6 w-6 items-center justify-center rounded-[99px] border
+                   border-water bg-water text-[11px] font-extrabold text-ink-on-water"
+      >
+        ✕
+      </span>
+    </button>
+  )
+}
+
 export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
   const toast = useToast()
@@ -26,6 +45,7 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
     if (!file) return
     try {
       const { photo, thumb } = await processPhoto(file)
+      if (draft.photo) URL.revokeObjectURL(draft.photo.previewUrl) // replacing a prior pick
       dispatch({
         type: 'setPhoto',
         photo: { blob: photo, thumb, previewUrl: URL.createObjectURL(photo) },
@@ -55,29 +75,22 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
               alt=""
               className="h-6 w-6 rounded-[4px] object-cover"
             />
-            <button
-              type="button"
-              aria-label={STRINGS.registrar.removerFoto}
+            <RemoveBadge
               onClick={() => {
                 URL.revokeObjectURL(draft.photo!.previewUrl)
                 dispatch({ type: 'clearPhoto' })
               }}
-              className="absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center"
-            >
-              <span
-                className="flex h-6 w-6 items-center justify-center rounded-[99px] border
-                           border-water bg-water text-[11px] font-extrabold text-ink-on-water"
-              >
-                ✕
-              </span>
+            />
+          </span>
+        ) : entryHasPhoto && !draft.photoRemoved ? (
+          <span className="relative">
+            <button type="button" className={CHIP_ON} onClick={() => fileRef.current?.click()}>
+              {STRINGS.registrar.foto}
             </button>
+            <RemoveBadge onClick={() => dispatch({ type: 'clearPhoto' })} />
           </span>
         ) : (
-          <button
-            type="button"
-            className={draft.photoRemoved || !entryHasPhoto ? CHIP_OFF : CHIP_ON}
-            onClick={() => fileRef.current?.click()}
-          >
+          <button type="button" className={CHIP_OFF} onClick={() => fileRef.current?.click()}>
             {STRINGS.registrar.foto}
           </button>
         )}

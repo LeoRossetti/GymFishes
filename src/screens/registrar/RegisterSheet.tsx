@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react'
+import { useEffect, useReducer, useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import { useSession } from '@/features/auth/AuthProvider'
 import { useBootstrap } from '@/features/profile/useBootstrap'
@@ -31,6 +31,19 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
     e ? draftFromEntry(e) : emptyDraft(new Date()),
   )
   const [openChip, setOpenChip] = useState<'nota' | 'hora' | null>(null)
+
+  // keep a ref to the current preview URL so unmount always revokes whatever object URL
+  // is live at the time — the sheet can close (drag-to-dismiss, backdrop tap) with an
+  // unsaved picked photo still on the draft.
+  const previewUrlRef = useRef<string | null>(draft.photo?.previewUrl ?? null)
+  useEffect(() => {
+    previewUrlRef.current = draft.photo?.previewUrl ?? null
+  })
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+    }
+  }, [])
 
   const items = draftItems(draft)
   const total = totalMl(items)
