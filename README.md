@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="public/icon.svg" width="96" alt="GymFishes" />
+  <img src="docs/img/mascote.png" width="240" alt="Fih, o mascote: um peixe de pelúcia em cima de um All Star" />
+</p>
+
+<p align="center">
+  <sub>Fih</sub>
 </p>
 
 <h1 align="center">GymFishes 🐟</h1>
@@ -54,6 +58,5 @@ docs/         especificação e planos do projeto
 | `npm run test:run` | roda os testes |
 | `npm run build` | gera a versão final |
 
-Detalhes técnicos (banco de dados, convenções de código) estão em
-[`CLAUDE.md`](CLAUDE.md) e na
+Detalhes técnicos (banco de dados, decisões de design) estão na
 [especificação](docs/superpowers/specs/2026-08-11-gymfishes-design.md).
