@@ -35,6 +35,13 @@ export const STRINGS = {
   hoje: {
     titulo: 'Hoje',
     vazio: 'Nenhum registro hoje. Bora beber água. 💧',
+    voce: 'Você',
+    alguem: 'Alguém',
+    registrosDeHoje: 'Registros de hoje',
+    empate: 'Empate técnico',
+    voceNaFrente: (volume: string) => `Você está ${volume} na frente`,
+    parceiroNaFrente: (nome: string, volume: string) => `${nome} está ${volume} na frente`,
+    abrirPerfil: 'Abrir perfil',
   },
   nav: {
     hoje: 'Hoje',
