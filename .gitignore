@@ -1,0 +1,27 @@
+# Brainstorming visual companion (local mockups + server state)
+.superpowers/
+
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+.vite/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Supabase CLI
+supabase/.temp/
+supabase/.branches/
+
+# Claude (local AI tooling — not part of the app)
+CLAUDE.md
+.claude/
