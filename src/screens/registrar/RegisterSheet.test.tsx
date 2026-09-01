@@ -2,12 +2,14 @@ import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '@/test/utils'
+import { ToastProvider } from '@/ui/Toast'
 import { RegisterSheet } from './RegisterSheet'
 import type { Entry } from '@/features/entries/cache'
 
 const insertMutate = vi.fn()
 const updateMutate = vi.fn()
 const onClose = vi.fn()
+const createBottleMock = vi.fn()
 
 vi.mock('@/features/auth/AuthProvider', () => ({
   useSession: () => ({ session: { user: { id: 'u1' } }, loading: false }),
@@ -31,7 +33,7 @@ vi.mock('@/features/bottles/queries', () => ({
   }),
 }))
 vi.mock('@/features/bottles/mutations', () => ({
-  createBottle: vi.fn(),
+  createBottle: (...args: unknown[]) => createBottleMock(...args),
 }))
 vi.mock('@/features/entries/mutations', () => ({
   useInsertEntry: () => ({ mutate: insertMutate }),
@@ -43,6 +45,7 @@ describe('RegisterSheet', () => {
     insertMutate.mockReset()
     updateMutate.mockReset()
     onClose.mockReset()
+    createBottleMock.mockReset()
   })
 
   it('disables the CTA at zero', () => {
@@ -117,5 +120,20 @@ describe('RegisterSheet', () => {
     const call = updateMutate.mock.calls[0]?.[0]
     expect(call.id).toBe('e1')
     expect(call.patch.total_ml).toBe(1800)
+  })
+
+  it('surfaces a toast and keeps the form open when creating a bottle fails', async () => {
+    createBottleMock.mockRejectedValueOnce(new Error('boom'))
+    renderWithProviders(
+      <ToastProvider>
+        <RegisterSheet entry={undefined} onClose={onClose} />
+      </ToastProvider>,
+    )
+    await userEvent.click(screen.getByRole('button', { name: '+ nova garrafa' }))
+    await userEvent.type(screen.getByLabelText('Nome da garrafa'), 'Copo')
+    await userEvent.type(screen.getByLabelText('Volume (ml)'), '300')
+    await userEvent.click(screen.getByRole('button', { name: 'Salvar' }))
+    expect(await screen.findByRole('status')).toHaveTextContent('Algo deu errado. Tente de novo.')
+    expect(screen.getByLabelText('Nome da garrafa')).toBeInTheDocument()
   })
 })

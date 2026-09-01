@@ -5,6 +5,7 @@ import { BottleForm } from '@/features/bottles/BottleForm'
 import type { Bottle } from '@/features/bottles/queries'
 import { formatVolume } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
+import { useToast } from '@/ui/Toast'
 import { qtyOf, type Draft, type DraftAction } from './draft'
 
 type Props = {
@@ -16,6 +17,7 @@ type Props = {
 
 export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
   const client = useQueryClient()
+  const toast = useToast()
   const [adding, setAdding] = useState(false)
   const [busy, setBusy] = useState(false)
 
@@ -44,12 +46,16 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
               {qty > 0 ? (
                 <button
                   type="button"
-                  aria-label={`${b.name} menos um`}
+                  aria-label={STRINGS.registrar.menosUm(b.name)}
                   onClick={() => dispatch({ type: 'decBottle', name: b.name, volume_ml: b.volume_ml })}
-                  className="absolute -top-2 -right-2 min-h-[24px] rounded-[99px] border border-water
-                             bg-water px-2 text-[11px] font-extrabold text-ink-on-water"
+                  className="absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center"
                 >
-                  ×{qty}
+                  <span
+                    className="rounded-[99px] border border-water bg-water px-2 text-[11px]
+                               font-extrabold text-ink-on-water"
+                  >
+                    ×{qty}
+                  </span>
                 </button>
               ) : null}
             </div>
@@ -76,6 +82,7 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
                   setAdding(false)
                   return client.invalidateQueries({ queryKey: ['bottles'] })
                 })
+                .catch(() => toast(STRINGS.erro.generico))
                 .finally(() => setBusy(false))
             }}
           />
