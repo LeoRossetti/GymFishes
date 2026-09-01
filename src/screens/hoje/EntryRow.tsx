@@ -19,11 +19,16 @@ export function EntryRow({ entry, authorName, isOwn, onEdit, onDelete }: Props) 
   const items = parseComposition(entry.composition)
   const subtitle = entry.note ?? describeComposition(items)
 
+  function toggle() {
+    setExpanded((v) => !v)
+    setConfirmando(false)
+  }
+
   return (
     <li className="border-b border-line py-2 last:border-b-0">
       <button
         type="button"
-        onClick={() => setExpanded((v) => !v)}
+        onClick={toggle}
         className="flex min-h-[44px] w-full items-center gap-3 text-left"
       >
         <span className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-control bg-surface-2 text-[17px]">

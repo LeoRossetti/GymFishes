@@ -59,4 +59,16 @@ describe('EntryRow', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Excluir mesmo?' }))
     expect(onDelete).toHaveBeenCalled()
   })
+
+  it('resets the delete confirm when the row collapses', async () => {
+    const onDelete = vi.fn()
+    render(<EntryRow entry={entry} authorName="Leo" isOwn onEdit={vi.fn()} onDelete={onDelete} />)
+    await userEvent.click(screen.getByText(/Leo · 11:00/))
+    await userEvent.click(screen.getByRole('button', { name: 'Excluir' }))
+    await userEvent.click(screen.getByText(/Leo · 11:00/)) // collapse
+    await userEvent.click(screen.getByText(/Leo · 11:00/)) // re-expand
+    expect(screen.getByRole('button', { name: 'Excluir' })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Excluir' }))
+    expect(onDelete).not.toHaveBeenCalled()
+  })
 })
