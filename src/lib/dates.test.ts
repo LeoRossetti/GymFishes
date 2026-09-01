@@ -51,6 +51,11 @@ describe('toDatetimeLocal', () => {
     // 2026-01-15T03:30Z is 00:30 in São Paulo (-03:00)
     expect(toDatetimeLocal(new Date('2026-01-15T03:30:00Z'))).toBe('2026-01-15T00:30')
   })
+
+  it('formats midnight as 00:00, never 24:00', () => {
+    // 2026-01-15T03:00:00Z is exactly 00:00 in São Paulo (-03:00)
+    expect(toDatetimeLocal(new Date('2026-01-15T03:00:00Z'))).toBe('2026-01-15T00:00')
+  })
 })
 
 describe('fromDatetimeLocal', () => {
