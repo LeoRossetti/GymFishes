@@ -26,7 +26,7 @@ export function TabBar() {
           type="button"
           aria-label={STRINGS.nav.registrarAgua}
           className="mx-auto -mt-3.5 block h-10 w-10 rounded-full border-b-[3px]
-                     border-water-edge bg-water text-[19px] font-extrabold text-[#0A2A3A]"
+                     border-water-edge bg-water text-[19px] font-extrabold text-ink-on-water"
         >
           +
         </button>
