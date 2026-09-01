@@ -1,6 +1,9 @@
+import { useRef } from 'react'
 import { formatTime } from '@/lib/format'
 import { fromDatetimeLocal, toDatetimeLocal } from '@/lib/dates'
+import { processPhoto } from '@/lib/image'
 import { STRINGS } from '@/lib/strings'
+import { useToast } from '@/ui/Toast'
 import type { Draft, DraftAction } from './draft'
 
 type Props = {
@@ -8,16 +11,76 @@ type Props = {
   dispatch: (a: DraftAction) => void
   open: 'nota' | 'hora' | null
   setOpen: (v: 'nota' | 'hora' | null) => void
+  entryHasPhoto: boolean
 }
 
 const CHIP = 'min-h-[44px] rounded-[99px] border px-4 text-[13px] font-bold'
 const CHIP_OFF = `${CHIP} border-dashed border-line text-ink-3`
 const CHIP_ON = `${CHIP} border-ok text-ok`
 
-export function OptionalChips({ draft, dispatch, open, setOpen }: Props) {
+export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }: Props) {
+  const fileRef = useRef<HTMLInputElement>(null)
+  const toast = useToast()
+
+  async function onFile(file: File | undefined) {
+    if (!file) return
+    try {
+      const { photo, thumb } = await processPhoto(file)
+      dispatch({
+        type: 'setPhoto',
+        photo: { blob: photo, thumb, previewUrl: URL.createObjectURL(photo) },
+      })
+    } catch {
+      toast(STRINGS.registrar.fotoErro) // spec §14: the register proceeds without the photo
+    }
+  }
+
   return (
     <section className="mt-4">
       <div className="flex gap-2">
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={(e) => {
+            void onFile(e.target.files?.[0])
+            e.target.value = ''
+          }}
+        />
+        {draft.photo ? (
+          <span className={`${CHIP_ON} relative flex items-center gap-2`}>
+            <img
+              src={draft.photo.previewUrl}
+              alt=""
+              className="h-6 w-6 rounded-[4px] object-cover"
+            />
+            <button
+              type="button"
+              aria-label={STRINGS.registrar.removerFoto}
+              onClick={() => {
+                URL.revokeObjectURL(draft.photo!.previewUrl)
+                dispatch({ type: 'clearPhoto' })
+              }}
+              className="absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center"
+            >
+              <span
+                className="flex h-6 w-6 items-center justify-center rounded-[99px] border
+                           border-water bg-water text-[11px] font-extrabold text-ink-on-water"
+              >
+                ✕
+              </span>
+            </button>
+          </span>
+        ) : (
+          <button
+            type="button"
+            className={draft.photoRemoved || !entryHasPhoto ? CHIP_OFF : CHIP_ON}
+            onClick={() => fileRef.current?.click()}
+          >
+            {STRINGS.registrar.foto}
+          </button>
+        )}
         <button
           type="button"
           className={draft.note ? CHIP_ON : CHIP_OFF}

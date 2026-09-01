@@ -1,5 +1,6 @@
 import type { Entry } from '@/features/entries/cache'
 import { useUpdateEntry } from '@/features/entries/mutations'
+import { removeEntryPhotos } from '@/features/entries/photos'
 import type { Member } from '@/features/group/queries'
 import { dayKey } from '@/lib/dates'
 import { STRINGS } from '@/lib/strings'
@@ -43,7 +44,10 @@ export function RegistersCard({ userId, groupId, members, entries, openRegister 
               onDelete={() =>
                 update.mutate(
                   { id: entry.id, patch: { deleted_at: new Date().toISOString() } },
-                  { onError: () => toast(STRINGS.registrar.falhou) },
+                  {
+                    onError: () => toast(STRINGS.registrar.falhou),
+                    onSuccess: () => removeEntryPhotos(entry.photo_path, entry.thumb_path),
+                  },
                 )
               }
             />

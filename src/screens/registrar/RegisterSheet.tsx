@@ -15,6 +15,7 @@ import { BottleGrid } from './BottleGrid'
 import { LooseAmount } from './LooseAmount'
 import { OptionalChips } from './OptionalChips'
 import { draftFromEntry, draftItems, draftReducer, emptyDraft } from './draft'
+import { submitDraft } from './submit'
 import { useCountUp } from './useCountUp'
 
 export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; onClose: () => void }) {
@@ -37,38 +38,19 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
   const canSave = total >= 1 && total <= MAX_ML && Boolean(userId) && Boolean(groupId)
 
   function submit() {
-    if (!canSave || !userId) return
-    const note = draft.note.trim() || null
-    const onError = () => toast(STRINGS.registrar.falhou)
-    if (entry) {
-      update.mutate(
-        {
-          id: entry.id,
-          patch: {
-            total_ml: total,
-            composition: items as Entry['composition'],
-            note,
-            drank_at: draft.drankAt.toISOString(),
-          },
-        },
-        { onError },
-      )
-    } else {
-      insert.mutate(
-        {
-          id: crypto.randomUUID(),
-          profileId: userId,
-          totalMl: total,
-          composition: items,
-          note,
-          drankAt: draft.drankAt,
-          photoPath: null,
-          thumbPath: null,
-        },
-        { onError },
-      )
-    }
-    onClose() // optimistic: never wait on the network
+    if (!canSave || !userId || !groupId) return
+    submitDraft(
+      {
+        userId,
+        groupId,
+        insert: (input, opts) => insert.mutate(input, opts),
+        update: (vars, opts) => update.mutate(vars, opts),
+        toast,
+      },
+      draft,
+      entry,
+    )
+    onClose()
   }
 
   return (
@@ -100,7 +82,13 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
         ) : null}
         <BottleGrid userId={userId} bottles={bottles.data ?? []} draft={draft} dispatch={dispatch} />
         <LooseAmount draft={draft} dispatch={dispatch} />
-        <OptionalChips draft={draft} dispatch={dispatch} open={openChip} setOpen={setOpenChip} />
+        <OptionalChips
+          draft={draft}
+          dispatch={dispatch}
+          open={openChip}
+          setOpen={setOpenChip}
+          entryHasPhoto={Boolean(entry?.photo_path)}
+        />
         <Button className="mt-5" disabled={!canSave} onClick={submit}>
           {entry
             ? STRINGS.registrar.salvarAlteracoes

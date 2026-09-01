@@ -89,6 +89,7 @@ export const STRINGS = {
     editar: 'Editar',
     excluir: 'Excluir',
     excluirMesmo: 'Excluir mesmo?',
+    fotoDoRegistro: 'Foto do registro',
   },
   registrar: {
     minhasGarrafas: 'Minhas garrafas',
