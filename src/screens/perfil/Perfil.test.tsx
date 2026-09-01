@@ -33,6 +33,12 @@ vi.mock('@/features/group/queries', () => ({
 vi.mock('@/lib/supabase', () => ({
   supabase: { auth: { signOut: (...args: unknown[]) => signOut(...args) } },
 }))
+vi.mock('@/features/bottles/queries', () => ({ useBottles: () => ({ data: [] }) }))
+vi.mock('@/features/bottles/mutations', () => ({
+  createBottle: vi.fn(),
+  updateBottle: vi.fn(),
+  archiveBottle: vi.fn(),
+}))
 
 describe('Perfil', () => {
   beforeEach(() => {

@@ -8,6 +8,7 @@ import { STRINGS } from '@/lib/strings'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
+import { BottleManager } from './BottleManager'
 import { GroupCard } from './GroupCard'
 
 export function Perfil() {
@@ -74,6 +75,8 @@ export function Perfil() {
           ))}
         </div>
       </section>
+
+      <BottleManager userId={userId} />
 
       <GroupCard groupId={bootstrap.data?.groupId} />
 
