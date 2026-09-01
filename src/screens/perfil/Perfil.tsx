@@ -20,6 +20,7 @@ export function Perfil() {
   const [nome, setNome] = useState<string | null>(null)
   const [confirmandoSaida, setConfirmandoSaida] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [erro, setErro] = useState<string | null>(null)
 
   if (!profile) return null
   const shownNome = nome ?? profile.display_name
@@ -33,6 +34,10 @@ export function Perfil() {
     try {
       await updateProfile(userId, patch)
       await client.invalidateQueries({ queryKey: ['bootstrap'] })
+      await client.invalidateQueries({ queryKey: ['members'] })
+      setErro(null)
+    } catch {
+      setErro(STRINGS.erro.generico)
     } finally {
       setBusy(false)
     }
@@ -45,6 +50,7 @@ export function Perfil() {
       </header>
 
       <section className="mb-3 rounded-card border border-line bg-surface p-4">
+        {erro ? <p className="mb-2 text-[13px] text-danger">{erro}</p> : null}
         <Field
           label={STRINGS.perfil.nome}
           value={shownNome}

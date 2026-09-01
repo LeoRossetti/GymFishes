@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { screen } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '@/test/utils'
 import { ToastProvider } from '@/ui/Toast'
@@ -87,6 +87,15 @@ describe('RegisterSheet', () => {
       { kind: 'bottle', name: 'Garrafa azul', volume_ml: 1500, qty: 1 },
     ])
     expect(onClose).toHaveBeenCalled()
+  })
+
+  it('a fast double-tap on the CTA only inserts once', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: /Garrafa azul/ }))
+    const cta = screen.getByRole('button', { name: /Registrar 1,5 L/ })
+    fireEvent.click(cta)
+    fireEvent.click(cta)
+    expect(insertMutate).toHaveBeenCalledTimes(1)
   })
 
   it('includes a typed nota on submit', async () => {

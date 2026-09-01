@@ -32,8 +32,7 @@ export function GroupCard({ groupId }: { groupId: string | null | undefined }) {
           variant="ghost"
           className="mt-3"
           onClick={() => {
-            navigator.clipboard.writeText(code).catch(() => {})
-            setCopiado(true)
+            navigator.clipboard.writeText(code).then(() => setCopiado(true)).catch(() => {})
           }}
         >
           {copiado ? STRINGS.grupo.copiado : STRINGS.grupo.copiarCodigo}

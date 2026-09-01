@@ -68,6 +68,16 @@ describe('Perfil', () => {
     expect(updateProfile).toHaveBeenCalledWith('u1', { accent: 'pink' })
   })
 
+  it('shows an error when saving the name fails', async () => {
+    updateProfile.mockRejectedValueOnce(new Error('down'))
+    renderWithProviders(<Perfil />)
+    const field = screen.getByLabelText('Nome')
+    await userEvent.clear(field)
+    await userEvent.type(field, 'Leonardo')
+    await userEvent.click(screen.getByRole('button', { name: 'Salvar' }))
+    expect(await screen.findByText('Algo deu errado. Tente de novo.')).toBeInTheDocument()
+  })
+
   it('hides the copy button when the clipboard API is unavailable', () => {
     renderWithProviders(<Perfil />)
     expect(screen.queryByRole('button', { name: 'Copiar código' })).not.toBeInTheDocument()

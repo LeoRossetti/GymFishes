@@ -24,13 +24,15 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
   const bootstrap = useBootstrap(userId)
   const groupId = bootstrap.data?.groupId ?? ''
   const bottles = useBottles(userId)
-  const insert = useInsertEntry(groupId)
-  const update = useUpdateEntry(groupId)
   const toast = useToast()
+  const onFailure = () => toast(STRINGS.registrar.falhou)
+  const insert = useInsertEntry(groupId, onFailure)
+  const update = useUpdateEntry(groupId, onFailure)
   const [draft, dispatch] = useReducer(draftReducer, entry, (e) =>
     e ? draftFromEntry(e) : emptyDraft(new Date()),
   )
   const [openChip, setOpenChip] = useState<'nota' | 'hora' | null>(null)
+  const submitted = useRef(false)
 
   // keep a ref to the current preview URL so unmount always revokes whatever object URL
   // is live at the time — the sheet can close (drag-to-dismiss, backdrop tap) with an
@@ -51,12 +53,13 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
   const canSave = total >= 1 && total <= MAX_ML && Boolean(userId) && Boolean(groupId)
 
   function submit() {
-    if (!canSave || !userId || !groupId) return
+    if (!canSave || !userId || !groupId || submitted.current) return
+    submitted.current = true
     submitDraft(
       {
         userId,
         groupId,
-        insert: (input, opts) => insert.mutate(input, opts),
+        insert: (input) => insert.mutate(input),
         update: (vars, opts) => update.mutate(vars, opts),
         toast,
       },

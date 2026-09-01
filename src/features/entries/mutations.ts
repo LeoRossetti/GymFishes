@@ -53,7 +53,7 @@ async function snapshot(client: QueryClient, groupId: string): Promise<Entry[]> 
   return client.getQueryData<Entry[]>(entriesKey(groupId)) ?? []
 }
 
-export function useInsertEntry(groupId: string) {
+export function useInsertEntry(groupId: string, onFailure?: () => void) {
   const client = useQueryClient()
   return useMutation({
     mutationFn: (input: NewEntry) => insertEntry(toRow(input, groupId)),
@@ -64,12 +64,13 @@ export function useInsertEntry(groupId: string) {
     },
     onError: (_e, _input, ctx) => {
       if (ctx) client.setQueryData(entriesKey(groupId), ctx.before)
+      onFailure?.()
     },
     onSettled: () => client.invalidateQueries({ queryKey: entriesKey(groupId) }),
   })
 }
 
-export function useUpdateEntry(groupId: string) {
+export function useUpdateEntry(groupId: string, onFailure?: () => void) {
   const client = useQueryClient()
   return useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: EntryPatch }) => updateEntry(id, patch),
@@ -89,6 +90,7 @@ export function useUpdateEntry(groupId: string) {
     },
     onError: (_e, _input, ctx) => {
       if (ctx) client.setQueryData(entriesKey(groupId), ctx.before)
+      onFailure?.()
     },
     onSettled: () => client.invalidateQueries({ queryKey: entriesKey(groupId) }),
   })

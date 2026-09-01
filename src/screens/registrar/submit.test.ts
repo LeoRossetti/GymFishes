@@ -78,7 +78,7 @@ describe('submitDraft', () => {
     const d = deps()
     submitDraft(d, { ...withLoose(300), photoRemoved: true }, entry)
     expect(photos.removeEntryPhotos).not.toHaveBeenCalled()
-    d.update.mock.calls[0]?.[1].onSuccess?.()
+    d.update.mock.calls[0]?.[1]?.onSuccess?.()
     expect(photos.removeEntryPhotos).toHaveBeenCalledWith('g1/u1/e1.jpg', 'g1/u1/e1_thumb.jpg')
   })
 

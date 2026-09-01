@@ -78,6 +78,16 @@ describe('useInsertEntry', () => {
     await waitFor(() => expect(result.current.isError).toBe(true))
     expect(client.getQueryData<Entry[]>(entriesKey('g1'))?.map((e) => e.id)).toEqual(['e1'])
   })
+
+  it('calls onFailure even when the component unmounts before the network settles', async () => {
+    api.insertEntry.mockRejectedValue(new Error('down'))
+    const onFailure = vi.fn()
+    const { wrapper } = harness()
+    const { result, unmount } = renderHook(() => useInsertEntry('g1', onFailure), { wrapper })
+    result.current.mutate(novo)
+    unmount()
+    await waitFor(() => expect(onFailure).toHaveBeenCalledTimes(1))
+  })
 })
 
 describe('useUpdateEntry', () => {

@@ -909,7 +909,8 @@ src/
   screens/
     auth/                 Login, SignUp
     onboarding/           Nome, Peixe, Grupo
-    hoje/                 Hoje, ProgressStrip, MemberTube, EntryRow, EntryRowExpanded
+    hoje/                 Hoje, ProgressStrip, MemberTube, WaveSurface, RegistersCard, EntryRow,
+                           useWavePause
     registrar/            RegisterSheet, BottleGrid, LooseAmount, OptionalChips,
                            draft, submit, useCountUp
     ranking/              Ranking, PeriodControl, Standings, StatsCompare, MonthWrapUp

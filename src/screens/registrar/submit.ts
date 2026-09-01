@@ -8,11 +8,8 @@ import { draftItems, type Draft } from './draft'
 export type SubmitDeps = {
   userId: string
   groupId: string
-  insert: (input: NewEntry, opts: { onError: () => void }) => void
-  update: (
-    vars: { id: string; patch: EntryPatch },
-    opts: { onError: () => void; onSuccess?: () => void },
-  ) => void
+  insert: (input: NewEntry) => void
+  update: (vars: { id: string; patch: EntryPatch }, opts?: { onSuccess?: () => void }) => void
   toast: (msg: string) => void
 }
 
@@ -24,7 +21,6 @@ export function submitDraft(deps: SubmitDeps, draft: Draft, entry: Entry | undef
   const items = draftItems(draft)
   const total = totalMl(items)
   const note = draft.note.trim() || null
-  const onError = () => deps.toast(STRINGS.registrar.falhou)
 
   if (entry) {
     const base: EntryPatch = {
@@ -37,24 +33,25 @@ export function submitDraft(deps: SubmitDeps, draft: Draft, entry: Entry | undef
       const { blob, thumb } = draft.photo
       void uploadEntryPhoto(deps.groupId, deps.userId, entry.id, blob, thumb)
         .then(({ photoPath, thumbPath }) =>
-          deps.update(
-            { id: entry.id, patch: { ...base, photo_path: photoPath, thumb_path: thumbPath } },
-            { onError },
-          ),
+          deps.update({ id: entry.id, patch: { ...base, photo_path: photoPath, thumb_path: thumbPath } }),
         )
         .catch(() => {
           deps.toast(STRINGS.registrar.fotoErro)
-          deps.update({ id: entry.id, patch: base }, { onError })
+          deps.update({ id: entry.id, patch: base })
         })
     } else if (draft.photoRemoved) {
-      // row wins: only drop the storage objects once the patch actually lands
-      // (spec §13 step 7 — mirrors RegistersCard's delete-then-cleanup ordering)
+      // row wins: only drop the storage objects once the patch actually lands (spec §13
+      // step 7). The onSuccess cleanup below is best-effort — the sheet is typically
+      // unmounted by the time the update settles, so it may never run; the storage objects
+      // are then simply orphaned, which spec §13 step 7 accepts. What must never happen is
+      // removing objects still referenced by the row, which is why cleanup only ever
+      // follows a successful update, never precedes or races it.
       deps.update(
         { id: entry.id, patch: { ...base, photo_path: null, thumb_path: null } },
-        { onError, onSuccess: () => removeEntryPhotos(entry.photo_path, entry.thumb_path) },
+        { onSuccess: () => removeEntryPhotos(entry.photo_path, entry.thumb_path) },
       )
     } else {
-      deps.update({ id: entry.id, patch: base }, { onError })
+      deps.update({ id: entry.id, patch: base })
     }
     return
   }
@@ -72,12 +69,12 @@ export function submitDraft(deps: SubmitDeps, draft: Draft, entry: Entry | undef
   if (draft.photo) {
     const { blob, thumb } = draft.photo
     void uploadEntryPhoto(deps.groupId, deps.userId, input.id, blob, thumb)
-      .then(({ photoPath, thumbPath }) => deps.insert({ ...input, photoPath, thumbPath }, { onError }))
+      .then(({ photoPath, thumbPath }) => deps.insert({ ...input, photoPath, thumbPath }))
       .catch(() => {
         deps.toast(STRINGS.registrar.fotoErro)
-        deps.insert(input, { onError })
+        deps.insert(input)
       })
   } else {
-    deps.insert(input, { onError })
+    deps.insert(input)
   }
 }

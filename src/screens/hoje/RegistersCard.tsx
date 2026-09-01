@@ -16,8 +16,8 @@ type Props = {
 }
 
 export function RegistersCard({ userId, groupId, members, entries, openRegister }: Props) {
-  const update = useUpdateEntry(groupId)
   const toast = useToast()
+  const update = useUpdateEntry(groupId, () => toast(STRINGS.registrar.falhou))
   const today = dayKey(new Date())
   const todays = entries.filter((e) => e.drank_on === today)
   const nameOf = (id: string) =>
@@ -44,10 +44,7 @@ export function RegistersCard({ userId, groupId, members, entries, openRegister 
               onDelete={() =>
                 update.mutate(
                   { id: entry.id, patch: { deleted_at: new Date().toISOString() } },
-                  {
-                    onError: () => toast(STRINGS.registrar.falhou),
-                    onSuccess: () => removeEntryPhotos(entry.photo_path, entry.thumb_path),
-                  },
+                  { onSuccess: () => removeEntryPhotos(entry.photo_path, entry.thumb_path) },
                 )
               }
             />
