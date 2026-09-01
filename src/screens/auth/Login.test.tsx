@@ -47,7 +47,9 @@ describe('Login', () => {
   })
 
   it('shows a pt-BR message when Supabase rejects the credentials', async () => {
-    signInWithPassword.mockResolvedValue({ error: { message: 'Invalid login credentials' } })
+    signInWithPassword.mockResolvedValue({
+      error: { name: 'AuthApiError', __isAuthError: true, status: 400, message: 'Invalid login credentials' },
+    })
     render(
       <MemoryRouter>
         <Login />
@@ -58,5 +60,20 @@ describe('Login', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Entrar' }))
 
     expect(await screen.findByText('E-mail ou senha incorretos')).toBeInTheDocument()
+  })
+
+  it('shows a network message when the failure is not an auth error', async () => {
+    signInWithPassword.mockResolvedValue({
+      error: { name: 'AuthRetryableFetchError', __isAuthError: true, message: 'fetch failed' },
+    })
+    render(
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>,
+    )
+    await userEvent.type(screen.getByLabelText('E-mail'), 'leo@exemplo.com')
+    await userEvent.type(screen.getByLabelText('Senha'), 'senhaforte1')
+    await userEvent.click(screen.getByRole('button', { name: 'Entrar' }))
+    expect(await screen.findByText('Falha de conexão. Tente de novo.')).toBeInTheDocument()
   })
 })

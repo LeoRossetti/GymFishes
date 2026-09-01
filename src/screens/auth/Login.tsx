@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
+import { isAuthApiError } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
@@ -26,7 +27,11 @@ export function Login() {
         email: email.trim(),
         password,
       })
-      if (error) setFailure(STRINGS.auth.credenciaisInvalidas)
+      if (error) {
+        setFailure(
+          isAuthApiError(error) ? STRINGS.auth.credenciaisInvalidas : STRINGS.auth.falhaRede,
+        )
+      }
     } catch {
       setFailure(STRINGS.erro.generico)
     } finally {

@@ -8,6 +8,7 @@ export const STRINGS = {
     emailInvalido: 'E-mail inválido',
     senhaCurta: 'A senha precisa de pelo menos 8 caracteres',
     credenciaisInvalidas: 'E-mail ou senha incorretos',
+    falhaRede: 'Falha de conexão. Tente de novo.',
     jaTenhoConta: 'Já tenho conta',
     naoTenhoConta: 'Ainda não tenho conta',
     sair: 'Sair',

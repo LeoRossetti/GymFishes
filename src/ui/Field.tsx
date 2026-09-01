@@ -16,11 +16,17 @@ export function Field({ label, error, id, ...rest }: Props) {
       </label>
       <input
         id={inputId}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? `${inputId}-erro` : undefined}
         className="min-h-[44px] w-full rounded-control border border-line bg-surface-2 px-3
                    text-[15px] text-ink outline-none focus:border-water"
         {...rest}
       />
-      {error ? <p className="mt-2 text-[13px] text-danger">{error}</p> : null}
+      {error ? (
+        <p id={`${inputId}-erro`} className="mt-2 text-[13px] text-danger">
+          {error}
+        </p>
+      ) : null}
     </div>
   )
 }
