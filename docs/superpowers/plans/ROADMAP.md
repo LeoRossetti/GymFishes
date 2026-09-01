@@ -70,8 +70,8 @@ matches the spec.
 **§11 RLS checklist:** the entry-level half M1 could not run (no `entries` rows existed yet)
 was run programmatically on 2026-09-01 via `curl` against the REST/Auth/Storage APIs with two
 throwaway accounts in a throwaway group, cross-checked against the real group read-only —
-all 7 negative checks and all positive controls passed. See
-`.superpowers/sdd/2026-09-01-m2-core-loop/rls-checklist-evidence.md` (git-ignored, local only).
+all 7 negative checks and all positive controls passed. Evidence:
+[`../2026-09-01-rls-checklist-evidence.md`](../2026-09-01-rls-checklist-evidence.md).
 
 ## M3 — Offline e sync
 
