@@ -313,7 +313,8 @@ Settings and identity. Nothing competitive lives here.
   the unlock condition below ("Sequência de 30 dias"). Selecting one saves immediately and
   the partner sees the change.
 - **Nome** — inline editable.
-- **Cor** — a row of six flat accent swatches used for your column and avatar ring.
+- **Cor** — a row of six flat accent swatches used for your name label under the tube
+  and your avatar ring. The water itself is always `--water` blue — it's water.
 - **Minhas garrafas** — list with volume; add, rename, change volume, or archive.
   Archiving hides a bottle from the register sheet but never rewrites history, because
   every register stores a snapshot of the bottle's name and volume at the time.
@@ -436,8 +437,9 @@ Tailwind v4's `@theme`. Dark only — there is no light palette to maintain.
 | `--streak` | `#FFC800` | streak chip, first place |
 | `--danger` | `#FF4B4B` | delete |
 
-Six accent swatches for member colours are picked to stay legible on `--bg` and to remain
-distinguishable from each other in the tubes.
+Six accent swatches for member colours — `#1CB0F6` blue, `#58CC02` green, `#FFC800` yellow,
+`#FF9600` orange, `#CE82FF` purple, `#FF86D0` pink — picked to stay legible on `--bg` and to
+remain distinguishable from each other in the tubes.
 
 ### Rules
 

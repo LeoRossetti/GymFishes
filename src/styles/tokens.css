@@ -16,6 +16,13 @@
   --color-streak: #FFC800;
   --color-danger: #FF4B4B;
 
+  --color-accent-blue: #1CB0F6;
+  --color-accent-green: #58CC02;
+  --color-accent-yellow: #FFC800;
+  --color-accent-orange: #FF9600;
+  --color-accent-purple: #CE82FF;
+  --color-accent-pink: #FF86D0;
+
   --radius-card: 16px;
   --radius-control: 12px;
   --radius-key: 10px;

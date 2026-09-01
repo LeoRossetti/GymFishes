@@ -38,7 +38,25 @@ export const STRINGS = {
   },
   nav: {
     hoje: 'Hoje',
+    perfil: 'Perfil',
     registrarAgua: 'Registrar água',
+  },
+  perfil: {
+    titulo: 'Perfil',
+    nome: 'Nome',
+    salvar: 'Salvar',
+    cor: 'Cor',
+    cores: {
+      blue: 'Azul',
+      green: 'Verde',
+      yellow: 'Amarelo',
+      orange: 'Laranja',
+      purple: 'Roxo',
+      pink: 'Rosa',
+    },
+    grupo: 'Grupo',
+    membros: 'Membros',
+    sairMesmo: 'Sair mesmo?',
   },
   erro: {
     abaQuebrou: 'Algo quebrou nesta aba',
