@@ -7,6 +7,20 @@ import { WaveSurface } from './WaveSurface'
 
 type Props = { name: string; isSelf: boolean; accent: string; totalMl: number; scaleMl: number }
 
+const FISH_KNEE = 70
+
+/**
+ * Where the fish floats for a given fill %. It rides the surface until the
+ * water nears the top, then decelerates tangentially (no kink) and stops at
+ * 85% — submerged under the wave instead of clipped above the tube, which the
+ * leader would otherwise hit at exactly 100% once past the 3 L scale floor.
+ */
+export function fishLevel(pct: number): number {
+  if (pct <= FISH_KNEE) return pct
+  const x = pct - FISH_KNEE
+  return FISH_KNEE + x - x ** 2 / (2 * (100 - FISH_KNEE))
+}
+
 export function MemberTube({ name, isSelf, accent, totalMl, scaleMl }: Props) {
   const pct = Math.min(100, (totalMl / scaleMl) * 100)
   const reduced = useReducedMotion()
@@ -45,7 +59,7 @@ export function MemberTube({ name, isSelf, accent, totalMl, scaleMl }: Props) {
           <motion.span
             aria-hidden
             className="absolute left-1/2 -translate-x-1/2 text-[20px]"
-            animate={{ bottom: `${pct}%` }}
+            animate={{ bottom: `${fishLevel(pct)}%` }}
             transition={spring}
           >
             🐟
