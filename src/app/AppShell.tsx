@@ -4,6 +4,7 @@ import { AnimatePresence } from 'motion/react'
 import { useSession } from '@/features/auth/AuthProvider'
 import type { Entry } from '@/features/entries/cache'
 import { useRealtimeEntries } from '@/features/entries/realtime'
+import { useOutboxFlush } from '@/features/entries/flush'
 import { useBootstrap } from '@/features/profile/useBootstrap'
 import { RegisterSheet } from '@/screens/registrar/RegisterSheet'
 import { ToastProvider } from '@/ui/Toast'
@@ -18,6 +19,7 @@ export function AppShell() {
   const { session } = useSession()
   const bootstrap = useBootstrap(session?.user.id)
   useRealtimeEntries(bootstrap.data?.groupId)
+  useOutboxFlush()
   return (
     <ToastProvider>
       <div className="min-h-dvh pb-24">

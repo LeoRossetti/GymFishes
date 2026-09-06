@@ -12,8 +12,8 @@ codebase rather than an imagined one.
 |---|---|---|---|
 | M1 | Foundation | [`2026-08-11-m1-foundation.md`](2026-08-11-m1-foundation.md) | **code-complete** — pending user handoff: Vercel deploy, two-phone install, cloud RLS behavioral checklist |
 | M2 | Core loop — registrar e ver água | [`2026-09-01-m2-core-loop.md`](2026-09-01-m2-core-loop.md) | **code-complete** — pending owner verifications: two-browser realtime check, one register from a real phone |
-| M3 | Offline e sync | [`2026-09-06-m3-offline-sync.md`](2026-09-06-m3-offline-sync.md) | **planned** — em execução |
-| M4 | Competição — Ranking e Histórico | not written yet | blocked by M3 |
+| M3 | Offline e sync | [`2026-09-06-m3-offline-sync.md`](2026-09-06-m3-offline-sync.md) | **code-complete** — pending owner verification: airplane-mode register survives a force-quit on a real iPhone |
+| M4 | Competição — Ranking e Histórico | not written yet | ready |
 | M5 | Peixes e celebrações | not written yet | blocked by M2 |
 | M6 | PWA e endurecimento | not written yet | blocked by M4, M5 |
 
