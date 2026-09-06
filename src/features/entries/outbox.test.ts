@@ -72,6 +72,7 @@ describe('mergeOp', () => {
     const base = enqueue([], { type: 'update', id: 'e1', groupId: 'g1', profileId: 'u1', patch: { total_ml: 700 }, removePaths: ['a.jpg'] })
     const q = enqueue(base, { type: 'delete', id: 'e1', groupId: 'g1', profileId: 'u1', patch: { deleted_at: 'x' }, removePaths: ['b.jpg'] })
     expect(q[0]).toMatchObject({ type: 'delete', rev: 1, patch: { deleted_at: 'x' }, removePaths: ['a.jpg', 'b.jpg'] })
+    expect(q[0]?.type === 'delete' && q[0].patch).toEqual({ deleted_at: 'x' })
   })
 
   it('merging resets attempts so an edited op earns fresh tries', () => {
@@ -84,6 +85,12 @@ describe('mergeOp', () => {
     const del = enqueue([], { type: 'delete', id: 'e1', groupId: 'g1', profileId: 'u1', patch: { deleted_at: 'x' }, removePaths: [] })
     const q = enqueue(del, { type: 'update', id: 'e1', groupId: 'g1', profileId: 'u1', patch: { total_ml: 1 }, removePaths: [] })
     expect(q).toEqual(del)
+  })
+
+  it('an insert for an id already queued leaves the queue unchanged', () => {
+    const q0 = enqueue([], insertOp)
+    const q = enqueue(q0, { ...insertOp, row: { ...row, total_ml: 999 } })
+    expect(q).toEqual(q0)
   })
 })
 
