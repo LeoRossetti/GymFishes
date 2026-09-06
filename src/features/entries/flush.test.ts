@@ -9,8 +9,6 @@ const api = vi.hoisted(() => ({
   upsertEntryRow: vi.fn(),
   updateEntry: vi.fn(),
   fetchEntriesSince: vi.fn(),
-  fetchEntries: vi.fn(),
-  insertEntry: vi.fn(),
 }))
 vi.mock('./api', () => api)
 const photos = vi.hoisted(() => ({
@@ -204,6 +202,7 @@ describe('isTransientError', () => {
     expect(isTransientError(new TypeError('Failed to fetch'))).toBe(true)
     expect(isTransientError({ message: 'JWT expired' })).toBe(true)
     expect(isTransientError({ message: 'new row violates row-level security' })).toBe(false)
+    expect(isTransientError({ message: 'Invalid Refresh Token: Refresh Token Not Found' })).toBe(true)
     onlineManager.setOnline(false)
     expect(isTransientError({ message: 'anything' })).toBe(true)
     onlineManager.setOnline(true)

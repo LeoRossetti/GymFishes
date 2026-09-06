@@ -25,7 +25,7 @@ function messageOf(e: unknown): string {
  */
 export function isTransientError(e: unknown): boolean {
   if (!onlineManager.isOnline()) return true
-  return e instanceof TypeError || /fetch|network|jwt|401/i.test(messageOf(e))
+  return e instanceof TypeError || /fetch|network|jwt|401|refresh token/i.test(messageOf(e))
 }
 
 /** Photos upload first; the row write only ever goes out carrying their paths (spec §12). */

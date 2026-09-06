@@ -123,3 +123,7 @@ once.
 - Playwright smoke: login → registrar 500 ml → Hoje → Ranking → reload
 - Re-run the §11 RLS checklist against production
 - Performance pass against the §1 success criteria
+- Persister `buster` tied to the app version, so an `Entry` shape change can't rehydrate
+  old-shaped rows for up to 30 days
+- First-ever sync fetches full history including soft-deleted rows — revisit if it ever
+  gets slow (pagination or a deleted-rows cutoff)

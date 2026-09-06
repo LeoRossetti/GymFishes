@@ -6,7 +6,7 @@ import { outboxStore } from './outboxStore'
 
 /**
  * Realtime is an accelerator, never the source of truth (spec §12) —
- * refetch-on-focus covers a dropped socket until M3's watermark sync.
+ * the watermark sync in sync.ts/queries.ts is what guarantees correctness if a socket drops.
  */
 export function useRealtimeEntries(groupId: string | null | undefined) {
   const client = useQueryClient()
