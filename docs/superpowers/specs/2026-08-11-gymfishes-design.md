@@ -800,7 +800,7 @@ type OutboxOp =
 ```
 
 - The UI updates optimistically the moment the op is enqueued. Pending entries render with
-  a small dot and cannot be edited until confirmed.
+  a small dot; they stay editable — edits and deletes merge into the queued op.
 - Entry ids are client-generated, so inserts are idempotent: `upsert` on conflict.
 - Flush triggers: app start, `visibilitychange` → visible, `online`, and after each
   successful mutation. No background flushing — iOS has no Background Sync.
