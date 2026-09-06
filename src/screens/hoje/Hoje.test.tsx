@@ -20,7 +20,7 @@ vi.mock('@/features/group/queries', () => ({
   }),
 }))
 vi.mock('@/features/entries/mutations', () => ({
-  useUpdateEntry: () => ({ mutate: vi.fn() }),
+  useEntryOps: () => ({ insert: vi.fn(), update: vi.fn(), remove: vi.fn(), retry: vi.fn() }),
 }))
 
 const hoje = new Date().toISOString()

@@ -104,7 +104,6 @@ export const STRINGS = {
     agora: '🕐 agora',
     fotoErro: 'Não foi possível usar essa imagem.',
     removerFoto: 'Remover foto',
-    falhou: 'Não foi possível salvar. Tente de novo.',
     fechar: 'Fechar',
   },
 } as const

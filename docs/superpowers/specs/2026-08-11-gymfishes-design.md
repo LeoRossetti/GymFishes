@@ -210,8 +210,9 @@ day's registers from **both** members, newest first, as compact rows:
 - Tapping a row expands it in place: full photo, full note, composition chips
   ("1 × Garrafa azul 1,5 L", "+ 300 ml"), the resolved total, and — only on **your own**
   registers — "Editar" and "Excluir".
-- A register still in the outbox shows a small dot next to the time and is not editable
-  until it syncs.
+- A register still in the outbox shows a small dot next to the time. It stays editable —
+  edits and deletes while it waits merge into the queued operation (§12). If sending has
+  definitively failed, the row shows "Falha ao enviar — tentar novamente".
 
 **Empty state** — "Nenhum registro hoje. Bora beber água. 💧"
 
@@ -766,10 +767,13 @@ Instead, with two real accounts A and B in different groups, verify by hand:
 
 On app start and on regaining focus, sync incrementally:
 
-1. Read `lastSyncAt` from IndexedDB.
+1. Derive `lastSyncAt` as the newest server `updated_at` present in the local mirror
+   (optimistic rows carry an empty `updated_at` and are excluded, so client clocks never
+   pollute the watermark).
 2. `select * from entries where group_id = ? and updated_at > lastSyncAt`.
 3. Merge into the mirror by `id`; drop rows with `deleted_at` set.
-4. Store the newest `updated_at` seen as the new `lastSyncAt`.
+4. Nothing extra is stored: because the watermark is derived from the mirror itself, a
+   crash between fetch and persist can never leave it ahead of the data.
 
 Soft deletes are what make this correct — a hard delete would be invisible to a watermark
 query. Profiles, group and bottles are small and refetched whole on focus.
@@ -786,15 +790,13 @@ is what guarantees correctness if a socket drops.
 Every mutation goes into a durable IndexedDB queue before it is attempted:
 
 ```ts
-type OutboxOp = {
-  id: string            // uuid, same id as the entry for inserts
-  type: 'insert' | 'update' | 'delete'   // 'delete' is sent as an update setting deleted_at
-  payload: EntryPayload
-  photo?: Blob          // compressed, awaiting upload
-  thumb?: Blob
-  createdAt: number
-  attempts: number
-}
+type OutboxOp =
+  | { type: 'insert'; id: string; groupId; profileId; row; photo?: { photo: Blob; thumb: Blob }
+      createdAt: number; attempts: number; rev: number }
+  | { type: 'update'; id; groupId; profileId; patch; photo?; removePaths: string[]; …meta }
+  | { type: 'delete'; id; groupId; profileId; patch; removePaths: string[]; …meta }
+// 'delete' is sent as an update setting deleted_at; removePaths are cleaned up after it lands.
+// rev bumps on every merge, so a send racing an edit can never drop the newer version.
 ```
 
 - The UI updates optimistically the moment the op is enqueued. Pending entries render with
@@ -804,12 +806,15 @@ type OutboxOp = {
   successful mutation. No background flushing — iOS has no Background Sync.
 - Photos upload first; only when both objects land does the entry write go out carrying
   their paths. A failed photo upload retries with the op rather than orphaning the entry.
-- Retry with exponential backoff, capped at 5 attempts and 60 seconds. After 5 failures
-  the op is marked `failed` and surfaced in Hoje as "Falha ao enviar — tentar novamente",
-  with a manual retry. Nothing is ever silently dropped.
+- Server rejections retry with exponential backoff, capped at 5 attempts and 60 seconds.
+  After 5 failures the op is marked failed and surfaced in Hoje as "Falha ao enviar —
+  tentar novamente", with a manual retry. Network and auth errors never count as attempts —
+  offline is a wait, not a failure — and retry on the next flush trigger (or every 30 s
+  while the browser still claims to be online). Nothing is ever silently dropped.
 - Ordering is FIFO. An update or delete for an entry still queued is merged into the
   pending op instead of being enqueued separately, so a create-then-edit while offline
-  produces one clean insert.
+  produces one clean insert. A delete for an entry still queued as an insert simply drops
+  the op — the entry never reached the server. Merging resets the attempt count.
 
 ### Conflicts
 

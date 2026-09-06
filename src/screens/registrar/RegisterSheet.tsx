@@ -3,14 +3,13 @@ import { motion } from 'motion/react'
 import { useSession } from '@/features/auth/AuthProvider'
 import { useBootstrap } from '@/features/profile/useBootstrap'
 import { useBottles } from '@/features/bottles/queries'
-import { useInsertEntry, useUpdateEntry } from '@/features/entries/mutations'
+import { useEntryOps } from '@/features/entries/mutations'
 import type { Entry } from '@/features/entries/cache'
 import { describeComposition, totalMl } from '@/lib/composition'
 import { MAX_ML } from '@/lib/keypad'
 import { formatVolume } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
-import { useToast } from '@/ui/Toast'
 import { BottleGrid } from './BottleGrid'
 import { LooseAmount } from './LooseAmount'
 import { OptionalChips } from './OptionalChips'
@@ -24,10 +23,7 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
   const bootstrap = useBootstrap(userId)
   const groupId = bootstrap.data?.groupId ?? ''
   const bottles = useBottles(userId)
-  const toast = useToast()
-  const onFailure = () => toast(STRINGS.registrar.falhou)
-  const insert = useInsertEntry(groupId, onFailure)
-  const update = useUpdateEntry(groupId, onFailure)
+  const ops = useEntryOps(groupId, userId ?? '')
   const [draft, dispatch] = useReducer(draftReducer, entry, (e) =>
     e ? draftFromEntry(e) : emptyDraft(new Date()),
   )
@@ -55,17 +51,7 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
   function submit() {
     if (!canSave || !userId || !groupId || submitted.current) return
     submitted.current = true
-    submitDraft(
-      {
-        userId,
-        groupId,
-        insert: (input) => insert.mutate(input),
-        update: (vars, opts) => update.mutate(vars, opts),
-        toast,
-      },
-      draft,
-      entry,
-    )
+    submitDraft(ops, userId, draft, entry)
     onClose()
   }
 

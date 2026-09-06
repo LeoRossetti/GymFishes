@@ -1,10 +1,8 @@
 import type { Entry } from '@/features/entries/cache'
-import { useUpdateEntry } from '@/features/entries/mutations'
-import { removeEntryPhotos } from '@/features/entries/photos'
+import { useEntryOps } from '@/features/entries/mutations'
 import type { Member } from '@/features/group/queries'
 import { dayKey } from '@/lib/dates'
 import { STRINGS } from '@/lib/strings'
-import { useToast } from '@/ui/Toast'
 import { EntryRow } from './EntryRow'
 
 type Props = {
@@ -16,8 +14,7 @@ type Props = {
 }
 
 export function RegistersCard({ userId, groupId, members, entries, openRegister }: Props) {
-  const toast = useToast()
-  const update = useUpdateEntry(groupId, () => toast(STRINGS.registrar.falhou))
+  const ops = useEntryOps(groupId, userId)
   const today = dayKey(new Date())
   const todays = entries.filter((e) => e.drank_on === today)
   const nameOf = (id: string) =>
@@ -41,12 +38,7 @@ export function RegistersCard({ userId, groupId, members, entries, openRegister 
               authorName={nameOf(entry.profile_id)}
               isOwn={entry.profile_id === userId}
               onEdit={() => openRegister(entry)}
-              onDelete={() =>
-                update.mutate(
-                  { id: entry.id, patch: { deleted_at: new Date().toISOString() } },
-                  { onSuccess: () => removeEntryPhotos([entry.photo_path, entry.thumb_path]) },
-                )
-              }
+              onDelete={() => ops.remove(entry)}
             />
           ))}
         </ul>
