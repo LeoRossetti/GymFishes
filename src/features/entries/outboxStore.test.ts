@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { TablesInsert } from '@/lib/database.types'
 import { MAX_ATTEMPTS, type NewOp, type OutboxOp } from './outbox'
-import { createOutboxStore } from './outboxStore'
+import { createOutboxStore, type OutboxIo } from './outboxStore'
 
 function memoryIo(seed?: OutboxOp[]) {
   let stored: OutboxOp[] | undefined = seed
@@ -92,5 +92,16 @@ describe('outboxStore', () => {
     const op = store.claim(new Set())!
     store.fail(op.id, op.rev)
     expect(store.nextBackoffMs()).toBe(2000)
+  })
+
+  it('a failing io.save never breaks the in-memory queue', async () => {
+    const io: OutboxIo = {
+      load: () => Promise.resolve(undefined),
+      save: () => Promise.reject(new Error('quota')),
+    }
+    const store = createOutboxStore(io)
+    await store.enqueue(insertOp)
+    expect(store.getStatus().pending.has('e1')).toBe(true)
+    expect(store.claim(new Set())?.id).toBe('e1')
   })
 })
