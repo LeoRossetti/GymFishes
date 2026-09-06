@@ -106,4 +106,8 @@ export const STRINGS = {
     removerFoto: 'Remover foto',
     fechar: 'Fechar',
   },
+  sync: {
+    pendente: 'Aguardando envio',
+    falhaTentarNovamente: 'Falha ao enviar — tentar novamente',
+  },
 } as const

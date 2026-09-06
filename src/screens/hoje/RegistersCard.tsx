@@ -1,5 +1,6 @@
 import type { Entry } from '@/features/entries/cache'
 import { useEntryOps } from '@/features/entries/mutations'
+import { useOutboxStatus } from '@/features/entries/outboxStore'
 import type { Member } from '@/features/group/queries'
 import { dayKey } from '@/lib/dates'
 import { STRINGS } from '@/lib/strings'
@@ -15,6 +16,7 @@ type Props = {
 
 export function RegistersCard({ userId, groupId, members, entries, openRegister }: Props) {
   const ops = useEntryOps(groupId, userId)
+  const status = useOutboxStatus()
   const today = dayKey(new Date())
   const todays = entries.filter((e) => e.drank_on === today)
   const nameOf = (id: string) =>
@@ -37,8 +39,11 @@ export function RegistersCard({ userId, groupId, members, entries, openRegister 
               entry={entry}
               authorName={nameOf(entry.profile_id)}
               isOwn={entry.profile_id === userId}
+              pending={status.pending.has(entry.id)}
+              failed={status.failed.has(entry.id)}
               onEdit={() => openRegister(entry)}
               onDelete={() => ops.remove(entry)}
+              onRetry={() => ops.retry(entry.id)}
             />
           ))}
         </ul>

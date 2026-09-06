@@ -22,6 +22,9 @@ vi.mock('@/features/group/queries', () => ({
 vi.mock('@/features/entries/mutations', () => ({
   useEntryOps: () => ({ insert: vi.fn(), update: vi.fn(), remove: vi.fn(), retry: vi.fn() }),
 }))
+vi.mock('@/features/entries/outboxStore', () => ({
+  useOutboxStatus: () => ({ pending: new Set(), failed: new Set(), queued: new Set() }),
+}))
 
 const hoje = new Date().toISOString()
 const hojeDia = dayKey(new Date())

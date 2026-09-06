@@ -10,11 +10,14 @@ type Props = {
   entry: Entry
   authorName: string
   isOwn: boolean
+  pending: boolean
+  failed: boolean
   onEdit: () => void
   onDelete: () => void
+  onRetry: () => void
 }
 
-export function EntryRow({ entry, authorName, isOwn, onEdit, onDelete }: Props) {
+export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, onDelete, onRetry }: Props) {
   const [expanded, setExpanded] = useState(false)
   const [confirmando, setConfirmando] = useState(false)
   const items = parseComposition(entry.composition)
@@ -48,6 +51,13 @@ export function EntryRow({ entry, authorName, isOwn, onEdit, onDelete }: Props) 
         <span className="min-w-0 flex-1">
           <span className="block text-[13px] font-bold">
             {authorName} · {formatTime(new Date(entry.drank_at))}
+            {pending || failed ? (
+              <span
+                role="img"
+                aria-label={STRINGS.sync.pendente}
+                className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-ink-3 align-middle"
+              />
+            ) : null}
           </span>
           {subtitle ? (
             <span className="block truncate text-[11px] text-ink-3">{subtitle}</span>
@@ -57,6 +67,15 @@ export function EntryRow({ entry, authorName, isOwn, onEdit, onDelete }: Props) 
           {formatVolume(entry.total_ml)}
         </span>
       </button>
+      {failed ? (
+        <button
+          type="button"
+          onClick={onRetry}
+          className="min-h-[44px] w-full pl-[54px] text-left text-[13px] font-bold text-danger"
+        >
+          {STRINGS.sync.falhaTentarNovamente}
+        </button>
+      ) : null}
       {expanded ? (
         <div className="mt-2 pl-[54px]">
           {photoUrl.data ? (
