@@ -151,6 +151,51 @@ describe('flushOutbox', () => {
     expect(api.updateEntry).toHaveBeenCalledWith('e1', { deleted_at: '2026-09-06T13:00:00.000Z' })
     expect(photos.removeEntryPhotos).toHaveBeenCalledWith(['g1/u1/e1.jpg', 'g1/u1/e1_thumb.jpg'])
   })
+
+  it('a server-error backoff timer re-runs the flush and retries the op', async () => {
+    api.upsertEntryRow.mockRejectedValueOnce({ message: 'rls' }).mockResolvedValue(undefined)
+    const { store, client } = harness()
+    await store.enqueue(insertOp)
+    await flushOutbox(client, store)
+    expect(store.claim(new Set())?.attempts).toBe(1)
+    expect(vi.getTimerCount()).toBeGreaterThan(0)
+    await vi.advanceTimersByTimeAsync(2000) // backoffMs(1)
+    expect(api.upsertEntryRow).toHaveBeenCalledTimes(2)
+    expect(store.getStatus().queued.size).toBe(0)
+  })
+
+  it('a network error while online schedules a 30 s retry', async () => {
+    api.upsertEntryRow.mockRejectedValueOnce(new TypeError('Failed to fetch')).mockResolvedValue(undefined)
+    const { store, client } = harness()
+    await store.enqueue(insertOp)
+    await flushOutbox(client, store)
+    expect(store.claim(new Set())?.attempts).toBe(0)
+    await vi.advanceTimersByTimeAsync(30_000)
+    expect(api.upsertEntryRow).toHaveBeenCalledTimes(2)
+    expect(store.getStatus().queued.size).toBe(0)
+  })
+
+  it('a flush arriving mid-pass coalesces into one extra pass', async () => {
+    let release = () => {}
+    api.upsertEntryRow
+      .mockImplementationOnce(
+        () =>
+          new Promise<void>((r) => {
+            release = () => r()
+          }),
+      )
+      .mockResolvedValue(undefined)
+    const { store, client } = harness()
+    await store.enqueue(insertOp)
+    const first = flushOutbox(client, store)
+    await Promise.resolve() // let the first pass claim and start sending
+    const second = flushOutbox(client, store) // coalesces via `again`
+    await store.enqueue({ ...insertOp, id: 'e2', row: { ...row, id: 'e2' } })
+    release()
+    await first
+    await second
+    expect(store.getStatus().queued.size).toBe(0)
+  })
 })
 
 describe('isTransientError', () => {

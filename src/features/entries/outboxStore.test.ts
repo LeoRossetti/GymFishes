@@ -104,4 +104,13 @@ describe('outboxStore', () => {
     expect(store.getStatus().pending.has('e1')).toBe(true)
     expect(store.claim(new Set())?.id).toBe('e1')
   })
+
+  it('a failing io.load degrades to an empty in-memory queue', async () => {
+    const store = createOutboxStore({
+      load: () => Promise.reject(new Error('idb unavailable')),
+      save: () => Promise.resolve(),
+    })
+    await store.enqueue(insertOp)
+    expect(store.claim(new Set())?.id).toBe('e1')
+  })
 })

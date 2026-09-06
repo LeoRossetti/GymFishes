@@ -87,6 +87,8 @@ export async function flushOutbox(client: QueryClient, store: OutboxStore = outb
     for (const groupId of flushedGroups) {
       await client.invalidateQueries({ queryKey: entriesKey(groupId) })
     }
+  } catch {
+    // a flush pass never throws — whatever failed here retries on the next trigger
   } finally {
     running = false
   }

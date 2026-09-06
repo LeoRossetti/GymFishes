@@ -30,9 +30,13 @@ export function createOutboxStore(io: OutboxIo) {
   }
 
   function ready(): Promise<void> {
-    readyPromise ??= io.load().then((stored) => {
-      if (stored && stored.length > 0) commit(stored)
-    })
+    readyPromise ??= io
+      .load()
+      .then((stored) => {
+        if (stored && stored.length > 0) commit(stored)
+      })
+      // a broken IndexedDB degrades to an in-memory queue for this session
+      .catch(() => {})
     return readyPromise
   }
 
