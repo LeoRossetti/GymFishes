@@ -3,7 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
 import { entriesKey, type Entry } from './cache'
-import { useEntries } from './queries'
+import { useEntries, syncStatusOf } from './queries'
 
 const api = vi.hoisted(() => ({ fetchEntriesSince: vi.fn() }))
 vi.mock('./api', () => api)
@@ -54,5 +54,17 @@ describe('useEntries', () => {
     await waitFor(() =>
       expect(result.current.data?.map((e) => e.id)).toEqual(['pending', 'partner', 'synced']),
     )
+  })
+})
+
+describe('syncStatusOf', () => {
+  const cincoMin = 5 * 60_000
+  it('offline wins and suppresses stale', () => {
+    expect(syncStatusOf(false, 1000, 1000 + cincoMin + 1)).toEqual({ offline: true, stale: false })
+  })
+  it('stale after 5 minutes without a successful sync, but only once data existed', () => {
+    expect(syncStatusOf(true, 1000, 1000 + cincoMin + 1)).toEqual({ offline: false, stale: true })
+    expect(syncStatusOf(true, 1000, 1000 + cincoMin)).toEqual({ offline: false, stale: false })
+    expect(syncStatusOf(true, 0, cincoMin * 10)).toEqual({ offline: false, stale: false })
   })
 })

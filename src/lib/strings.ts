@@ -109,5 +109,6 @@ export const STRINGS = {
   sync: {
     pendente: 'Aguardando envio',
     falhaTentarNovamente: 'Falha ao enviar — tentar novamente',
+    desatualizado: 'Dados desatualizados',
   },
 } as const

@@ -8,6 +8,7 @@ import { STRINGS } from '@/lib/strings'
 import { formatDateLong } from '@/lib/format'
 import { ProgressStrip } from './ProgressStrip'
 import { RegistersCard } from './RegistersCard'
+import { SyncPill } from './SyncPill'
 
 export function Hoje() {
   const { session } = useSession()
@@ -25,6 +26,7 @@ export function Hoje() {
         <div>
           <h1 className="text-[20px] font-extrabold tracking-tight">{STRINGS.hoje.titulo}</h1>
           <p className="mt-1 text-[10px] text-ink-3">{formatDateLong(new Date())}</p>
+          <SyncPill groupId={groupId} />
         </div>
         <button
           type="button"
