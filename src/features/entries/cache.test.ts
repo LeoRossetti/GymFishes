@@ -58,6 +58,14 @@ describe('watermarkOf', () => {
     expect(watermarkOf([])).toBeUndefined()
     expect(watermarkOf([makeEntry({ updated_at: '' })])).toBeUndefined()
   })
+  it('keeps microsecond precision that Date.parse would drop', () => {
+    // both parse to the same millisecond; only string comparison can order them
+    const list = [
+      makeEntry({ id: 'a', updated_at: '2026-09-05T10:00:00.100002+00:00' }),
+      makeEntry({ id: 'b', updated_at: '2026-09-05T10:00:00.100001+00:00' }),
+    ]
+    expect(watermarkOf(list)).toBe('2026-09-05T10:00:00.100002+00:00')
+  })
 })
 
 describe('mergeEntries', () => {
