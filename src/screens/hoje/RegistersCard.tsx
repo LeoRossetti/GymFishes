@@ -44,7 +44,7 @@ export function RegistersCard({ userId, groupId, members, entries, openRegister 
               onDelete={() =>
                 update.mutate(
                   { id: entry.id, patch: { deleted_at: new Date().toISOString() } },
-                  { onSuccess: () => removeEntryPhotos(entry.photo_path, entry.thumb_path) },
+                  { onSuccess: () => removeEntryPhotos([entry.photo_path, entry.thumb_path]) },
                 )
               }
             />

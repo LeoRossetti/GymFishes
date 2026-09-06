@@ -79,7 +79,7 @@ describe('submitDraft', () => {
     submitDraft(d, { ...withLoose(300), photoRemoved: true }, entry)
     expect(photos.removeEntryPhotos).not.toHaveBeenCalled()
     d.update.mock.calls[0]?.[1]?.onSuccess?.()
-    expect(photos.removeEntryPhotos).toHaveBeenCalledWith('g1/u1/e1.jpg', 'g1/u1/e1_thumb.jpg')
+    expect(photos.removeEntryPhotos).toHaveBeenCalledWith(['g1/u1/e1.jpg', 'g1/u1/e1_thumb.jpg'])
   })
 
   it('edit with a new photo uploads first, then updates with the returned paths', async () => {

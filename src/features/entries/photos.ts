@@ -20,12 +20,12 @@ export async function uploadEntryPhoto(
 }
 
 /** Best-effort: an orphaned object costs nothing (spec §13 step 7). Never throws. */
-export function removeEntryPhotos(photoPath: string | null, thumbPath: string | null): void {
-  const paths = [photoPath, thumbPath].filter((p): p is string => Boolean(p))
-  if (paths.length === 0) return
+export function removeEntryPhotos(paths: readonly (string | null)[]): void {
+  const found = paths.filter((p): p is string => Boolean(p))
+  if (found.length === 0) return
   void supabase.storage
     .from('photos')
-    .remove(paths)
+    .remove(found)
     .catch(() => {})
 }
 

@@ -48,7 +48,7 @@ export function submitDraft(deps: SubmitDeps, draft: Draft, entry: Entry | undef
       // follows a successful update, never precedes or races it.
       deps.update(
         { id: entry.id, patch: { ...base, photo_path: null, thumb_path: null } },
-        { onSuccess: () => removeEntryPhotos(entry.photo_path, entry.thumb_path) },
+        { onSuccess: () => removeEntryPhotos([entry.photo_path, entry.thumb_path]) },
       )
     } else {
       deps.update({ id: entry.id, patch: base })
