@@ -22,3 +22,20 @@ body {
 button {
   touch-action: manipulation;
 }
+
+@keyframes wave-back-drift {
+  to { transform: translateX(-260px); }
+}
+@keyframes wave-front-drift {
+  from { transform: translateX(-190px); }
+  to { transform: translateX(0); }
+}
+.wave-back { animation: wave-back-drift 7s linear infinite; }
+.wave-front { animation: wave-front-drift 4.5s linear infinite; }
+[data-waves='paused'] .wave-back,
+[data-waves='paused'] .wave-front { animation-play-state: paused; }
+.wave-static { display: none; height: 3px; background: var(--color-water-hi); }
+@media (prefers-reduced-motion: reduce) {
+  .wave-back, .wave-front { display: none; }
+  .wave-static { display: block; }
+}

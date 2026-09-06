@@ -11,7 +11,7 @@ codebase rather than an imagined one.
 | # | Milestone | Plan | Status |
 |---|---|---|---|
 | M1 | Foundation | [`2026-08-11-m1-foundation.md`](2026-08-11-m1-foundation.md) | **code-complete** — pending user handoff: Vercel deploy, two-phone install, cloud RLS behavioral checklist |
-| M2 | Core loop — registrar e ver água | not written yet | blocked by M1 |
+| M2 | Core loop — registrar e ver água | [`2026-09-01-m2-core-loop.md`](2026-09-01-m2-core-loop.md) | **code-complete** — pending owner verifications: two-browser realtime check, one register from a real phone |
 | M3 | Offline e sync | not written yet | blocked by M2 |
 | M4 | Competição — Ranking e Histórico | not written yet | blocked by M3 |
 | M5 | Peixes e celebrações | not written yet | blocked by M2 |
@@ -47,21 +47,6 @@ spec exactly; this only avoids building a throwaway fish renderer in M1.
 **Done when:** both people log water from their phones and see each other's
 registers appear live, without refreshing.
 
-**Carry-ins from M1's reviews (address while touching the relevant code):**
-
-- `entries` Insert type requires `drank_on` even though the trigger overwrites it —
-  add a DB default in an M2 migration or pass a derived value
-- Entry rows must degrade gracefully when the author's profile is unreadable
-  (a member who left the group)
-- `ErrorBoundary` needs a route-keyed reset once multiple tabs exist
-- Promote the hardcoded `#0A2A3A` ink-on-water color to a token on next touch
-  (Button, TabBar plus-button)
-- `Field` should link its error via `aria-invalid`/`aria-describedby`
-- Login maps every auth failure to "E-mail ou senha incorretos" — distinguish
-  network errors when touching that screen
-- `navigator.clipboard` is assumed present in the invite-code copy button
-  (fine over HTTPS; guard if contexts change)
-
 - `bottles` CRUD and the bottle manager in Perfil
 - Perfil basics: nome, cor, código do grupo, sair
 - Register sheet: bottle chips with ×N, quick pills, keypad, optional
@@ -73,9 +58,20 @@ registers appear live, without refreshing.
 - Photo pipeline: canvas resize to 1080px, 96px thumbnail, private bucket upload,
   signed URLs
 - Storage: the private `photos` bucket plus its read/write policies on
-  `storage.objects` (spec §11), and the entry-level half of the §11 RLS checklist,
-  which M1 could not run because `entries` had no rows
+  `storage.objects` (spec §11)
 - Realtime subscription on `entries` filtered by group
+
+**Deliberate sequencing note:** the spec's Hoje shows the member's fish riding the wave
+and a streak chip on the registers card. M2 ships a 🐟 emoji placeholder (the 13 SVG fish
+are M5) and no streak chip (`streaks.ts` is M5). Photo uploads happen before the entry
+write, directly — the durable outbox that makes this crash-safe is M3. End state still
+matches the spec.
+
+**§11 RLS checklist:** the entry-level half M1 could not run (no `entries` rows existed yet)
+was run programmatically on 2026-09-01 via `curl` against the REST/Auth/Storage APIs with two
+throwaway accounts in a throwaway group, cross-checked against the real group read-only —
+all 7 negative checks and all positive controls passed. Evidence:
+[`../2026-09-01-rls-checklist-evidence.md`](../2026-09-01-rls-checklist-evidence.md).
 
 ## M3 — Offline e sync
 

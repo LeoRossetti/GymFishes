@@ -99,6 +99,7 @@ Every decision below was explicitly settled during design. Recorded so we don't 
 | Component base | shadcn/ui | React Bits Pro ships via the shadcn registry protocol |
 | i18n | None — pt-BR strings in one module | Single locale forever |
 | Overriding constraint | **Never overcomplicate anything** | Simplicity is a product feature, not a tradeoff |
+| Display font | Nunito, self-hosted | System stack read generic on first real use (2026-09-01); ~30 KB buys the rounded Duolingo feel |
 
 ---
 
@@ -312,7 +313,8 @@ Settings and identity. Nothing competitive lives here.
   the unlock condition below ("Sequência de 30 dias"). Selecting one saves immediately and
   the partner sees the change.
 - **Nome** — inline editable.
-- **Cor** — a row of six flat accent swatches used for your column and avatar ring.
+- **Cor** — a row of six flat accent swatches used for your name label under the tube
+  and your avatar ring. The water itself is always `--water` blue — it's water.
 - **Minhas garrafas** — list with volume; add, rename, change volume, or archive.
   Archiving hides a bottle from the register sheet but never rewrites history, because
   every register stores a snapshot of the bottle's name and volume at the time.
@@ -430,12 +432,14 @@ Tailwind v4's `@theme`. Dark only — there is no light palette to maintain.
 | `--water` | `#1CB0F6` | water, primary action, totals |
 | `--water-edge` | `#1899D6` | button bottom edge |
 | `--water-hi` | `#4FC3F9` | wave crest / surface highlight |
+| `--ink-on-water` | `#0A2A3A` | text on water-colored fills |
 | `--ok` | `#58CC02` | confirmation, set-state chips |
 | `--streak` | `#FFC800` | streak chip, first place |
 | `--danger` | `#FF4B4B` | delete |
 
-Six accent swatches for member colours are picked to stay legible on `--bg` and to remain
-distinguishable from each other in the tubes.
+Six accent swatches for member colours — `#1CB0F6` blue, `#58CC02` green, `#FFC800` yellow,
+`#FF9600` orange, `#CE82FF` purple, `#FF86D0` pink — picked to stay legible on `--bg` and to
+remain distinguishable from each other in the tubes.
 
 ### Rules
 
@@ -446,9 +450,9 @@ distinguishable from each other in the tubes.
 - **Numbers carry the emphasis.** Totals are the largest, heaviest text on any screen.
 - **Radius:** 16px cards and sheets, 12px controls, 10px keypad keys, 99px pills.
 - **Spacing:** 4px scale; 13px screen gutter; 11px between cards.
-- **Type:** system stack (`-apple-system, "Segoe UI", system-ui, sans-serif`) — native
-  feel, zero bytes. Scale: 38 / 24 / 20 / 17 / 15 / 13 / 11 / 9. Weights 500 / 700 / 800.
-  Tight tracking (`-0.4px` and below) on large numbers only.
+- **Type:** Nunito, self-hosted (Fontsource), weights 500 / 700 / 800, falling back to
+  the system stack. Rounded and friendly — the Duolingo feel. Scale: 38 / 24 / 20 / 17 /
+  15 / 13 / 11 / 9. Tight tracking (`-0.4px` and below) on large numbers only.
 - **Labels** are 9px, uppercase, `letter-spacing: 1px`, `--ink-3`, weight 800.
 - **Touch targets** never below 44px.
 - **Safe areas:** `env(safe-area-inset-*)` on the tab bar and sheets.
@@ -896,15 +900,19 @@ too much.
 src/
   main.tsx
   app/
-    router.tsx            routes: /hoje /ranking /historico /perfil + /registrar modal
+    router.tsx            routes: /hoje /ranking /historico /perfil
+                           (register sheet is an AppShell overlay, not a route —
+                           deep-linking a modal buys nothing here)
     providers.tsx         query client, persister, auth, realtime
     TabBar.tsx
     ErrorBoundary.tsx
   screens/
     auth/                 Login, SignUp
     onboarding/           Nome, Peixe, Grupo
-    hoje/                 Hoje, ProgressStrip, MemberTube, EntryRow, EntryRowExpanded
-    registrar/            RegisterSheet, BottleGrid, Keypad, OptionalChips
+    hoje/                 Hoje, ProgressStrip, MemberTube, WaveSurface, RegistersCard, EntryRow,
+                           useWavePause
+    registrar/            RegisterSheet, BottleGrid, LooseAmount, OptionalChips,
+                           draft, submit, useCountUp
     ranking/              Ranking, PeriodControl, Standings, StatsCompare, MonthWrapUp
     historico/            Historico, CalendarGrid, DayDetail
     perfil/               Perfil, FishGallery, BottleManager, GroupCard
@@ -919,7 +927,7 @@ src/
     streaks.ts  composition.ts  format.ts  image.ts  strings.ts
   styles/
     tokens.css  globals.css
-  ui/                     shadcn primitives + Button, Card, Sheet, Segmented, Toast
+  ui/                     shadcn primitives + Button, Field, Card, Sheet, Segmented, Toast
 docs/
   superpowers/specs/      this document
 ```

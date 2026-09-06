@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addDays, dayKey, pad2, parseDayKey, weekdayMon0 } from './dates'
+import { addDays, dayKey, fromDatetimeLocal, pad2, parseDayKey, toDatetimeLocal, weekdayMon0 } from './dates'
 
 describe('dayKey', () => {
   it('uses the Sao Paulo calendar day, not UTC', () => {
@@ -43,5 +43,28 @@ describe('weekdayMon0', () => {
   it('treats Monday as zero', () => {
     expect(weekdayMon0('2026-08-10')).toBe(0) // Monday
     expect(weekdayMon0('2026-08-16')).toBe(6) // Sunday
+  })
+})
+
+describe('toDatetimeLocal', () => {
+  it('formats an instant as São Paulo wall time', () => {
+    // 2026-01-15T03:30Z is 00:30 in São Paulo (-03:00)
+    expect(toDatetimeLocal(new Date('2026-01-15T03:30:00Z'))).toBe('2026-01-15T00:30')
+  })
+
+  it('formats midnight as 00:00, never 24:00', () => {
+    // 2026-01-15T03:00:00Z is exactly 00:00 in São Paulo (-03:00)
+    expect(toDatetimeLocal(new Date('2026-01-15T03:00:00Z'))).toBe('2026-01-15T00:00')
+  })
+})
+
+describe('fromDatetimeLocal', () => {
+  it('parses São Paulo wall time back to the same instant', () => {
+    const d = fromDatetimeLocal('2026-01-15T00:30')
+    expect(d.toISOString()).toBe('2026-01-15T03:30:00.000Z')
+  })
+  it('round-trips', () => {
+    const now = new Date('2026-08-11T18:04:00Z')
+    expect(fromDatetimeLocal(toDatetimeLocal(now)).getTime()).toBe(now.getTime())
   })
 })
