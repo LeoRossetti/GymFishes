@@ -43,7 +43,8 @@ function optimisticRow(input: NewEntry, groupId: string): Entry {
     thumb_path: input.thumbPath,
     drank_on: dayKey(input.drankAt),
     created_at: now,
-    updated_at: now,
+    // '' marks the row optimistic: the sync watermark ignores it (see cache.watermarkOf)
+    updated_at: '',
     deleted_at: null,
   } as Entry
 }
@@ -82,7 +83,7 @@ export function useUpdateEntry(groupId: string, onFailure?: () => void) {
           ...row,
           ...patch,
           drank_on: patch.drank_at ? dayKey(new Date(patch.drank_at)) : row.drank_on,
-          updated_at: new Date().toISOString(),
+          updated_at: '',
         }
         client.setQueryData(entriesKey(groupId), upsertEntry(before, merged))
       }

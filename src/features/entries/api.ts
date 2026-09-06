@@ -2,17 +2,6 @@ import { supabase } from '@/lib/supabase'
 import type { TablesInsert } from '@/lib/database.types'
 import type { Entry } from './cache'
 
-export async function fetchEntries(groupId: string): Promise<Entry[]> {
-  const { data, error } = await supabase
-    .from('entries')
-    .select('*')
-    .eq('group_id', groupId)
-    .is('deleted_at', null)
-    .order('drank_at', { ascending: false })
-  if (error) throw error
-  return data
-}
-
 export async function insertEntry(row: TablesInsert<'entries'>): Promise<void> {
   const { error } = await supabase.from('entries').insert(row)
   if (error) throw error

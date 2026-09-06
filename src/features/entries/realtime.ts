@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { entriesKey, upsertEntry, type Entry } from './cache'
+import { outboxStore } from './outboxStore'
 
 /**
  * Realtime is an accelerator, never the source of truth (spec §12) —
@@ -19,6 +20,8 @@ export function useRealtimeEntries(groupId: string | null | undefined) {
         (payload) => {
           const row = payload.new as Partial<Entry>
           if (!row || typeof row.id !== 'string') return
+          // a queued local op owns this row's optimistic state; the post-flush sync will reconcile
+          if (outboxStore.getStatus().queued.has(row.id)) return
           const key = entriesKey(groupId)
           const list = client.getQueryData<Entry[]>(key) ?? []
           client.setQueryData(key, upsertEntry(list, row as Entry))
