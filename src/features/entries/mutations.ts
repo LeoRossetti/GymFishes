@@ -1,9 +1,13 @@
-import { useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query'
+import { useMemo } from 'react'
+import { useQueryClient, type QueryClient } from '@tanstack/react-query'
 import type { CompositionItem } from '@/lib/composition'
 import { dayKey } from '@/lib/dates'
 import type { TablesInsert } from '@/lib/database.types'
-import { insertEntry, updateEntry, type EntryPatch } from './api'
-import { entriesKey, upsertEntry, type Entry } from './cache'
+import type { EntryPatch } from './api'
+import { entriesKey, removeEntry, upsertEntry, type Entry } from './cache'
+import { flushOutbox } from './flush'
+import type { NewOp, OpPhoto } from './outbox'
+import { outboxStore } from './outboxStore'
 
 export type { EntryPatch }
 
@@ -14,8 +18,7 @@ export type NewEntry = {
   composition: CompositionItem[]
   note: string | null
   drankAt: Date
-  photoPath: string | null
-  thumbPath: string | null
+  photo: OpPhoto | null
 }
 
 function toRow(input: NewEntry, groupId: string): TablesInsert<'entries'> {
@@ -26,72 +29,96 @@ function toRow(input: NewEntry, groupId: string): TablesInsert<'entries'> {
     total_ml: input.totalMl,
     composition: input.composition as TablesInsert<'entries'>['composition'],
     note: input.note,
-    photo_path: input.photoPath,
-    thumb_path: input.thumbPath,
     drank_at: input.drankAt.toISOString(),
+    // photo_path/thumb_path omitted: the flusher fills them in after the upload
     // drank_on omitted: DB default + trigger own it
   }
 }
 
+/** updated_at '' marks the row optimistic: the sync watermark ignores it (cache.watermarkOf). */
 function optimisticRow(input: NewEntry, groupId: string): Entry {
-  const now = new Date().toISOString()
   return {
     ...toRow(input, groupId),
     composition: input.composition as Entry['composition'],
     note: input.note,
-    photo_path: input.photoPath,
-    thumb_path: input.thumbPath,
+    photo_path: null,
+    thumb_path: null,
     drank_on: dayKey(input.drankAt),
-    created_at: now,
-    updated_at: now,
+    created_at: new Date().toISOString(),
+    updated_at: '',
     deleted_at: null,
   } as Entry
 }
 
-async function snapshot(client: QueryClient, groupId: string): Promise<Entry[]> {
+async function patchAndEnqueue(
+  client: QueryClient,
+  groupId: string,
+  apply: (list: readonly Entry[]) => Entry[],
+  op: NewOp,
+): Promise<void> {
   await client.cancelQueries({ queryKey: entriesKey(groupId) })
-  return client.getQueryData<Entry[]>(entriesKey(groupId)) ?? []
+  const list = client.getQueryData<Entry[]>(entriesKey(groupId)) ?? []
+  client.setQueryData(entriesKey(groupId), apply(list))
+  await outboxStore.enqueue(op)
+  void flushOutbox(client)
 }
 
-export function useInsertEntry(groupId: string, onFailure?: () => void) {
-  const client = useQueryClient()
-  return useMutation({
-    mutationFn: (input: NewEntry) => insertEntry(toRow(input, groupId)),
-    onMutate: async (input) => {
-      const before = await snapshot(client, groupId)
-      client.setQueryData(entriesKey(groupId), upsertEntry(before, optimisticRow(input, groupId)))
-      return { before }
-    },
-    onError: (_e, _input, ctx) => {
-      if (ctx) client.setQueryData(entriesKey(groupId), ctx.before)
-      onFailure?.()
-    },
-    onSettled: () => client.invalidateQueries({ queryKey: entriesKey(groupId) }),
-  })
+function storagePaths(entry: Entry): string[] {
+  return [entry.photo_path, entry.thumb_path].filter((p): p is string => p !== null)
 }
 
-export function useUpdateEntry(groupId: string, onFailure?: () => void) {
+/**
+ * The write path (spec §12): patch the cache, enqueue the op, kick a flush. Writes never
+ * fail at call time — delivery is the outbox's job, and failures surface as row state.
+ */
+export function useEntryOps(groupId: string, profileId: string) {
   const client = useQueryClient()
-  return useMutation({
-    mutationFn: ({ id, patch }: { id: string; patch: EntryPatch }) => updateEntry(id, patch),
-    onMutate: async ({ id, patch }) => {
-      const before = await snapshot(client, groupId)
-      const row = before.find((e) => e.id === id)
-      if (row) {
-        const merged = {
-          ...row,
-          ...patch,
-          drank_on: patch.drank_at ? dayKey(new Date(patch.drank_at)) : row.drank_on,
-          updated_at: new Date().toISOString(),
-        }
-        client.setQueryData(entriesKey(groupId), upsertEntry(before, merged))
-      }
-      return { before }
-    },
-    onError: (_e, _input, ctx) => {
-      if (ctx) client.setQueryData(entriesKey(groupId), ctx.before)
-      onFailure?.()
-    },
-    onSettled: () => client.invalidateQueries({ queryKey: entriesKey(groupId) }),
-  })
+  return useMemo(
+    () => ({
+      insert(input: NewEntry): void {
+        void patchAndEnqueue(client, groupId, (l) => upsertEntry(l, optimisticRow(input, groupId)), {
+          type: 'insert',
+          id: input.id,
+          groupId,
+          profileId,
+          row: toRow(input, groupId),
+          ...(input.photo ? { photo: input.photo } : {}),
+        })
+      },
+      update(entry: Entry, patch: EntryPatch, photo?: OpPhoto): void {
+        const removePaths = patch.photo_path === null ? storagePaths(entry) : []
+        void patchAndEnqueue(
+          client,
+          groupId,
+          (l) => {
+            const row = l.find((e) => e.id === entry.id)
+            if (!row) return [...l]
+            return upsertEntry(l, {
+              ...row,
+              ...patch,
+              drank_on: patch.drank_at ? dayKey(new Date(patch.drank_at)) : row.drank_on,
+              updated_at: '',
+            })
+          },
+          { type: 'update', id: entry.id, groupId, profileId, patch, removePaths, ...(photo ? { photo } : {}) },
+        )
+      },
+      remove(entry: Entry): void {
+        void patchAndEnqueue(client, groupId, (l) => removeEntry(l, entry.id), {
+          type: 'delete',
+          id: entry.id,
+          groupId,
+          profileId,
+          patch: { deleted_at: new Date().toISOString() },
+          removePaths: storagePaths(entry),
+        })
+      },
+      retry(entryId: string): void {
+        void outboxStore.retry(entryId).then(() => flushOutbox(client))
+      },
+    }),
+    [client, groupId, profileId],
+  )
 }
+
+export type EntryOps = ReturnType<typeof useEntryOps>

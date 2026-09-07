@@ -36,12 +36,7 @@ vi.mock('@/features/bottles/mutations', () => ({
   createBottle: (...args: unknown[]) => createBottleMock(...args),
 }))
 vi.mock('@/features/entries/mutations', () => ({
-  useInsertEntry: () => ({ mutate: insertMutate }),
-  useUpdateEntry: () => ({ mutate: updateMutate }),
-}))
-vi.mock('@/features/entries/photos', () => ({
-  uploadEntryPhoto: vi.fn(),
-  removeEntryPhotos: vi.fn(),
+  useEntryOps: () => ({ insert: insertMutate, update: updateMutate, remove: vi.fn(), retry: vi.fn() }),
 }))
 
 describe('RegisterSheet', () => {
@@ -130,9 +125,9 @@ describe('RegisterSheet', () => {
     expect(screen.getByText('1,8 L')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: /Salvar alterações/ }))
     expect(updateMutate).toHaveBeenCalledTimes(1)
-    const call = updateMutate.mock.calls[0]?.[0]
-    expect(call.id).toBe('e1')
-    expect(call.patch.total_ml).toBe(1800)
+    const [target, patch] = updateMutate.mock.calls[0]!
+    expect(target.id).toBe('e1')
+    expect(patch.total_ml).toBe(1800)
   })
 
   it('removing an existing photo in edit mode clears the paths on save', async () => {
@@ -158,9 +153,9 @@ describe('RegisterSheet', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Remover foto' }))
     await userEvent.click(screen.getByRole('button', { name: /Salvar alterações/ }))
     expect(updateMutate).toHaveBeenCalledTimes(1)
-    const call = updateMutate.mock.calls[0]?.[0]
-    expect(call.patch.photo_path).toBeNull()
-    expect(call.patch.thumb_path).toBeNull()
+    const patch = updateMutate.mock.calls[0]?.[1]
+    expect(patch.photo_path).toBeNull()
+    expect(patch.thumb_path).toBeNull()
   })
 
   it('surfaces a toast and keeps the form open when creating a bottle fails', async () => {

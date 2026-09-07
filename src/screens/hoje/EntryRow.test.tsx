@@ -36,11 +36,25 @@ const entry = {
   deleted_at: null,
 } as Entry
 
+function renderRow(overrides: Partial<Parameters<typeof EntryRow>[0]> = {}) {
+  return renderWithProviders(
+    <EntryRow
+      entry={entry}
+      authorName="Leo"
+      isOwn
+      pending={false}
+      failed={false}
+      onEdit={vi.fn()}
+      onDelete={vi.fn()}
+      onRetry={vi.fn()}
+      {...overrides}
+    />,
+  )
+}
+
 describe('EntryRow', () => {
   it('shows author, time, note and total', () => {
-    renderWithProviders(
-      <EntryRow entry={entry} authorName="Leo" isOwn onEdit={vi.fn()} onDelete={vi.fn()} />,
-    )
+    renderRow()
     expect(screen.getByText(/Leo · 11:00/)).toBeInTheDocument() // 14:00Z = 11:00 São Paulo
     expect(screen.getByText('pós treino')).toBeInTheDocument()
     expect(screen.getByText('1,8 L')).toBeInTheDocument()
@@ -48,9 +62,7 @@ describe('EntryRow', () => {
 
   it('expands to composition chips and actions on own rows', async () => {
     const onEdit = vi.fn()
-    renderWithProviders(
-      <EntryRow entry={entry} authorName="Leo" isOwn onEdit={onEdit} onDelete={vi.fn()} />,
-    )
+    renderRow({ onEdit })
     await userEvent.click(screen.getByText(/Leo · 11:00/))
     expect(screen.getByText('1 × Garrafa azul 1,5 L')).toBeInTheDocument()
     expect(screen.getByText('+ 300 ml')).toBeInTheDocument()
@@ -59,9 +71,7 @@ describe('EntryRow', () => {
   })
 
   it('hides actions on the partner rows', async () => {
-    renderWithProviders(
-      <EntryRow entry={entry} authorName="Ana" isOwn={false} onEdit={vi.fn()} onDelete={vi.fn()} />,
-    )
+    renderRow({ authorName: 'Ana', isOwn: false })
     await userEvent.click(screen.getByText(/Ana · 11:00/))
     expect(screen.queryByRole('button', { name: 'Editar' })).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Excluir' })).not.toBeInTheDocument()
@@ -69,9 +79,7 @@ describe('EntryRow', () => {
 
   it('deletes only on the second tap', async () => {
     const onDelete = vi.fn()
-    renderWithProviders(
-      <EntryRow entry={entry} authorName="Leo" isOwn onEdit={vi.fn()} onDelete={onDelete} />,
-    )
+    renderRow({ onDelete })
     await userEvent.click(screen.getByText(/Leo · 11:00/))
     await userEvent.click(screen.getByRole('button', { name: 'Excluir' }))
     expect(onDelete).not.toHaveBeenCalled()
@@ -81,9 +89,7 @@ describe('EntryRow', () => {
 
   it('resets the delete confirm when the row collapses', async () => {
     const onDelete = vi.fn()
-    renderWithProviders(
-      <EntryRow entry={entry} authorName="Leo" isOwn onEdit={vi.fn()} onDelete={onDelete} />,
-    )
+    renderRow({ onDelete })
     await userEvent.click(screen.getByText(/Leo · 11:00/))
     await userEvent.click(screen.getByRole('button', { name: 'Excluir' }))
     await userEvent.click(screen.getByText(/Leo · 11:00/)) // collapse
@@ -95,11 +101,30 @@ describe('EntryRow', () => {
 
   it('shows the thumbnail once the signed URL resolves', async () => {
     const withThumb = { ...entry, thumb_path: 'g1/u1/e1_thumb.jpg' } as Entry
-    const { container } = renderWithProviders(
-      <EntryRow entry={withThumb} authorName="Leo" isOwn onEdit={vi.fn()} onDelete={vi.fn()} />,
-    )
+    const { container } = renderRow({ entry: withThumb })
     // the thumb is decorative (alt=""), so it carries an ARIA "presentation" role rather
     // than "img" — assert on the element directly instead of screen.findByRole('img')
     await waitFor(() => expect(container.querySelector('img')).toBeInTheDocument())
+  })
+
+  it('shows the pending dot while the entry waits in the outbox', () => {
+    renderRow({ pending: true })
+    expect(screen.getByRole('img', { name: 'Aguardando envio' })).toBeInTheDocument()
+  })
+
+  it('a failed entry shows the retry line and taps call onRetry', async () => {
+    const onRetry = vi.fn()
+    renderRow({ failed: true, onRetry })
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Falha ao enviar — tentar novamente' }),
+    )
+    expect(onRetry).toHaveBeenCalled()
+  })
+
+  it('a pending own entry still offers Editar when expanded', async () => {
+    // deviation settled in this plan: pending entries stay editable; edits merge into the queued op
+    renderRow({ pending: true })
+    await userEvent.click(screen.getByText(/Leo · 11:00/))
+    expect(screen.getByRole('button', { name: 'Editar' })).toBeInTheDocument()
   })
 })

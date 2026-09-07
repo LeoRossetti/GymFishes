@@ -14,7 +14,7 @@ export function Guard({ children }: { children: ReactNode }) {
   if (!session) return <Navigate to="/entrar" replace />
   if (bootstrap.isLoading) return null
 
-  if (bootstrap.isError) {
+  if (bootstrap.isError && !bootstrap.data) {
     return (
       <div className="px-4 pt-16 text-center">
         <p className="mb-6 text-[15px] text-ink-2">{STRINGS.erro.generico}</p>

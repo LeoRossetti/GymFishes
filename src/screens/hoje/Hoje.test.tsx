@@ -20,7 +20,10 @@ vi.mock('@/features/group/queries', () => ({
   }),
 }))
 vi.mock('@/features/entries/mutations', () => ({
-  useUpdateEntry: () => ({ mutate: vi.fn() }),
+  useEntryOps: () => ({ insert: vi.fn(), update: vi.fn(), remove: vi.fn(), retry: vi.fn() }),
+}))
+vi.mock('@/features/entries/outboxStore', () => ({
+  useOutboxStatus: () => ({ pending: new Set(), failed: new Set(), queued: new Set() }),
 }))
 
 const hoje = new Date().toISOString()
@@ -32,6 +35,7 @@ vi.mock('@/features/entries/queries', () => ({
       { id: 'e2', profile_id: 'u2', group_id: 'g1', total_ml: 2300, composition: [], note: null, photo_path: null, thumb_path: null, drank_at: hoje, drank_on: hojeDia, created_at: hoje, updated_at: hoje, deleted_at: null },
     ],
   }),
+  useSyncStatus: () => ({ offline: false, stale: false }),
 }))
 
 function renderHoje() {

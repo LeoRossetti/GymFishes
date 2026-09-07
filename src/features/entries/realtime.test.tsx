@@ -23,6 +23,11 @@ vi.mock('@/lib/supabase', () => ({
   },
 }))
 
+const queuedIds = vi.hoisted(() => new Set<string>())
+vi.mock('./outboxStore', () => ({
+  outboxStore: { getStatus: () => ({ pending: queuedIds, failed: new Set<string>(), queued: queuedIds }) },
+}))
+
 const row: Entry = {
   id: 'e9',
   profile_id: 'u2',
@@ -52,6 +57,7 @@ describe('useRealtimeEntries', () => {
   beforeEach(() => {
     handlers.length = 0
     removeChannel.mockReset()
+    queuedIds.clear()
   })
 
   it('patches an incoming insert into the cache', () => {
@@ -76,5 +82,15 @@ describe('useRealtimeEntries', () => {
     expect(removeChannel).toHaveBeenCalled()
     renderHook(() => useRealtimeEntries(null), { wrapper })
     expect(handlers).toHaveLength(1) // no second subscription
+  })
+
+  it('ignores realtime rows that have a queued outbox op', () => {
+    const { client, wrapper } = harness()
+    const optimistic = { ...row, total_ml: 900, updated_at: '' }
+    client.setQueryData(entriesKey('g1'), [optimistic])
+    queuedIds.add(row.id)
+    renderHook(() => useRealtimeEntries('g1'), { wrapper })
+    handlers[0]?.({ new: { ...row, total_ml: 500 } })
+    expect(client.getQueryData<Entry[]>(entriesKey('g1'))?.[0]?.total_ml).toBe(900)
   })
 })

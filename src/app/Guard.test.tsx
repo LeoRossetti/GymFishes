@@ -40,4 +40,37 @@ describe('Guard', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Recarregar' }))
     expect(refetch).toHaveBeenCalled()
   })
+
+  it('shows the retry UI when bootstrap fails and there is no cached data', () => {
+    bootstrapState = { isLoading: false, isError: true, data: undefined, refetch }
+    render(
+      <MemoryRouter initialEntries={['/hoje']}>
+        <Guard>
+          <div>Conteúdo protegido</div>
+        </Guard>
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByText('Algo deu errado. Tente de novo.')).toBeInTheDocument()
+    expect(screen.queryByText('Conteúdo protegido')).not.toBeInTheDocument()
+  })
+
+  it('renders children instead of the error screen when a cached bootstrap survives a refetch error', () => {
+    bootstrapState = {
+      isLoading: false,
+      isError: true,
+      data: { profile: { id: 'user-1' }, groupId: 'group-1' },
+      refetch,
+    }
+    render(
+      <MemoryRouter initialEntries={['/hoje']}>
+        <Guard>
+          <div>Conteúdo protegido</div>
+        </Guard>
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByText('Conteúdo protegido')).toBeInTheDocument()
+    expect(screen.queryByText('Algo deu errado. Tente de novo.')).not.toBeInTheDocument()
+  })
 })
