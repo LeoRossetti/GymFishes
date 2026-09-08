@@ -256,6 +256,10 @@ arrows to step backwards and forwards through periods (previous day, previous we
 previous month). `Total` has no arrows. The current period label sits between the arrows
 ("Semana de 4–10 de agosto", "Julho", "Desde 12 de junho").
 
+The `›` arrow is disabled while the current period is shown — there is no future to step
+into. A single day is labelled "Hoje", "Ontem", then the full date ("sexta, 7 de agosto").
+Months outside the current year carry it ("Julho de 2025"), as does the all-time label.
+
 Stepping into a past period is how you answer *"quem bebeu mais na semana passada?"*.
 
 **Standings** — one row per member, ordered by volume descending:
@@ -263,7 +267,8 @@ Stepping into a past period is how you answer *"quem bebeu mais na semana passad
 `[position] [fish] [name] [·············· bar ··············] [total]`
 
 The bar shows each member's share of the period leader's total. First place is marked with
-a flat first-place treatment (yellow position badge); no crowns, no glow. A period with no
+a flat first-place treatment (yellow position badge); no crowns, no glow. Tied members
+share a position (1, 1, 3) and every tied leader gets the badge. A period with no
 registers shows "Nada registrado neste período".
 
 **"Médias e recordes"** — a comparison card, one column per member:
@@ -279,13 +284,16 @@ registers shows "Nada registrado neste período".
 a day genuinely costs you. For `Total`, days elapsed counts from the group's first
 register. This is the figure that answers *"quem tem a maior média?"*.
 
-**Month wrap-up** — on the first open of a new month, if the previous month has registers,
-a dismissible card appears at the top of Ranking:
+The card is shown for every period, Hoje included; a single day simply reads "1 de 1".
+
+**Month wrap-up** — during a month, if the previous month has registers, a dismissible card
+sits at the top of Ranking until it is dismissed (a tie reads "Empate"):
 
 > **Julho encerrado** — Ela venceu 🏆
 > 68,4 L × 61,2 L
 
-Dismissal is stored per device in `localStorage`. Deliberately not synced; re-showing it
+Dismissal is stored per device in `localStorage`, one key per month
+(`gymfishes:wrapup:YYYY-MM`). Deliberately not synced; re-showing it
 once on a second device is harmless.
 
 ### 5.4 Histórico
@@ -297,7 +305,7 @@ Answers *what happened before*.
 **Calendar** — a month grid with `‹ ›` month arrows. Each day cell is filled with one of
 five discrete flat blue steps based on that day's total (0, <1L, 1–2L, 2–3L, >3L). Flat
 steps, not a continuous gradient. Today gets a border. Days before the group's first
-register are blank.
+register, and days after today, are blank. The toggle opens on "Você".
 
 **Day detail** — tapping a day expands a panel below the calendar showing both members'
 totals for that day and the full register list, reusing the same compact-row component
@@ -915,7 +923,7 @@ src/
     auth/                 Login, SignUp
     onboarding/           Nome, Peixe, Grupo
     hoje/                 Hoje, ProgressStrip, MemberTube, WaveSurface, RegistersCard, EntryRow,
-                           useWavePause
+                           EntryList, useWavePause
     registrar/            RegisterSheet, BottleGrid, LooseAmount, OptionalChips,
                            draft, submit, useCountUp
     ranking/              Ranking, PeriodControl, Standings, StatsCompare, MonthWrapUp
@@ -924,15 +932,15 @@ src/
   features/
     entries/              queries.ts mutations.ts outbox.ts sync.ts realtime.ts
     bottles/              queries.ts mutations.ts
-    group/                queries.ts joinGroup.ts createGroup.ts
+    group/                queries.ts joinGroup.ts createGroup.ts useGroupData.ts
     fish/                 catalog.ts unlocks.ts Fish.tsx svg/
     celebrations/         engine.ts Celebration.tsx timelines.ts
   lib/
-    supabase.ts  idb.ts  dates.ts  periods.ts  rankings.ts  averages.ts
+    supabase.ts  idb.ts  dates.ts  periods.ts  rankings.ts  averages.ts  calendar.ts  wrapup.ts
     streaks.ts  composition.ts  format.ts  image.ts  strings.ts
   styles/
     tokens.css  globals.css
-  ui/                     shadcn primitives + Button, Field, Card, Sheet, Segmented, Toast
+  ui/                     shadcn primitives + Button, Field, Card, Sheet, Segmented, Stepper, Toast
 docs/
   superpowers/specs/      this document
 ```
@@ -976,4 +984,4 @@ Each is a self-contained addition, deliberately deferred:
 - **Incremental photo cleanup** — a scheduled job removing objects orphaned by failed
   deletes.
 - **A third member** — the schema, RLS and the scrollable column strip already support it.
-  Only the Ranking comparison card assumes two columns and would need to become a list.
+  The Ranking comparison card already renders one column per member.
