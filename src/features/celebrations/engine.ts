@@ -38,12 +38,7 @@ export function celebrationsFor(before: DayState, after: DayState): Celebration[
   if (days !== undefined) out.push({ kind: 'streak', days })
   if (!before.leading && after.leading) out.push({ kind: 'lead' })
   const litres = Math.floor(after.todayMl / 1000)
-  const beforeLitres = Math.floor(before.todayMl / 1000)
-  const litreIncrease = litres - beforeLitres
-  const hasNoPreviousBest = after.bestOtherDayMl === 0
-  if ((hasNoPreviousBest && litreIncrease === 1) || (!hasNoPreviousBest && litreIncrease >= 2)) {
-    out.push({ kind: 'litre', litres })
-  }
+  if (litres > Math.floor(before.todayMl / 1000)) out.push({ kind: 'litre', litres })
   return out
 }
 

@@ -22,15 +22,15 @@ describe('celebrationsFor', () => {
   })
 
   it('needs a previous best to beat — day one is not a record', () => {
-    expect(celebrationsFor(state({ todayMl: 1000 }), state({ todayMl: 4200 }))).toEqual([])
+    expect(celebrationsFor(state({ todayMl: 4000 }), state({ todayMl: 4200 }))).toEqual([])
   })
 
   it('fires the record once, when today first passes the old best', () => {
-    const before = state({ todayMl: 3900, bestOtherDayMl: 4000 })
-    expect(celebrationsFor(before, state({ todayMl: 4000, bestOtherDayMl: 4000 }))).toEqual([])
-    expect(celebrationsFor(before, state({ todayMl: 4200, bestOtherDayMl: 4000 }))).toEqual([{ kind: 'record', ml: 4200 }])
+    const before = state({ todayMl: 4100, bestOtherDayMl: 4500 })
+    expect(celebrationsFor(before, state({ todayMl: 4500, bestOtherDayMl: 4500 }))).toEqual([])
+    expect(celebrationsFor(before, state({ todayMl: 4600, bestOtherDayMl: 4500 }))).toEqual([{ kind: 'record', ml: 4600 }])
     expect(
-      celebrationsFor(state({ todayMl: 4200, bestOtherDayMl: 4000 }), state({ todayMl: 4500, bestOtherDayMl: 4000 })),
+      celebrationsFor(state({ todayMl: 4600, bestOtherDayMl: 4500 }), state({ todayMl: 4900, bestOtherDayMl: 4500 })),
     ).toEqual([])
   })
 
