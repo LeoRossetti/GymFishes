@@ -1,9 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Route, Routes } from 'react-router'
+import { MemoryRouter, Route, Routes } from 'react-router'
 import { renderWithProviders } from '@/test/utils'
 import { Ranking } from './Ranking'
+
+const mirror = vi.hoisted(() => ({ entries: [] as unknown[] }))
 
 vi.mock('@/features/auth/AuthProvider', () => ({
   useSession: () => ({ session: { user: { id: 'u1' } }, loading: false }),
@@ -36,14 +39,7 @@ const row = (id: string, profile_id: string, total_ml: number, drank_on: string)
   deleted_at: null,
 })
 vi.mock('@/features/entries/queries', () => ({
-  useEntries: () => ({
-    data: [
-      row('e1', 'u1', 1800, '2026-08-10'),
-      row('e2', 'u2', 2300, '2026-08-10'),
-      row('e3', 'u1', 3000, '2026-08-03'),
-      row('e4', 'u2', 500, '2026-07-15'),
-    ],
-  }),
+  useEntries: () => ({ data: mirror.entries }),
 }))
 
 function renderRanking() {
@@ -59,6 +55,12 @@ describe('Ranking', () => {
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date('2026-08-10T15:00:00Z')) // segunda, 10 de agosto, meio-dia em São Paulo
     localStorage.clear()
+    mirror.entries = [
+      row('e1', 'u1', 1800, '2026-08-10'),
+      row('e2', 'u2', 2300, '2026-08-10'),
+      row('e3', 'u1', 3000, '2026-08-03'),
+      row('e4', 'u2', 500, '2026-07-15'),
+    ]
   })
   afterEach(() => vi.useRealTimers())
 
@@ -92,5 +94,27 @@ describe('Ranking', () => {
     renderRanking()
     expect(screen.getByText('Julho encerrado — Ana venceu 🏆')).toBeInTheDocument()
     expect(screen.getByText('Médias e recordes')).toBeInTheDocument()
+  })
+
+  it('recomputes Total when the mirror hydrates after the tap', async () => {
+    mirror.entries = []
+    const { rerender, client } = renderRanking()
+    await userEvent.click(screen.getByRole('button', { name: 'Total' }))
+    expect(screen.getByText('Desde 10 de agosto')).toBeInTheDocument()
+    expect(screen.getByText('Nada registrado neste período')).toBeInTheDocument()
+
+    mirror.entries = [row('e4', 'u2', 500, '2026-07-15')]
+    rerender(
+      <QueryClientProvider client={client}>
+        <MemoryRouter initialEntries={['/']}>
+          <Routes>
+            <Route path="/" element={<Ranking />} />
+          </Routes>
+        </MemoryRouter>
+      </QueryClientProvider>,
+    )
+    expect(screen.getByText('Desde 15 de julho')).toBeInTheDocument()
+    expect(screen.getAllByRole('listitem')[0]).toHaveTextContent('Ana')
+    expect(screen.getAllByRole('listitem')[0]).toHaveTextContent('500 ml')
   })
 })

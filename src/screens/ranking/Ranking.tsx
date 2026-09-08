@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useGroupData } from '@/features/group/useGroupData'
 import { statsFor, type MemberStats } from '@/lib/averages'
 import { dayKey } from '@/lib/dates'
-import { dayPeriod, type Period } from '@/lib/periods'
+import { allPeriod, dayPeriod, type Period } from '@/lib/periods'
 import { firstRegisterDay, standings, totalsForPeriod } from '@/lib/rankings'
 import { STRINGS } from '@/lib/strings'
 import { MonthWrapUp } from './MonthWrapUp'
@@ -18,10 +18,11 @@ export function Ranking() {
   if (!userId) return null
 
   const firstDay = firstRegisterDay(entries) ?? today
+  const shown = period.kind === 'all' ? allPeriod(firstDay, today) : period
   const ids = members.map((m) => m.id)
-  const rows = standings(totalsForPeriod(entries, period), ids)
+  const rows = standings(totalsForPeriod(entries, shown), ids)
   const stats = new Map<string, MemberStats>(
-    ids.map((id): [string, MemberStats] => [id, statsFor(entries, period, today, id)]),
+    ids.map((id): [string, MemberStats] => [id, statsFor(entries, shown, today, id)]),
   )
 
   return (
@@ -31,7 +32,7 @@ export function Ranking() {
       </header>
       <MonthWrapUp entries={entries} members={members} userId={userId} today={today} />
       <section className="rounded-card border border-line bg-surface p-4">
-        <PeriodControl period={period} today={today} firstDay={firstDay} onChange={setPeriod} />
+        <PeriodControl period={shown} today={today} firstDay={firstDay} onChange={setPeriod} />
         <Standings rows={rows} members={members} userId={userId} />
       </section>
       <StatsCompare members={members} userId={userId} stats={stats} />

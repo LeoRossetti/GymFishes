@@ -42,7 +42,7 @@ export function MonthWrapUp({ entries, members, userId, today }: Props) {
     <section className="mb-3 flex items-start justify-between rounded-card border border-line bg-surface p-4">
       <div>
         <p className="text-[15px] font-extrabold">
-          {STRINGS.ranking.encerrado(formatMonthTitle(wrap.period.start, today))} — {result}
+          {STRINGS.ranking.encerrado(formatMonthTitle(wrap.period.start, today), result)}
         </p>
         <p className="mt-1 text-[20px] font-extrabold tracking-[-0.4px] text-water">
           {wrap.rows.map((r) => formatVolume(r.ml)).join(STRINGS.ranking.versus)}

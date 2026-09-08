@@ -69,7 +69,7 @@ export const STRINGS = {
     registros: 'Registros',
     de: (a: number, b: number) => `${a} de ${b}`,
     semDados: '—',
-    encerrado: (mes: string) => `${mes} encerrado`,
+    encerrado: (mes: string, resultado: string) => `${mes} encerrado — ${resultado}`,
     venceu: (nome: string) => `${nome} venceu 🏆`,
     empate: 'Empate',
     versus: ' × ',
