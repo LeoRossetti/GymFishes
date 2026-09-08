@@ -1,9 +1,6 @@
 import { useNavigate, useOutletContext } from 'react-router'
 import type { ShellContext } from '@/app/AppShell'
-import { useSession } from '@/features/auth/AuthProvider'
-import { useBootstrap } from '@/features/profile/useBootstrap'
-import { useMembers } from '@/features/group/queries'
-import { useEntries } from '@/features/entries/queries'
+import { useGroupData } from '@/features/group/useGroupData'
 import { STRINGS } from '@/lib/strings'
 import { formatDateLong } from '@/lib/format'
 import { ProgressStrip } from './ProgressStrip'
@@ -11,12 +8,7 @@ import { RegistersCard } from './RegistersCard'
 import { SyncPill } from './SyncPill'
 
 export function Hoje() {
-  const { session } = useSession()
-  const userId = session?.user.id
-  const bootstrap = useBootstrap(userId)
-  const groupId = bootstrap.data?.groupId
-  const members = useMembers(groupId)
-  const entries = useEntries(groupId)
+  const { userId, groupId, members, entries } = useGroupData()
   const navigate = useNavigate()
   const { openRegister } = useOutletContext<ShellContext>()
 
@@ -37,15 +29,13 @@ export function Hoje() {
           🐟
         </button>
       </header>
-      {userId ? (
-        <ProgressStrip userId={userId} members={members.data ?? []} entries={entries.data ?? []} />
-      ) : null}
+      {userId ? <ProgressStrip userId={userId} members={members} entries={entries} /> : null}
       {userId && groupId ? (
         <RegistersCard
           userId={userId}
           groupId={groupId}
-          members={members.data ?? []}
-          entries={entries.data ?? []}
+          members={members}
+          entries={entries}
           openRegister={openRegister}
         />
       ) : null}
