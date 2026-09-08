@@ -13,9 +13,9 @@ codebase rather than an imagined one.
 | M1 | Foundation | [`2026-08-11-m1-foundation.md`](2026-08-11-m1-foundation.md) | **code-complete** — pending user handoff: Vercel deploy, two-phone install, cloud RLS behavioral checklist |
 | M2 | Core loop — registrar e ver água | [`2026-09-01-m2-core-loop.md`](2026-09-01-m2-core-loop.md) | **code-complete** — pending owner verifications: two-browser realtime check, one register from a real phone |
 | M3 | Offline e sync | [`2026-09-06-m3-offline-sync.md`](2026-09-06-m3-offline-sync.md) | **code-complete** — pending owner verification: airplane-mode register survives a force-quit on a real iPhone |
-| M4 | Competição — Ranking e Histórico | not written yet | ready |
-| M5 | Peixes e celebrações | not written yet | blocked by M2 |
-| M6 | PWA e endurecimento | not written yet | blocked by M4, M5 |
+| M4 | Competição — Ranking e Histórico | [`2026-09-07-m4-competicao.md`](2026-09-07-m4-competicao.md) | **code-complete** — pending owner verification: step back one week on a real phone and sanity-check the standings; edit a past register from Histórico |
+| M5 | Peixes e celebrações | not written yet | ready |
+| M6 | PWA e endurecimento | not written yet | blocked by M5 |
 
 ---
 
@@ -98,6 +98,13 @@ this month, ever — plus who has the better average.
 - Month wrap-up card with per-device dismissal
 - Histórico: month calendar with five flat fill steps, day detail reusing the
   Hoje register row, month footer
+
+**Deliberate sequencing note:** the spec's standings row shows the member's fish; M4 ships the
+same 🐟 emoji placeholder as Hoje (the 13 SVG fish are M5). No streak chip anywhere yet
+(`streaks.ts` is M5). Calls the spec left open — forward arrow disabled at the current period,
+"Hoje"/"Ontem" day labels, shared positions on ties, the wrap-up showing all month until
+dismissed, one comparison column per member, opacity steps for the calendar fills — are
+recorded in the plan and folded into spec §5.3/§5.4.
 
 ## M5 — Peixes e celebrações
 

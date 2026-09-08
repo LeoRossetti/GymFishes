@@ -2,7 +2,10 @@ import { describe, expect, it } from 'vitest'
 import {
   allPeriod,
   containsDay,
+  currentPeriod,
   dayPeriod,
+  daysElapsed,
+  daysOf,
   monthPeriod,
   stepPeriod,
   weekPeriod,
@@ -91,5 +94,48 @@ describe('containsDay', () => {
     expect(containsDay(week, '2026-08-16')).toBe(true)
     expect(containsDay(week, '2026-08-09')).toBe(false)
     expect(containsDay(week, '2026-08-17')).toBe(false)
+  })
+})
+
+describe('daysOf', () => {
+  it('lists every day of a week', () => {
+    expect(daysOf(weekPeriod('2026-08-10'))).toEqual([
+      '2026-08-10', '2026-08-11', '2026-08-12', '2026-08-13', '2026-08-14', '2026-08-15', '2026-08-16',
+    ])
+  })
+
+  it('has 31 days in August', () => {
+    expect(daysOf(monthPeriod('2026-08-10'))).toHaveLength(31)
+  })
+})
+
+describe('daysElapsed', () => {
+  it('counts a finished period in full', () => {
+    expect(daysElapsed(weekPeriod('2026-08-03'), '2026-08-10')).toBe(7)
+  })
+
+  it('counts the current period only up to today', () => {
+    expect(daysElapsed(weekPeriod('2026-08-10'), '2026-08-12')).toBe(3)
+  })
+
+  it('is one on the first day', () => {
+    expect(daysElapsed(monthPeriod('2026-08-01'), '2026-08-01')).toBe(1)
+  })
+
+  it('is zero for a period that has not started', () => {
+    expect(daysElapsed(monthPeriod('2026-09-01'), '2026-08-31')).toBe(0)
+  })
+
+  it('runs from the first register for the all-time period', () => {
+    expect(daysElapsed(allPeriod('2026-06-12', '2026-08-10'), '2026-08-10')).toBe(60)
+  })
+})
+
+describe('currentPeriod', () => {
+  it('builds the period of each kind around today', () => {
+    expect(currentPeriod('day', '2026-08-12', '2026-06-12')).toEqual(dayPeriod('2026-08-12'))
+    expect(currentPeriod('week', '2026-08-12', '2026-06-12')).toEqual(weekPeriod('2026-08-12'))
+    expect(currentPeriod('month', '2026-08-12', '2026-06-12')).toEqual(monthPeriod('2026-08-12'))
+    expect(currentPeriod('all', '2026-08-12', '2026-06-12')).toEqual(allPeriod('2026-06-12', '2026-08-12'))
   })
 })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addDays, dayKey, fromDatetimeLocal, pad2, parseDayKey, toDatetimeLocal, weekdayMon0 } from './dates'
+import { addDays, dateAtNoon, dayKey, daysBetween, fromDatetimeLocal, pad2, parseDayKey, toDatetimeLocal, weekdayMon0 } from './dates'
 
 describe('dayKey', () => {
   it('uses the Sao Paulo calendar day, not UTC', () => {
@@ -66,5 +66,25 @@ describe('fromDatetimeLocal', () => {
   it('round-trips', () => {
     const now = new Date('2026-08-11T18:04:00Z')
     expect(fromDatetimeLocal(toDatetimeLocal(now)).getTime()).toBe(now.getTime())
+  })
+})
+
+describe('daysBetween', () => {
+  it('counts forward and backward', () => {
+    expect(daysBetween('2026-08-10', '2026-08-10')).toBe(0)
+    expect(daysBetween('2026-08-10', '2026-08-16')).toBe(6)
+    expect(daysBetween('2026-08-16', '2026-08-10')).toBe(-6)
+  })
+
+  it('crosses month and year boundaries', () => {
+    expect(daysBetween('2025-12-31', '2026-01-01')).toBe(1)
+    expect(daysBetween('2026-06-12', '2026-08-10')).toBe(59)
+  })
+})
+
+describe('dateAtNoon', () => {
+  it('lands on the same São Paulo day', () => {
+    expect(dayKey(dateAtNoon('2026-08-10'))).toBe('2026-08-10')
+    expect(dateAtNoon('2026-08-10').toISOString()).toBe('2026-08-10T15:00:00.000Z')
   })
 })

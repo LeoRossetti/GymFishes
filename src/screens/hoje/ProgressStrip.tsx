@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import type { Member } from '@/features/group/queries'
+import { selfFirst } from '@/features/group/useGroupData'
 import type { Entry } from '@/features/entries/cache'
 import { dayKey } from '@/lib/dates'
 import { gapText } from '@/lib/gap'
@@ -14,7 +15,7 @@ export function ProgressStrip({ userId, members, entries }: Props) {
   const paused = useWavePause(ref)
   const totals = totalsForDay(entries, dayKey(new Date()))
   const scale = Math.max(3000, ...members.map((m) => totals.get(m.id) ?? 0))
-  const ordered = [...members].sort((a, b) => (a.id === userId ? -1 : b.id === userId ? 1 : 0))
+  const ordered = selfFirst(members, userId)
   const partner = ordered.find((m) => m.id !== userId)
 
   return (

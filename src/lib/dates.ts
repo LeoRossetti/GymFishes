@@ -40,6 +40,15 @@ export function weekdayMon0(k: DayKey): number {
   return (new Date(Date.UTC(y, m - 1, d)).getUTCDay() + 6) % 7
 }
 
+/** Whole days from `a` to `b`; negative when `b` is earlier. */
+export function daysBetween(a: DayKey, b: DayKey): number {
+  const pa = parseDayKey(a)
+  const pb = parseDayKey(b)
+  const ta = Date.UTC(pa.y, pa.m - 1, pa.d)
+  const tb = Date.UTC(pb.y, pb.m - 1, pb.d)
+  return Math.round((tb - ta) / 86_400_000)
+}
+
 /** São Paulo has a fixed -03:00 offset — DST was abolished in 2019. */
 const SP_OFFSET = '-03:00'
 
@@ -63,4 +72,9 @@ export function toDatetimeLocal(d: Date): string {
 /** "YYYY-MM-DDTHH:mm" interpreted as APP_TZ wall time → Date. */
 export function fromDatetimeLocal(s: string): Date {
   return new Date(`${s}:00${SP_OFFSET}`)
+}
+
+/** Noon in APP_TZ on that day — a safe instant for formatting a DayKey with Intl. */
+export function dateAtNoon(k: DayKey): Date {
+  return new Date(`${k}T12:00:00${SP_OFFSET}`)
 }
