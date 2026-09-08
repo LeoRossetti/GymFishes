@@ -29,6 +29,16 @@ export function totalsForDay(entries: readonly RankableEntry[], day: DayKey): Ma
   return totalsForPeriod(entries, dayPeriod(day))
 }
 
+/** One member's volume per day across every live register — the all-time input for streaks and unlocks. */
+export function dayTotals(entries: readonly RankableEntry[], profileId: string): Map<DayKey, number> {
+  const totals = new Map<DayKey, number>()
+  for (const e of entries) {
+    if (e.deleted_at || e.profile_id !== profileId) continue
+    totals.set(e.drank_on, (totals.get(e.drank_on) ?? 0) + e.total_ml)
+  }
+  return totals
+}
+
 /** One member's volume per day inside the period; days without registers are absent. */
 export function totalsByDay(
   entries: readonly RankableEntry[],
@@ -36,9 +46,8 @@ export function totalsByDay(
   profileId: string,
 ): Map<DayKey, number> {
   const totals = new Map<DayKey, number>()
-  for (const e of live(entries, p)) {
-    if (e.profile_id !== profileId) continue
-    totals.set(e.drank_on, (totals.get(e.drank_on) ?? 0) + e.total_ml)
+  for (const [day, ml] of dayTotals(entries, profileId)) {
+    if (containsDay(p, day)) totals.set(day, ml)
   }
   return totals
 }

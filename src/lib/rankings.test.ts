@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { monthPeriod, weekPeriod } from './periods'
-import { firstRegisterDay, standings, totalsByDay, totalsForDay, totalsForPeriod } from './rankings'
+import { dayTotals, firstRegisterDay, standings, totalsByDay, totalsForDay, totalsForPeriod } from './rankings'
 
 const e = (profile_id: string, total_ml: number, drank_on: string, deleted_at: string | null = null) => ({
   profile_id,
@@ -96,5 +96,24 @@ describe('firstRegisterDay', () => {
 
   it('is undefined with no registers', () => {
     expect(firstRegisterDay([])).toBeUndefined()
+  })
+})
+
+describe('dayTotals', () => {
+  it('sums one member per day across all time, ignoring deleted rows and other members', () => {
+    const totals = dayTotals(
+      [
+        e('a', 500, '2026-09-01'),
+        e('a', 300, '2026-09-01'),
+        e('a', 900, '2026-07-15'),
+        e('a', 999, '2026-07-15', '2026-07-15T13:00:00Z'),
+        e('b', 250, '2026-09-01'),
+      ],
+      'a',
+    )
+    expect([...totals.entries()]).toEqual([
+      ['2026-09-01', 800],
+      ['2026-07-15', 900],
+    ])
   })
 })
