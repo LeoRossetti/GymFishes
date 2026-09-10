@@ -94,7 +94,7 @@ Every decision below was explicitly settled during design. Recorded so we don't 
 | Theme | **Dark only**, deep-sea | Chosen over light-only or both |
 | Visual tone | Flat solid fills, 1px borders, solid bottom edge on buttons | Duolingo-like; no gradients, no glow |
 | Water surface | Continuously drifting sine waves, paused when hidden | The signature of a water app; it's shape rather than light, so it stays inside the no-glow rule |
-| Fish art | SVG components animated with GSAP | Rive's advantage is invisible at 20px and its WASM runtime outweighs the art |
+| Fish art | Flat SVG components; CSS keyframes for the idle loop, `motion` for celebrations | Rive's advantage is invisible at 20px and its WASM runtime outweighs the art; a second animation library (GSAP) buys nothing `motion` and CSS don't already do |
 | Rive | Optional future upgrade for **one** large moment | ~$9/mo for `.riv` export, plus a learning and illustration project |
 | Component base | shadcn/ui | React Bits Pro ships via the shadcn registry protocol |
 | i18n | None — pt-BR strings in one module | Single locale forever |
@@ -120,7 +120,8 @@ Four steps, one screen each, no skipping:
 
 1. **Conta** — "Criar conta" / "Entrar" (email + senha).
 2. **Nome** — "Como você quer aparecer?" (display name, 2–20 chars).
-3. **Peixe** — pick one of the four starter fish. "Escolha seu peixe".
+3. **Peixe** — pick one of the four starter fish. "Escolha seu peixe". Tapping a fish saves it
+   and moves on.
 4. **Grupo** — either:
    - "Criar grupo" → group name, generates a 6-character invite code, shows it with a
      copy/share button; or
@@ -200,8 +201,9 @@ relative, not a target.
 Under the strip: the gap line — "Ela está 500 ml na frente" / "Você está 500 ml na frente"
 / "Empate técnico" — in flat blue.
 
-**Registers card** — "Registros de hoje · 4" with the streak chip on the right. Then the
-day's registers from **both** members, newest first, as compact rows:
+**Registers card** — "Registros de hoje · 4" with the streak chip on the right (hidden
+while the streak is 0). Then the day's registers from **both** members, newest first,
+as compact rows:
 
 `[thumb 42px] [name · time / note or composition] [total, right-aligned, blue]`
 
@@ -317,7 +319,7 @@ from Hoje (including tap-to-expand and, for your own registers, edit/delete).
 
 Settings and identity. Nothing competitive lives here.
 
-- **Seu peixe** — your current fish, large. Tapping opens the fish gallery: a grid of all
+- **Seu peixe** — your current fish, large. Tapping expands the fish gallery in place: a grid of all
   fish, unlocked ones in full colour and tappable, locked ones as a flat silhouette with
   the unlock condition below ("Sequência de 30 dias"). Selecting one saves immediately and
   the partner sees the change.
@@ -361,30 +363,38 @@ Unlocked status is **derived**, never stored. A pure function takes your synced 
 plus the group's monthly results and returns the set of unlocked ids:
 
 ```ts
-unlockedFish(entries: Entry[], monthlyWins: number): Set<FishId>
+unlockedFish(entries: Entry[], profileId: string, monthsWon: number): Set<FishId>
 ```
 
-This means no extra table, no writes, no drift, and it self-heals if data changes. The only
-stored value is `profiles.fish_variant` — your current choice — because the other person
-has to see it.
+This means no extra table, no writes, no drift, and it self-heals if data changes.
+
+Every condition is an all-time fact — longest streak ever, best day ever, accumulated volume,
+completed months won — so a fish never re-locks when a streak breaks. A month counts only once
+it has ended, and a tie counts for nobody (the same rule as the wrap-up card).
+
+The only stored value is `profiles.fish_variant` — your current choice — because the
+other person has to see it.
 
 "Newly unlocked, not yet celebrated" is tracked per device in `localStorage`
-(`seen_unlocks`). On a fresh device you may miss a past unlock celebration; the fish is
-still unlocked. Acceptable.
+(`seen_unlocks`). The set seeds itself with whatever is already unlocked the first time it is
+needed, so a fresh device may miss a past celebration but never repeats one. The fish is
+unlocked either way. Acceptable.
 
 ### Art
 
-Each fish is a small React component rendering flat SVG using two or three palette
-colours, drawn on a shared silhouette structure so the set reads as one family. The public
-interface is deliberately narrow so any single fish can later be swapped for a Rive file
+Each fish is a small React component rendering flat SVG using two or three of the accent
+and ink tokens, drawn on a shared silhouette structure so the set reads as one family. The
+public interface is deliberately narrow so any single fish can later be swapped for a Rive file
 without touching callers:
 
 ```tsx
-<Fish variant="betta" level={0.62} state="idle" size={20} />
+<Fish variant="betta" state="idle" size={20} />
 ```
 
-GSAP drives a slow tail rotation and vertical bob at rest, and a quick dart upward when a
-register lands. `prefers-reduced-motion` disables both.
+CSS keyframes drive a slow tail wag and vertical bob at rest, paused with the water whenever
+the tube is hidden; the tube's own spring lifts the fish when a register lands.
+`prefers-reduced-motion` disables both. States are `idle`, `still` and `locked` (a one-colour
+silhouette for the gallery).
 
 ---
 
@@ -399,7 +409,7 @@ celebrationsFor(before: DayState, after: DayState): Celebration[]
 
 | Trigger | Presentation | Text |
 |---|---|---|
-| New fish unlocked | Full screen | "Novo peixe! 🐡" + reveal + "Escolher agora" / "Depois" |
+| New fish unlocked | Full screen | "Novo peixe!" + the fish + "Escolher agora" / "Depois" |
 | New personal best day | Full screen | "Novo recorde! 4,2 L" |
 | Streak milestone (7/30/100) | Full screen | "🔥 30 dias seguidos!" |
 | Took the lead today | Toast | "Você assumiu a liderança 🏆" |
@@ -410,14 +420,20 @@ celebrationsFor(before: DayState, after: DayState): Celebration[]
 - At most **one** full-screen celebration per register. Priority is the table order:
   unlock > record > streak > lead > round litre.
 - Anything outranked degrades to a toast, or is dropped if it was already inline.
-- Full-screen celebrations dismiss on tap and auto-dismiss after 4 seconds.
+- Record and streak screens dismiss on tap and auto-dismiss after 4 seconds; the unlock screen
+  waits for "Escolher agora" or "Depois" (a tap outside counts as Depois).
+- Only your own *new* registers from the sheet are evaluated — edits and deletes never fire;
+  anything they unlock is celebrated at your next register (`seen_unlocks`).
+- "Took the lead" means overtaking a partner who has registered today.
+- Several toasts join into one line with " · ". The round-litre caption replaces the Hoje gap
+  line for 2,5 s.
 - The personal-best celebration requires a previous best to beat, so day one is not a
   record.
 - Nothing fires for registers that arrive via realtime from the other person. You only
   celebrate your own water.
 - `prefers-reduced-motion` replaces every animation with a crossfade.
 
-Implementation is a GSAP timeline per celebration type, over flat shapes — bubbles rising,
+Implementation is a `motion` sequence per celebration type, over flat shapes — bubbles rising,
 the fish leaping, the number counting. No particles, no bloom.
 
 ---
@@ -475,10 +491,11 @@ remain distinguishable from each other in the tubes.
 | Water level change | 600 ms | spring |
 | Number count-up | 500 ms | ease-out |
 | Water surface wave | continuous loop | linear, see below |
-| Celebration timeline | 900–1400 ms | GSAP timeline |
+| Celebration sequence | 900–1400 ms | `motion` spring + stagger |
 
-`motion` handles component and layout transitions; GSAP handles choreographed celebration
-sequences and the fish. `prefers-reduced-motion` collapses everything to a 120ms crossfade.
+`motion` handles component and layout transitions and the celebration sequences; the water
+and the fish idle loop are CSS keyframes. `prefers-reduced-motion` collapses everything to a
+120ms crossfade.
 
 ### Water surface
 
@@ -513,7 +530,7 @@ the level change becomes a 120 ms crossfade.
   iPhone — PWA installed to home screen
   ┌───────────────────────────────────────────────┐
   │  React 19 + TypeScript + Tailwind v4          │
-  │  shadcn/ui  ·  motion  ·  GSAP                │
+  │  shadcn/ui  ·  motion                         │
   │                                               │
   │  TanStack Query ── persisted ──┐              │
   │      │                          ▼             │
@@ -568,7 +585,7 @@ hatch is a Postgres view plus a windowed query, without changing the UI.
 | Routing | React Router (4 tab routes + modal route for the sheet) |
 | Server state | TanStack Query + IndexedDB persister |
 | Local writes | `idb-keyval` for the outbox |
-| Animation | `motion` (UI) + GSAP (celebrations, fish) |
+| Animation | `motion` (UI, celebrations) + CSS keyframes (water, fish idle) |
 | PWA | `vite-plugin-pwa` (Workbox) |
 | Backend | `@supabase/supabase-js` |
 | Tests | Vitest + React Testing Library; Playwright smoke |
@@ -925,7 +942,7 @@ src/
     hoje/                 Hoje, ProgressStrip, MemberTube, WaveSurface, RegistersCard, EntryRow,
                            EntryList, useWavePause
     registrar/            RegisterSheet, BottleGrid, LooseAmount, OptionalChips,
-                           draft, submit, useCountUp
+                           draft, submit
     ranking/              Ranking, PeriodControl, Standings, StatsCompare, MonthWrapUp
     historico/            Historico, CalendarGrid, DayDetail
     perfil/               Perfil, FishGallery, BottleManager, GroupCard
@@ -933,14 +950,14 @@ src/
     entries/              queries.ts mutations.ts outbox.ts sync.ts realtime.ts
     bottles/              queries.ts mutations.ts
     group/                queries.ts joinGroup.ts createGroup.ts useGroupData.ts
-    fish/                 catalog.ts unlocks.ts Fish.tsx svg/
-    celebrations/         engine.ts Celebration.tsx timelines.ts
+    fish/                 catalog.ts unlocks.ts Fish.tsx FishGrid.tsx svg/
+    celebrations/         engine.ts dayState.ts seenUnlocks.ts CelebrationProvider.tsx CelebrationScreen.tsx
   lib/
     supabase.ts  idb.ts  dates.ts  periods.ts  rankings.ts  averages.ts  calendar.ts  wrapup.ts
     streaks.ts  composition.ts  format.ts  image.ts  strings.ts
   styles/
     tokens.css  globals.css
-  ui/                     shadcn primitives + Button, Field, Card, Sheet, Segmented, Stepper, Toast
+  ui/                     shadcn primitives + Button, Field, Card, Sheet, Segmented, Stepper, Toast, useCountUp
 docs/
   superpowers/specs/      this document
 ```

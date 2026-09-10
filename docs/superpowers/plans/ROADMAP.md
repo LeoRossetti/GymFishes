@@ -14,8 +14,8 @@ codebase rather than an imagined one.
 | M2 | Core loop — registrar e ver água | [`2026-09-01-m2-core-loop.md`](2026-09-01-m2-core-loop.md) | **code-complete** — pending owner verifications: two-browser realtime check, one register from a real phone |
 | M3 | Offline e sync | [`2026-09-06-m3-offline-sync.md`](2026-09-06-m3-offline-sync.md) | **code-complete** — pending owner verification: airplane-mode register survives a force-quit on a real iPhone |
 | M4 | Competição — Ranking e Histórico | [`2026-09-07-m4-competicao.md`](2026-09-07-m4-competicao.md) | **code-complete** — pending owner verification: step back one week on a real phone and sanity-check the standings; edit a past register from Histórico |
-| M5 | Peixes e celebrações | not written yet | ready |
-| M6 | PWA e endurecimento | not written yet | blocked by M5 |
+| M5 | Peixes e celebrações | [`2026-09-08-m5-peixes-celebracoes.md`](2026-09-08-m5-peixes-celebracoes.md) | **code-complete** — pending owner verification: both fish on both phones; a round litre, an overtake, and the first real 7-day streak celebrating once |
+| M6 | PWA e endurecimento | not written yet | ready |
 
 ---
 
@@ -119,6 +119,14 @@ once.
 - Celebration engine: priority ordering, one full screen per register, toasts
 - GSAP timelines; `prefers-reduced-motion` fallbacks
 - Fish picker added to onboarding
+
+**Deliberate sequencing note:** no GSAP — the fish idle loop is CSS keyframes (like the water)
+and celebration choreography is `motion`, which already ships; the spec's decision log now says
+so. `<Fish>` dropped the `level` prop (the tube positions it). Calls the spec left open — all-time
+unlock facts, completed-months-only wins, inserts-only celebrations with a self-seeding
+`seen_unlocks`, "lead" meaning an overtake, the unlock screen waiting for a button, joined toasts,
+the litre caption on the gap line, a hidden 0-day chip, tap-to-save in onboarding, an in-place
+gallery — are recorded in the plan and folded into spec §3/§5/§6/§7/§8.
 
 ## M6 — PWA e endurecimento
 
