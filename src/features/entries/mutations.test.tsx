@@ -61,7 +61,9 @@ describe('useEntryOps', () => {
 
   it('insert patches the cache optimistically (updated_at empty) and enqueues + flushes', async () => {
     const { client, ops } = harness()
-    ops.insert(novo)
+    const row = ops.insert(novo)
+    expect(row.id).toBe('e2')
+    expect(row.updated_at).toBe('')
     await waitFor(() => {
       const list = client.getQueryData<Entry[]>(entriesKey('g1'))
       expect(list?.map((e) => e.id)).toEqual(['e2', 'e1'])

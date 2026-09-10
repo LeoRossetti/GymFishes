@@ -75,8 +75,9 @@ export function useEntryOps(groupId: string, profileId: string) {
   const client = useQueryClient()
   return useMemo(
     () => ({
-      insert(input: NewEntry): void {
-        void patchAndEnqueue(client, groupId, (l) => upsertEntry(l, optimisticRow(input, groupId)), {
+      insert(input: NewEntry): Entry {
+        const row = optimisticRow(input, groupId)
+        void patchAndEnqueue(client, groupId, (l) => upsertEntry(l, row), {
           type: 'insert',
           id: input.id,
           groupId,
@@ -84,6 +85,7 @@ export function useEntryOps(groupId: string, profileId: string) {
           row: toRow(input, groupId),
           ...(input.photo ? { photo: input.photo } : {}),
         })
+        return row
       },
       update(entry: Entry, patch: EntryPatch, photo?: OpPhoto): void {
         const removePaths = patch.photo_path === null ? storagePaths(entry) : []

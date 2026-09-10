@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useCelebrations } from '@/features/celebrations/CelebrationProvider'
 import type { Member } from '@/features/group/queries'
 import { selfFirst } from '@/features/group/useGroupData'
 import type { Entry } from '@/features/entries/cache'
@@ -17,6 +18,9 @@ export function ProgressStrip({ userId, members, entries }: Props) {
   const scale = Math.max(3000, ...members.map((m) => totals.get(m.id) ?? 0))
   const ordered = selfFirst(members, userId)
   const partner = ordered.find((m) => m.id !== userId)
+  const { inline } = useCelebrations()
+  const caption =
+    inline ?? (partner ? gapText(totals.get(userId) ?? 0, totals.get(partner.id) ?? 0, partner.display_name) : null)
 
   return (
     <div
@@ -37,11 +41,7 @@ export function ProgressStrip({ userId, members, entries }: Props) {
           />
         ))}
       </div>
-      {partner ? (
-        <p className="mt-3 text-center text-[13px] font-bold text-water">
-          {gapText(totals.get(userId) ?? 0, totals.get(partner.id) ?? 0, partner.display_name)}
-        </p>
-      ) : null}
+      {caption ? <p className="mt-3 text-center text-[13px] font-bold text-water">{caption}</p> : null}
     </div>
   )
 }

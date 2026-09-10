@@ -38,6 +38,12 @@ vi.mock('@/features/bottles/mutations', () => ({
 vi.mock('@/features/entries/mutations', () => ({
   useEntryOps: () => ({ insert: insertMutate, update: updateMutate, remove: vi.fn(), retry: vi.fn() }),
 }))
+vi.mock('@/features/group/queries', () => ({ useMembers: () => ({ data: [] }) }))
+vi.mock('@/features/entries/queries', () => ({ useEntries: () => ({ data: [] }) }))
+const celebrate = vi.fn()
+vi.mock('@/features/celebrations/CelebrationProvider', () => ({
+  useCelebrations: () => ({ celebrate: (...args: unknown[]) => celebrate(...args), inline: null }),
+}))
 
 describe('RegisterSheet', () => {
   beforeEach(() => {
@@ -45,6 +51,7 @@ describe('RegisterSheet', () => {
     updateMutate.mockReset()
     onClose.mockReset()
     createBottleMock.mockReset()
+    celebrate.mockReset()
   })
 
   it('disables the CTA at zero', () => {
@@ -156,6 +163,29 @@ describe('RegisterSheet', () => {
     const patch = updateMutate.mock.calls[0]?.[1]
     expect(patch.photo_path).toBeNull()
     expect(patch.thumb_path).toBeNull()
+  })
+
+  it('hands the mirror before and after the insert to the celebrations', async () => {
+    const inserted = {
+      id: 'e9',
+      profile_id: 'u1',
+      group_id: 'g1',
+      total_ml: 1500,
+      composition: [],
+      note: null,
+      photo_path: null,
+      thumb_path: null,
+      drank_at: new Date().toISOString(),
+      drank_on: '2026-09-08',
+      created_at: new Date().toISOString(),
+      updated_at: '',
+      deleted_at: null,
+    } as Entry
+    insertMutate.mockReturnValue(inserted)
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: /Garrafa azul/ }))
+    await userEvent.click(screen.getByRole('button', { name: /Registrar 1,5 L/ }))
+    expect(celebrate).toHaveBeenCalledWith([], [inserted])
   })
 
   it('surfaces a toast and keeps the form open when creating a bottle fails', async () => {

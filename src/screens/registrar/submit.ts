@@ -5,15 +5,16 @@ import { totalMl } from '@/lib/composition'
 import { draftItems, type Draft } from './draft'
 
 /**
- * Submitting is now a pure local enqueue — uploads and retries live in the outbox
- * flusher — so the sheet closes instantly whatever the connectivity (spec §5.2/§12).
+ * Submitting is a pure local enqueue — uploads and retries live in the outbox flusher — so the
+ * sheet closes instantly whatever the connectivity (spec §5.2/§12). Returns the optimistic row
+ * for a new register (the celebrations compare the mirror with and without it), null for an edit.
  */
 export function submitDraft(
   ops: Pick<EntryOps, 'insert' | 'update'>,
   userId: string,
   draft: Draft,
   entry: Entry | undefined,
-): void {
+): Entry | null {
   const items = draftItems(draft)
   const note = draft.note.trim() || null
   const photo: OpPhoto | undefined = draft.photo
@@ -29,10 +30,10 @@ export function submitDraft(
       ...(draft.photoRemoved ? { photo_path: null, thumb_path: null } : {}),
     }
     ops.update(entry, patch, photo)
-    return
+    return null
   }
 
-  ops.insert({
+  return ops.insert({
     id: crypto.randomUUID(),
     profileId: userId,
     totalMl: totalMl(items),

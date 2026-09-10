@@ -1,29 +1,28 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
 import { motion } from 'motion/react'
-import { useSession } from '@/features/auth/AuthProvider'
-import { useBootstrap } from '@/features/profile/useBootstrap'
 import { useBottles } from '@/features/bottles/queries'
+import { useCelebrations } from '@/features/celebrations/CelebrationProvider'
+import { upsertEntry, type Entry } from '@/features/entries/cache'
 import { useEntryOps } from '@/features/entries/mutations'
-import type { Entry } from '@/features/entries/cache'
+import { useGroupData } from '@/features/group/useGroupData'
 import { describeComposition, totalMl } from '@/lib/composition'
 import { MAX_ML } from '@/lib/keypad'
 import { formatVolume } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
+import { useCountUp } from '@/ui/useCountUp'
 import { BottleGrid } from './BottleGrid'
 import { LooseAmount } from './LooseAmount'
 import { OptionalChips } from './OptionalChips'
 import { draftFromEntry, draftItems, draftReducer, emptyDraft } from './draft'
 import { submitDraft } from './submit'
-import { useCountUp } from '@/ui/useCountUp'
 
 export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; onClose: () => void }) {
-  const { session } = useSession()
-  const userId = session?.user.id
-  const bootstrap = useBootstrap(userId)
-  const groupId = bootstrap.data?.groupId ?? ''
+  const { userId, groupId: currentGroupId, entries } = useGroupData()
+  const groupId = currentGroupId ?? ''
   const bottles = useBottles(userId)
   const ops = useEntryOps(groupId, userId ?? '')
+  const { celebrate } = useCelebrations()
   const [draft, dispatch] = useReducer(draftReducer, entry, (e) =>
     e ? draftFromEntry(e) : emptyDraft(new Date()),
   )
@@ -51,7 +50,8 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
   function submit() {
     if (!canSave || !userId || !groupId || submitted.current) return
     submitted.current = true
-    submitDraft(ops, userId, draft, entry)
+    const inserted = submitDraft(ops, userId, draft, entry)
+    if (inserted) celebrate(entries, upsertEntry(entries, inserted))
     onClose()
   }
 
