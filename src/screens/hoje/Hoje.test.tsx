@@ -76,4 +76,8 @@ describe('Hoje', () => {
     expect(document.querySelectorAll('svg[data-fish="betta"]')).toHaveLength(1)
     expect(screen.queryByText('🐟')).toBeNull()
   })
+  it('shows the streak chip once you registered today', () => {
+    renderHoje()
+    expect(screen.getByText('🔥 1 dia')).toBeInTheDocument()
+  })
 })
