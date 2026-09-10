@@ -118,7 +118,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
             disabled={busy}
             onSelect={pickPeixe}
           />
-          {error ? <p className="mt-3 text-[13px] text-danger">{error}</p> : null}
+          {error ? <p className="mt-2 text-[13px] text-danger">{error}</p> : null}
         </>
       ) : null}
 

@@ -353,7 +353,7 @@ personal record.
 | Octopus | Polvo | um dia acima de 5 L |
 | Seahorse | Cavalo-marinho | 100 L acumulados |
 | Turtle | Tartaruga | 500 L acumulados |
-| Dolphin | Golfinho | 1.000 L acumulados |
+| Dolphin | Golfinho | 1000 L acumulados |
 | Shark | Tubarão | ganhar 1 mês |
 | Whale | Baleia | ganhar 3 meses |
 

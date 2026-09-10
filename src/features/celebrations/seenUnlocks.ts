@@ -12,7 +12,8 @@ export function loadSeenUnlocks(): Set<FishId> | null {
     const raw = localStorage.getItem(SEEN_UNLOCKS_KEY)
     if (raw === null) return null
     const parsed: unknown = JSON.parse(raw)
-    return new Set(Array.isArray(parsed) ? parsed.filter(isFishId) : [])
+    if (!Array.isArray(parsed)) return null
+    return new Set(parsed.filter(isFishId))
   } catch {
     return null
   }

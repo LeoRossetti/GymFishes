@@ -24,4 +24,9 @@ describe('seenUnlocks', () => {
     localStorage.setItem(SEEN_UNLOCKS_KEY, '{not json')
     expect(loadSeenUnlocks()).toBeNull()
   })
+
+  it('treats valid JSON that is not an array as never recorded', () => {
+    localStorage.setItem(SEEN_UNLOCKS_KEY, '{"a":1}')
+    expect(loadSeenUnlocks()).toBeNull()
+  })
 })

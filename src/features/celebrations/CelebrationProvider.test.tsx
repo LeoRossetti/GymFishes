@@ -89,7 +89,7 @@ describe('CelebrationProvider', () => {
     expect(screen.getByTestId('inline')).toHaveTextContent('')
   })
 
-  it('unlocks the pufferfish full screen once, toasts the streak, and remembers it', async () => {
+  it('unlocks the pufferfish full screen once and remembers it; the streak takes the screen next time', async () => {
     const six = sixDays()
     renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
