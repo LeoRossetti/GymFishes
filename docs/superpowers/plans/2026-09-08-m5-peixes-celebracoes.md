@@ -3002,7 +3002,8 @@ describe('CelebrationProvider', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Depois' }))
     expect(screen.queryByRole('dialog')).toBeNull()
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
-    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(screen.queryByRole('dialog', { name: 'Novo peixe! Baiacu' })).toBeNull()
+    expect(screen.getByRole('dialog', { name: '🔥 7 dias seguidos!' })).toBeInTheDocument()
   })
 
   it('"Escolher agora" saves the new fish and closes', async () => {
@@ -3019,8 +3020,9 @@ describe('CelebrationProvider', () => {
     const six = sixDays()
     renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
-    expect(screen.queryByRole('dialog')).toBeNull()
-    expect(screen.getByRole('status')).toHaveTextContent('🔥 7 dias seguidos!')
+    expect(screen.queryByRole('dialog', { name: 'Novo peixe! Baiacu' })).toBeNull()
+    expect(screen.getByRole('dialog', { name: '🔥 7 dias seguidos!' })).toBeInTheDocument()
+    expect(screen.queryByRole('status')).toBeNull()
   })
 })
 ```
