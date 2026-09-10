@@ -39,6 +39,7 @@ vi.mock('@/features/bottles/mutations', () => ({
   updateBottle: vi.fn(),
   archiveBottle: vi.fn(),
 }))
+vi.mock('@/features/entries/queries', () => ({ useEntries: () => ({ data: [] }) }))
 
 describe('Perfil', () => {
   beforeEach(() => {
@@ -89,5 +90,22 @@ describe('Perfil', () => {
     expect(signOut).not.toHaveBeenCalled()
     await userEvent.click(screen.getByRole('button', { name: 'Sair mesmo?' }))
     expect(signOut).toHaveBeenCalled()
+  })
+
+  it('shows your fish and opens the gallery in place', async () => {
+    renderWithProviders(<Perfil />)
+    expect(screen.getByText('Guppy')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Baiacu' })).toBeNull()
+    await userEvent.click(screen.getByRole('button', { name: /Trocar peixe/ }))
+    expect(screen.getByRole('button', { name: 'Baiacu' })).toBeDisabled()
+    expect(screen.getByText('Sequência de 7 dias')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Guppy' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('picking an unlocked fish saves it', async () => {
+    renderWithProviders(<Perfil />)
+    await userEvent.click(screen.getByRole('button', { name: /Trocar peixe/ }))
+    await userEvent.click(screen.getByRole('button', { name: 'Betta' }))
+    expect(updateProfile).toHaveBeenCalledWith('u1', { fish_variant: 'betta' })
   })
 })

@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
 import { BottleManager } from './BottleManager'
+import { FishGallery } from './FishGallery'
 import { GroupCard } from './GroupCard'
 
 export function Perfil() {
@@ -28,7 +29,7 @@ export function Perfil() {
   const nomeValido = trimmed.length >= 2 && trimmed.length <= 20
   const nomeMudou = trimmed !== profile.display_name
 
-  async function save(patch: { display_name?: string; accent?: string }) {
+  async function save(patch: { display_name?: string; accent?: string; fish_variant?: string }) {
     if (!userId) return
     setBusy(true)
     try {
@@ -48,6 +49,15 @@ export function Perfil() {
       <header className="mb-4 px-1">
         <h1 className="text-[20px] font-extrabold tracking-tight">{STRINGS.perfil.titulo}</h1>
       </header>
+
+      {userId ? (
+        <FishGallery
+          userId={userId}
+          current={profile.fish_variant}
+          busy={busy}
+          onSelect={(fish) => save({ fish_variant: fish })}
+        />
+      ) : null}
 
       <section className="mb-3 rounded-card border border-line bg-surface p-4">
         {erro ? <p className="mb-2 text-[13px] text-danger">{erro}</p> : null}
