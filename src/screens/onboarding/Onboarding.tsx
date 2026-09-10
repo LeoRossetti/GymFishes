@@ -3,10 +3,12 @@ import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
 import { useSession } from '@/features/auth/AuthProvider'
-import { createProfile } from '@/features/profile/mutations'
+import { createProfile, updateProfile } from '@/features/profile/mutations'
 import { createGroup, joinGroup } from '@/features/group/mutations'
+import { STARTERS, type FishId } from '@/features/fish/catalog'
+import { FishGrid } from '@/features/fish/FishGrid'
 
-type Stage = 'nome' | 'grupo' | 'criar' | 'entrar' | 'codigo'
+type Stage = 'nome' | 'peixe' | 'grupo' | 'criar' | 'entrar' | 'codigo'
 
 export function Onboarding({ onDone }: { onDone: () => void }) {
   const { session } = useSession()
@@ -30,6 +32,20 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
     setBusy(true)
     try {
       await createProfile(userId, trimmed)
+      setStage('peixe')
+    } catch {
+      setError(STRINGS.erro.generico)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function pickPeixe(fish: FishId) {
+    setError('')
+    if (!userId) return setError(STRINGS.erro.generico)
+    setBusy(true)
+    try {
+      await updateProfile(userId, { fish_variant: fish })
       setStage('grupo')
     } catch {
       setError(STRINGS.erro.generico)
@@ -87,6 +103,22 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           <Button onClick={submitNome} disabled={busy}>
             {STRINGS.onboarding.continuar}
           </Button>
+        </>
+      ) : null}
+
+      {stage === 'peixe' ? (
+        <>
+          <h1 className="mb-8 text-[24px] font-extrabold tracking-tight">
+            {STRINGS.onboarding.tituloPeixe}
+          </h1>
+          <FishGrid
+            variants={STARTERS}
+            unlocked={new Set(STARTERS)}
+            selected={null}
+            disabled={busy}
+            onSelect={pickPeixe}
+          />
+          {error ? <p className="mt-3 text-[13px] text-danger">{error}</p> : null}
         </>
       ) : null}
 
