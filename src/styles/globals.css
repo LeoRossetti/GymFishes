@@ -39,3 +39,22 @@ button {
   .wave-back, .wave-front { display: none; }
   .wave-static { display: block; }
 }
+
+/* Fish idle loop (spec §6): shape only — paused with the water, off under reduced motion. */
+@keyframes fish-tail-wag {
+  from { transform: rotate(-9deg); }
+  to { transform: rotate(9deg); }
+}
+@keyframes fish-bob {
+  from { transform: translateY(-1.5px); }
+  to { transform: translateY(1.5px); }
+}
+.fish-tail { animation: fish-tail-wag 0.8s ease-in-out infinite alternate; }
+.fish-bob { animation: fish-bob 2.4s ease-in-out infinite alternate; }
+[data-waves='paused'] .fish-tail,
+[data-waves='paused'] .fish-bob { animation-play-state: paused; }
+.fish-locked path,
+.fish-locked circle { fill: var(--color-ink-3); }
+@media (prefers-reduced-motion: reduce) {
+  .fish-tail, .fish-bob { animation: none; }
+}
