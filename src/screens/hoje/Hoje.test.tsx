@@ -15,7 +15,7 @@ vi.mock('@/features/group/queries', () => ({
   useMembers: () => ({
     data: [
       { id: 'u1', display_name: 'Leo', fish_variant: 'guppy', accent: 'blue', joined_at: '1' },
-      { id: 'u2', display_name: 'Ana', fish_variant: 'guppy', accent: 'pink', joined_at: '2' },
+      { id: 'u2', display_name: 'Ana', fish_variant: 'betta', accent: 'pink', joined_at: '2' },
     ],
   }),
 }))
@@ -68,5 +68,12 @@ describe('Hoje', () => {
   it('shows a partner row with their name', () => {
     renderHoje()
     expect(screen.getByText(/Ana ·/)).toBeInTheDocument()
+  })
+  it('draws each member fish on the tube and yours in the header', () => {
+    renderHoje()
+    // yours twice (header + tube), the partner's once
+    expect(document.querySelectorAll('svg[data-fish="guppy"]')).toHaveLength(2)
+    expect(document.querySelectorAll('svg[data-fish="betta"]')).toHaveLength(1)
+    expect(screen.queryByText('🐟')).toBeNull()
   })
 })

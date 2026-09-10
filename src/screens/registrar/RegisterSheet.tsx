@@ -15,7 +15,7 @@ import { LooseAmount } from './LooseAmount'
 import { OptionalChips } from './OptionalChips'
 import { draftFromEntry, draftItems, draftReducer, emptyDraft } from './draft'
 import { submitDraft } from './submit'
-import { useCountUp } from './useCountUp'
+import { useCountUp } from '@/ui/useCountUp'
 
 export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; onClose: () => void }) {
   const { session } = useSession()

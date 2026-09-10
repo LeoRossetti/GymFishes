@@ -1,11 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import { fishOf } from '@/features/fish/catalog'
+import { Fish } from '@/features/fish/Fish'
 import { ACCENT_TEXT, accentOf } from '@/lib/accents'
 import { formatVolume } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
+import { useCountUp } from '@/ui/useCountUp'
 import { WaveSurface } from './WaveSurface'
 
-type Props = { name: string; isSelf: boolean; accent: string; totalMl: number; scaleMl: number }
+type Props = {
+  name: string
+  isSelf: boolean
+  accent: string
+  fishVariant: string
+  totalMl: number
+  scaleMl: number
+}
 
 const FISH_KNEE = 70
 
@@ -21,7 +31,7 @@ export function fishLevel(pct: number): number {
   return FISH_KNEE + x - x ** 2 / (2 * (100 - FISH_KNEE))
 }
 
-export function MemberTube({ name, isSelf, accent, totalMl, scaleMl }: Props) {
+export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl }: Props) {
   const pct = Math.min(100, (totalMl / scaleMl) * 100)
   const reduced = useReducedMotion()
   const spring = reduced
@@ -29,6 +39,7 @@ export function MemberTube({ name, isSelf, accent, totalMl, scaleMl }: Props) {
     : ({ type: 'spring', duration: 0.6, bounce: 0.25 } as const)
   const [splash, setSplash] = useState(false)
   const prev = useRef(totalMl)
+  const shownTotal = useCountUp(totalMl)
 
   useEffect(() => {
     const grew = totalMl > prev.current
@@ -58,16 +69,16 @@ export function MemberTube({ name, isSelf, accent, totalMl, scaleMl }: Props) {
         {totalMl > 0 ? (
           <motion.span
             aria-hidden
-            className="absolute left-1/2 -translate-x-1/2 text-[20px]"
+            className="absolute left-1/2 -translate-x-1/2"
             animate={{ bottom: `${fishLevel(pct)}%` }}
             transition={spring}
           >
-            🐟
+            <Fish variant={fishOf(fishVariant)} size={28} state="idle" />
           </motion.span>
         ) : null}
       </div>
       <p className="mt-2 text-center text-[17px] font-extrabold tracking-[-0.4px]">
-        {formatVolume(totalMl)}
+        {formatVolume(shownTotal)}
       </p>
       <p
         className={`text-center text-[9px] font-extrabold uppercase tracking-[1px] ${ACCENT_TEXT[accentOf(accent)]}`}

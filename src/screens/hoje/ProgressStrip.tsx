@@ -31,6 +31,7 @@ export function ProgressStrip({ userId, members, entries }: Props) {
             name={m.display_name}
             isSelf={m.id === userId}
             accent={m.accent}
+            fishVariant={m.fish_variant}
             totalMl={totals.get(m.id) ?? 0}
             scaleMl={scale}
           />
