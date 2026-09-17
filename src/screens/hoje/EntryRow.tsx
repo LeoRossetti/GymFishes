@@ -69,7 +69,7 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
         </span>
         <span
           aria-hidden="true"
-          className={`shrink-0 text-ink-2 transition-transform duration-150 ${expanded ? 'rotate-90' : ''}`}
+          className={`shrink-0 text-[15px] text-ink-2 transition-transform duration-150 ${expanded ? 'rotate-90' : ''}`}
         >
           ›
         </span>

@@ -48,7 +48,7 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
                   type="button"
                   aria-label={STRINGS.registrar.menosUm(b.name)}
                   onClick={() => dispatch({ type: 'decBottle', name: b.name, volume_ml: b.volume_ml })}
-                  className="absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center"
+                  className="absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center active:bg-line transition-colors duration-100"
                 >
                   <span
                     className="rounded-[99px] border border-water bg-water px-2 text-[11px]
@@ -65,7 +65,7 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
           type="button"
           onClick={() => setAdding((v) => !v)}
           className="min-h-[44px] rounded-control border border-dashed border-line p-2
-                     text-[13px] font-bold text-ink-2"
+                     text-[13px] font-bold text-ink-2 active:bg-line transition-colors duration-100"
         >
           {STRINGS.garrafas.novaGarrafa}
         </button>
