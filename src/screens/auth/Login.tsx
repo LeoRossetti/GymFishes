@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
-import { validateCredentials, type CredentialErrors } from '@/features/auth/validate'
+import { validateLoginCredentials, type CredentialErrors } from '@/features/auth/validate'
 
 export function Login() {
   const [email, setEmail] = useState('')
@@ -17,7 +17,7 @@ export function Login() {
   async function onSubmit(event: FormEvent) {
     event.preventDefault()
     setFailure('')
-    const found = validateCredentials(email, password)
+    const found = validateLoginCredentials(email, password)
     setErrors(found)
     if (found.email || found.password) return
 

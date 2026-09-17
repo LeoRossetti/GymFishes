@@ -38,8 +38,10 @@ const row = (id: string, profile_id: string, total_ml: number, drank_on: string)
   updated_at: `${drank_on}T15:00:00+00:00`,
   deleted_at: null,
 })
+const syncStatus = vi.hoisted(() => ({ offline: false, stale: false }))
 vi.mock('@/features/entries/queries', () => ({
   useEntries: () => ({ data: mirror.entries }),
+  useSyncStatus: () => ({ ...syncStatus }),
 }))
 
 function renderRanking() {
@@ -55,6 +57,8 @@ describe('Ranking', () => {
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date('2026-08-10T15:00:00Z')) // segunda, 10 de agosto, meio-dia em São Paulo
     localStorage.clear()
+    syncStatus.offline = false
+    syncStatus.stale = false
     mirror.entries = [
       row('e1', 'u1', 1800, '2026-08-10'),
       row('e2', 'u2', 2300, '2026-08-10'),
@@ -63,6 +67,12 @@ describe('Ranking', () => {
     ]
   })
   afterEach(() => vi.useRealTimers())
+
+  it('shows the offline pill in the header', () => {
+    syncStatus.offline = true
+    renderRanking()
+    expect(screen.getByText('Sem conexão')).toBeInTheDocument()
+  })
 
   it('ranks today by default with the leader first', () => {
     renderRanking()

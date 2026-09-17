@@ -15,3 +15,7 @@ if (typeof URL.createObjectURL === 'undefined') {
   URL.createObjectURL = () => 'blob:stub'
   URL.revokeObjectURL = () => {}
 }
+
+if (typeof HTMLElement.prototype.scrollIntoView === 'undefined') {
+  HTMLElement.prototype.scrollIntoView = () => {}
+}

@@ -33,7 +33,7 @@ export function LooseAmount({ draft, dispatch }: { draft: Draft; dispatch: (a: D
           <button
             key={key}
             type="button"
-            aria-label={key === 'back' ? '⌫' : key}
+            aria-label={key === 'back' ? STRINGS.registrar.apagar : key}
             onClick={() => dispatch({ type: 'key', key })}
             className="min-h-[44px] rounded-key border border-line bg-surface-2
                        text-[17px] font-bold active:bg-line transition-colors duration-100"

@@ -41,6 +41,7 @@ const row = (id: string, profile_id: string, total_ml: number, drank_on: string)
   updated_at: `${drank_on}T15:00:00+00:00`,
   deleted_at: null,
 })
+const syncStatus = vi.hoisted(() => ({ offline: false, stale: false }))
 vi.mock('@/features/entries/queries', () => ({
   useEntries: () => ({
     data: [
@@ -50,6 +51,7 @@ vi.mock('@/features/entries/queries', () => ({
       row('e4', 'u2', 500, '2026-07-15'),
     ],
   }),
+  useSyncStatus: () => ({ ...syncStatus }),
 }))
 
 function renderHistorico() {
@@ -66,8 +68,16 @@ describe('Historico', () => {
   beforeEach(() => {
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date('2026-08-10T15:00:00Z'))
+    syncStatus.offline = false
+    syncStatus.stale = false
   })
   afterEach(() => vi.useRealTimers())
+
+  it('shows the offline pill in the header', () => {
+    syncStatus.offline = true
+    renderHistorico()
+    expect(screen.getByText('Sem conexão')).toBeInTheDocument()
+  })
 
   it('opens on your own current month with the footer', () => {
     renderHistorico()

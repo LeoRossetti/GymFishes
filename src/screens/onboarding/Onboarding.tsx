@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
@@ -21,6 +21,21 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
   const [copiado, setCopiado] = useState(false)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  useEffect(() => () => clearTimeout(copyTimer.current), [])
+
+  function copyInviteCode() {
+    if (typeof navigator === 'undefined' || !navigator.clipboard) return
+    navigator.clipboard
+      .writeText(inviteCode)
+      .then(() => {
+        setCopiado(true)
+        clearTimeout(copyTimer.current)
+        copyTimer.current = setTimeout(() => setCopiado(false), 2000)
+      })
+      .catch(() => {})
+  }
 
   async function submitNome() {
     setError('')
@@ -151,6 +166,9 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           <Button onClick={submitCriar} disabled={busy} aria-busy={busy || undefined}>
             {busy ? STRINGS.onboarding.salvando : STRINGS.onboarding.continuar}
           </Button>
+          <Button variant="ghost" className="mt-3" onClick={() => { setError(''); setStage('grupo') }}>
+            {STRINGS.onboarding.voltar}
+          </Button>
         </>
       ) : null}
 
@@ -170,6 +188,9 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           <Button onClick={submitEntrar} disabled={busy} aria-busy={busy || undefined}>
             {busy ? STRINGS.onboarding.salvando : STRINGS.onboarding.continuar}
           </Button>
+          <Button variant="ghost" className="mt-3" onClick={() => { setError(''); setStage('grupo') }}>
+            {STRINGS.onboarding.voltar}
+          </Button>
         </>
       ) : null}
 
@@ -184,16 +205,11 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           <p className="mb-8 text-center text-[13px] text-ink-2">
             {STRINGS.grupo.mostreEsteCodigo}
           </p>
-          <Button
-            className="mb-3"
-            variant="ghost"
-            onClick={() => {
-              navigator.clipboard.writeText(inviteCode).catch(() => {})
-              setCopiado(true)
-            }}
-          >
-            {copiado ? STRINGS.grupo.copiado : STRINGS.grupo.copiarCodigo}
-          </Button>
+          {typeof navigator !== 'undefined' && navigator.clipboard ? (
+            <Button className="mb-3" variant="ghost" onClick={copyInviteCode}>
+              {copiado ? STRINGS.grupo.copiado : STRINGS.grupo.copiarCodigo}
+            </Button>
+          ) : null}
           <Button onClick={onDone}>{STRINGS.onboarding.continuar}</Button>
         </>
       ) : null}

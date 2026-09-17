@@ -30,6 +30,35 @@ describe('Login', () => {
     expect(signInWithPassword).not.toHaveBeenCalled()
   })
 
+  it('accepts a short password since login does not enforce a minimum length', async () => {
+    render(
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>,
+    )
+    await userEvent.type(screen.getByLabelText('E-mail'), 'leo@exemplo.com')
+    await userEvent.type(screen.getByLabelText('Senha'), 'curta')
+    await userEvent.click(screen.getByRole('button', { name: 'Entrar' }))
+
+    expect(signInWithPassword).toHaveBeenCalledWith({
+      email: 'leo@exemplo.com',
+      password: 'curta',
+    })
+  })
+
+  it('rejects an empty password', async () => {
+    render(
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>,
+    )
+    await userEvent.type(screen.getByLabelText('E-mail'), 'leo@exemplo.com')
+    await userEvent.click(screen.getByRole('button', { name: 'Entrar' }))
+
+    expect(screen.getByText('Digite sua senha')).toBeInTheDocument()
+    expect(signInWithPassword).not.toHaveBeenCalled()
+  })
+
   it('signs in with valid credentials', async () => {
     render(
       <MemoryRouter>

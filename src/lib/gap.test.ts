@@ -8,7 +8,10 @@ describe('gapText', () => {
   it('says the partner is ahead, with formatted litres', () => {
     expect(gapText(500, 2500, 'Ana')).toBe('Ana está 2 L na frente')
   })
-  it('calls a tie, including 0 × 0', () => {
-    expect(gapText(0, 0, 'Ana')).toBe('Empate técnico')
+  it('calls a tie above zero', () => {
+    expect(gapText(1000, 1000, 'Ana')).toBe('Empate técnico')
+  })
+  it('shows no caption when both tubes are empty', () => {
+    expect(gapText(0, 0, 'Ana')).toBeNull()
   })
 })

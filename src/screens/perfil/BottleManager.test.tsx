@@ -59,22 +59,22 @@ describe('BottleManager', () => {
     expect(createBottle).not.toHaveBeenCalled()
   })
 
-  it('archives only on the second tap', async () => {
+  it('removes only on the second tap', async () => {
     renderWithProviders(<BottleManager userId="u1" />)
     await userEvent.click(screen.getByText('Garrafa azul'))
-    await userEvent.click(screen.getByRole('button', { name: 'Arquivar' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Remover' }))
     expect(archiveBottle).not.toHaveBeenCalled()
-    await userEvent.click(screen.getByRole('button', { name: 'Arquivar mesmo?' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Remover mesmo?' }))
     expect(archiveBottle).toHaveBeenCalledWith('b1')
   })
 
-  it('resets the archive confirmation when the row is closed and reopened', async () => {
+  it('resets the removal confirmation when the row is closed and reopened', async () => {
     renderWithProviders(<BottleManager userId="u1" />)
     await userEvent.click(screen.getByText('Garrafa azul'))
-    await userEvent.click(screen.getByRole('button', { name: 'Arquivar' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Remover' }))
     await userEvent.click(screen.getByText('Garrafa azul')) // collapse
     await userEvent.click(screen.getByText('Garrafa azul')) // reopen
-    expect(screen.getByRole('button', { name: 'Arquivar' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Remover' })).toBeInTheDocument()
     expect(archiveBottle).not.toHaveBeenCalled()
   })
 

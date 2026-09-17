@@ -98,6 +98,9 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
               ? STRINGS.registrar.registrar(formatVolume(total))
               : STRINGS.registrar.registrarVazio}
         </Button>
+        {total > MAX_ML ? (
+          <p className="mt-2 text-[13px] text-ink-2">{STRINGS.registrar.maximo(formatVolume(MAX_ML))}</p>
+        ) : null}
       </motion.div>
     </div>
   )

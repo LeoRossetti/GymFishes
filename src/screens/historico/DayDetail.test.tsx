@@ -54,4 +54,13 @@ describe('DayDetail', () => {
     expect(screen.getByText('Você 0 ml · Ana 0 ml')).toBeInTheDocument()
     expect(screen.getByText('Nenhum registro neste dia')).toBeInTheDocument()
   })
+
+  it('scrolls itself into view when it mounts', () => {
+    const spy = vi.spyOn(HTMLElement.prototype, 'scrollIntoView')
+    renderWithProviders(
+      <DayDetail day="2026-08-10" userId="u1" groupId="g1" members={members} entries={entries} openRegister={vi.fn()} />,
+    )
+    expect(spy).toHaveBeenCalledWith({ block: 'nearest', behavior: 'smooth' })
+    spy.mockRestore()
+  })
 })

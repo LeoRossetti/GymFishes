@@ -8,6 +8,7 @@ import { STRINGS } from '@/lib/strings'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
+import { SyncPill } from '@/screens/hoje/SyncPill'
 import { BottleManager } from './BottleManager'
 import { FishGallery } from './FishGallery'
 import { GroupCard } from './GroupCard'
@@ -28,6 +29,11 @@ export function Perfil() {
   const trimmed = shownNome.trim()
   const nomeValido = trimmed.length >= 2 && trimmed.length <= 20
   const nomeMudou = trimmed !== profile.display_name
+  const nomeErro = nomeMudou && !nomeValido
+    ? trimmed.length < 2
+      ? STRINGS.onboarding.nomeCurto
+      : STRINGS.onboarding.nomeLongo
+    : undefined
 
   async function save(patch: { display_name?: string; accent?: string; fish_variant?: string }) {
     if (!userId) return
@@ -48,6 +54,7 @@ export function Perfil() {
     <div className="px-3 pt-2">
       <header className="mb-4 px-1">
         <h1 className="text-[20px] font-extrabold tracking-tight">{STRINGS.perfil.titulo}</h1>
+        <SyncPill groupId={bootstrap.data?.groupId} />
       </header>
 
       {userId ? (
@@ -65,6 +72,7 @@ export function Perfil() {
           label={STRINGS.perfil.nome}
           value={shownNome}
           maxLength={20}
+          error={nomeErro}
           onChange={(e) => setNome(e.target.value)}
         />
         {nomeMudou && nomeValido ? (

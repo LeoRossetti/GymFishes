@@ -39,12 +39,18 @@ vi.mock('@/features/bottles/mutations', () => ({
   updateBottle: vi.fn(),
   archiveBottle: vi.fn(),
 }))
-vi.mock('@/features/entries/queries', () => ({ useEntries: () => ({ data: [] }) }))
+const syncStatus = vi.hoisted(() => ({ offline: false, stale: false }))
+vi.mock('@/features/entries/queries', () => ({
+  useEntries: () => ({ data: [] }),
+  useSyncStatus: () => ({ ...syncStatus }),
+}))
 
 describe('Perfil', () => {
   beforeEach(() => {
     updateProfile.mockReset().mockResolvedValue(undefined)
     signOut.mockReset().mockResolvedValue({ error: null })
+    syncStatus.offline = false
+    syncStatus.stale = false
   })
 
   it('shows group name, invite code and members', () => {
@@ -77,6 +83,21 @@ describe('Perfil', () => {
     await userEvent.type(field, 'Leonardo')
     await userEvent.click(screen.getByRole('button', { name: 'Salvar' }))
     expect(await screen.findByText('Algo deu errado. Tente de novo.')).toBeInTheDocument()
+  })
+
+  it('says why the name cannot be saved yet', async () => {
+    renderWithProviders(<Perfil />)
+    const field = screen.getByLabelText('Nome')
+    await userEvent.clear(field)
+    await userEvent.type(field, 'L')
+    expect(screen.getByText('Use pelo menos 2 caracteres')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Salvar' })).not.toBeInTheDocument()
+  })
+
+  it('shows the offline pill in the header', () => {
+    syncStatus.offline = true
+    renderWithProviders(<Perfil />)
+    expect(screen.getByText('Sem conexão')).toBeInTheDocument()
   })
 
   it('hides the copy button when the clipboard API is unavailable', () => {

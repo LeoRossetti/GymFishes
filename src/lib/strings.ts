@@ -14,6 +14,8 @@ export const STRINGS = {
     sair: 'Sair',
     entrando: 'Entrando…',
     criandoConta: 'Criando conta…',
+    senhaObrigatoria: 'Digite sua senha',
+    confirmeEmail: 'Confira seu e-mail para confirmar a conta.',
   },
   onboarding: {
     tituloNome: 'Como você quer aparecer?',
@@ -29,6 +31,7 @@ export const STRINGS = {
     codigoInvalido: 'Código inválido',
     continuar: 'Continuar',
     salvando: 'Salvando…',
+    voltar: 'Voltar',
   },
   grupo: {
     codigoDoConvite: 'Código do convite',
@@ -154,8 +157,8 @@ export const STRINGS = {
     volume: 'Volume (ml)',
     emoji: 'Emoji (opcional)',
     salvar: 'Salvar',
-    arquivar: 'Arquivar',
-    arquivarMesmo: 'Arquivar mesmo?',
+    arquivar: 'Remover',
+    arquivarMesmo: 'Remover mesmo?',
     nomeInvalido: 'Use de 1 a 30 caracteres',
     volumeInvalido: 'Volume entre 1 e 10.000 ml',
     vazio: 'Nenhuma garrafa ainda. Adicione a primeira.',
@@ -185,6 +188,9 @@ export const STRINGS = {
     fotoErro: 'Não foi possível usar essa imagem.',
     removerFoto: 'Remover foto',
     fechar: 'Fechar',
+    maximo: (volume: string) => `Máximo de ${volume} por registro`,
+    apagar: 'Apagar',
+    contador: (n: number, max: number) => `${n}/${max}`,
   },
   sync: {
     pendente: 'Aguardando envio',

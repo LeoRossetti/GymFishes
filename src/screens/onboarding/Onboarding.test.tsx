@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Onboarding } from './Onboarding'
 
@@ -33,6 +33,10 @@ describe('Onboarding', () => {
     updateProfile.mockReset().mockResolvedValue(undefined)
     createGroup.mockReset().mockResolvedValue({ id: 'group-1', inviteCode: 'ABC234' })
     joinGroup.mockReset().mockResolvedValue('group-1')
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+    Reflect.deleteProperty(navigator, 'clipboard')
   })
 
   it('rejects a name shorter than two characters', async () => {
@@ -102,5 +106,54 @@ describe('Onboarding', () => {
     await throughNameAndFish()
     expect(await screen.findByText('Algo deu errado. Tente de novo.')).toBeInTheDocument()
     expect(screen.getByText('Escolha seu peixe')).toBeInTheDocument()
+  })
+
+  it('shows Voltar on Criar grupo and Entrar com código', async () => {
+    render(<Onboarding onDone={vi.fn()} />)
+    await throughNameAndFish()
+    await userEvent.click(await screen.findByRole('button', { name: 'Criar grupo' }))
+    expect(screen.getByRole('button', { name: 'Voltar' })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Voltar' }))
+    await userEvent.click(await screen.findByRole('button', { name: 'Entrar com código' }))
+    expect(screen.getByRole('button', { name: 'Voltar' })).toBeInTheDocument()
+  })
+
+  it('goes back to the group choice from Entrar com código', async () => {
+    render(<Onboarding onDone={vi.fn()} />)
+    await throughNameAndFish()
+    await userEvent.click(await screen.findByRole('button', { name: 'Entrar com código' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Voltar' }))
+    expect(screen.getByRole('button', { name: 'Criar grupo' })).toBeInTheDocument()
+  })
+
+  it('does not render the invite-code copy button when clipboard is unavailable', async () => {
+    render(<Onboarding onDone={vi.fn()} />)
+    await throughNameAndFish()
+    await userEvent.click(await screen.findByRole('button', { name: 'Criar grupo' }))
+    await userEvent.type(screen.getByLabelText('Nome do grupo'), 'Fitness Fishes')
+    await userEvent.click(screen.getByRole('button', { name: 'Continuar' }))
+    await screen.findByText('ABC234')
+    expect(screen.queryByRole('button', { name: 'Copiar código' })).not.toBeInTheDocument()
+  })
+
+  it('shows Copiado only once copying the invite code resolves, then reverts after 2s', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
+    render(<Onboarding onDone={vi.fn()} />)
+    await throughNameAndFish()
+    await userEvent.click(await screen.findByRole('button', { name: 'Criar grupo' }))
+    await userEvent.type(screen.getByLabelText('Nome do grupo'), 'Fitness Fishes')
+    await userEvent.click(screen.getByRole('button', { name: 'Continuar' }))
+    await screen.findByText('ABC234')
+
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    const button = screen.getByRole('button', { name: 'Copiar código' })
+    await act(async () => {
+      fireEvent.click(button)
+    })
+    expect(writeText).toHaveBeenCalledWith('ABC234')
+    expect(screen.getByRole('button', { name: 'Copiado!' })).toBeInTheDocument()
+    act(() => vi.advanceTimersByTime(2000))
+    expect(screen.getByRole('button', { name: 'Copiar código' })).toBeInTheDocument()
   })
 })

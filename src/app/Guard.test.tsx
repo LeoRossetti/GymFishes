@@ -11,9 +11,10 @@ let bootstrapState: {
   data: unknown
   refetch: () => void
 }
+let sessionState: { session: { user: { id: string } } | null; loading: boolean }
 
 vi.mock('@/features/auth/AuthProvider', () => ({
-  useSession: () => ({ session: { user: { id: 'user-1' } }, loading: false }),
+  useSession: () => sessionState,
 }))
 vi.mock('@/features/profile/useBootstrap', () => ({
   useBootstrap: () => bootstrapState,
@@ -22,7 +23,34 @@ vi.mock('@/features/profile/useBootstrap', () => ({
 describe('Guard', () => {
   beforeEach(() => {
     refetch.mockReset()
+    sessionState = { session: { user: { id: 'user-1' } }, loading: false }
     bootstrapState = { isLoading: false, isError: true, data: undefined, refetch }
+  })
+
+  it('shows the app name while the session is resolving', () => {
+    sessionState = { session: null, loading: true }
+    render(
+      <MemoryRouter initialEntries={['/hoje']}>
+        <Guard>
+          <div>Conteúdo protegido</div>
+        </Guard>
+      </MemoryRouter>,
+    )
+    expect(screen.getByText('GymFishes')).toBeInTheDocument()
+    expect(screen.queryByText('Conteúdo protegido')).not.toBeInTheDocument()
+  })
+
+  it('shows the app name while bootstrap is loading', () => {
+    bootstrapState = { isLoading: true, isError: false, data: undefined, refetch }
+    render(
+      <MemoryRouter initialEntries={['/hoje']}>
+        <Guard>
+          <div>Conteúdo protegido</div>
+        </Guard>
+      </MemoryRouter>,
+    )
+    expect(screen.getByText('GymFishes')).toBeInTheDocument()
+    expect(screen.queryByText('Conteúdo protegido')).not.toBeInTheDocument()
   })
 
   it('shows the retry UI instead of redirecting to /inicio when bootstrap fails', async () => {

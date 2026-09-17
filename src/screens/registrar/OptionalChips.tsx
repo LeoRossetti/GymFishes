@@ -110,14 +110,17 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
         </button>
       </div>
       {open === 'nota' ? (
-        <textarea
-          value={draft.note}
-          maxLength={140}
-          rows={2}
-          onChange={(e) => dispatch({ type: 'setNote', note: e.target.value })}
-          className="mt-2 w-full rounded-control border border-line bg-surface-2 p-3
-                     text-[15px] text-ink outline-none focus:border-water"
-        />
+        <>
+          <textarea
+            value={draft.note}
+            maxLength={140}
+            rows={2}
+            onChange={(e) => dispatch({ type: 'setNote', note: e.target.value })}
+            className="mt-2 w-full rounded-control border border-line bg-surface-2 p-3
+                       text-[15px] text-ink outline-none focus:border-water"
+          />
+          <p className="mt-1 text-[11px] text-ink-2">{STRINGS.registrar.contador(draft.note.length, 140)}</p>
+        </>
       ) : null}
       {open === 'hora' ? (
         <input

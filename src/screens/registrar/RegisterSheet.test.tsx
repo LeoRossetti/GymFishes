@@ -109,6 +109,24 @@ describe('RegisterSheet', () => {
     expect(insertMutate.mock.calls[0]?.[0].note).toBe('pós treino')
   })
 
+  it('shows a live character counter under the nota field', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: /nota/ }))
+    expect(screen.getByText('0/140')).toBeInTheDocument()
+    await userEvent.type(screen.getByRole('textbox'), 'pós treino')
+    expect(screen.getByText('10/140')).toBeInTheDocument()
+  })
+
+  it('shows the cap line and disables the CTA once the total exceeds the maximum', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    const chip = screen.getByRole('button', { name: /Garrafa azul/ })
+    for (let i = 0; i < 14; i++) {
+      fireEvent.click(chip)
+    }
+    expect(await screen.findByText('Máximo de 20 L por registro')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Registrar/ })).toBeDisabled()
+  })
+
   it('edit mode prefills and submits an update', async () => {
     const entry = {
       id: 'e1',
