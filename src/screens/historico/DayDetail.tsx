@@ -28,7 +28,7 @@ export function DayDetail({ day, userId, groupId, members, entries, openRegister
 
   useEffect(() => {
     ref.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-  }, [])
+  }, [day])
 
   return (
     <section ref={ref} className="mt-3 rounded-card border border-line bg-surface p-4">

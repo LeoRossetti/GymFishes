@@ -166,7 +166,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           <Button onClick={submitCriar} disabled={busy} aria-busy={busy || undefined}>
             {busy ? STRINGS.onboarding.salvando : STRINGS.onboarding.continuar}
           </Button>
-          <Button variant="ghost" className="mt-3" onClick={() => { setError(''); setStage('grupo') }}>
+          <Button variant="ghost" className="mt-3" disabled={busy} onClick={() => { setError(''); setStage('grupo') }}>
             {STRINGS.onboarding.voltar}
           </Button>
         </>
@@ -188,7 +188,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           <Button onClick={submitEntrar} disabled={busy} aria-busy={busy || undefined}>
             {busy ? STRINGS.onboarding.salvando : STRINGS.onboarding.continuar}
           </Button>
-          <Button variant="ghost" className="mt-3" onClick={() => { setError(''); setStage('grupo') }}>
+          <Button variant="ghost" className="mt-3" disabled={busy} onClick={() => { setError(''); setStage('grupo') }}>
             {STRINGS.onboarding.voltar}
           </Button>
         </>

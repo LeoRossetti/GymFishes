@@ -18,7 +18,7 @@ const FILL: Record<FillStep, string> = {
   0: 'bg-surface-2 text-ink',
   1: 'bg-water/25 text-ink',
   2: 'bg-water/50 text-ink',
-  3: 'bg-water/75 text-ink',
+  3: 'bg-water/75 text-ink-on-water',
   4: 'bg-water text-ink-on-water',
 }
 
@@ -37,6 +37,8 @@ export function CalendarGrid({ period, totals, today, firstDay, selected, onSele
         const step = fillStep(total)
         const border =
           day === selected ? 'border-2 border-ink' : day === today ? 'border border-water' : 'border border-transparent'
+        // press feedback never inverts a filled surface: only steps 0–2 get it (spec §8).
+        const feedback = step <= 2 ? 'active:bg-line transition-colors duration-100' : ''
         return (
           <button
             key={day}
@@ -49,7 +51,7 @@ export function CalendarGrid({ period, totals, today, firstDay, selected, onSele
             aria-pressed={day === selected}
             data-step={blank ? undefined : step}
             onClick={() => onSelect(day)}
-            className={`flex min-h-[44px] items-center justify-center rounded-key text-[13px] font-bold active:bg-line transition-colors duration-100 ${border} ${
+            className={`flex min-h-[44px] items-center justify-center rounded-key text-[13px] font-bold ${feedback} ${border} ${
               blank ? 'text-ink-3' : FILL[step]
             }`}
           >

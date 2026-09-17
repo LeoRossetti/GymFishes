@@ -36,7 +36,7 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
         type="button"
         onClick={toggle}
         aria-expanded={expanded}
-        className="flex min-h-[44px] w-full items-center gap-3 text-left"
+        className="flex min-h-[44px] w-full items-center gap-3 text-left active:bg-surface-2 transition-colors duration-100"
       >
         {thumbUrl.data ? (
           <img

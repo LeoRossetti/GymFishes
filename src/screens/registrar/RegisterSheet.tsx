@@ -58,7 +58,14 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
 
   return (
     <div className="fixed inset-0 z-40 mx-auto max-w-[430px]">
-      <button type="button" aria-label={STRINGS.registrar.fechar} onClick={onClose} className="absolute inset-0 bg-bg/70" />
+      <button
+        type="button"
+        aria-hidden="true"
+        tabIndex={-1}
+        aria-label={STRINGS.registrar.fechar}
+        onClick={onClose}
+        className="absolute inset-0 bg-bg/70"
+      />
       <motion.div
         role="dialog"
         aria-modal="true"
@@ -79,14 +86,16 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
                    border-t border-line bg-surface px-3 pt-4"
         style={{ paddingBottom: 'calc(16px + env(safe-area-inset-bottom))' }}
       >
-        <div
-          aria-hidden="true"
+        <button
+          type="button"
+          aria-label={STRINGS.registrar.fechar}
+          onClick={onClose}
           onPointerDown={(e) => dragControls.start(e)}
-          className="mx-auto -mt-1 mb-2 flex min-h-[44px] w-11 items-center justify-center"
           style={{ touchAction: 'none' }}
+          className="mx-auto -mt-1 mb-2 flex min-h-[44px] w-11 items-center justify-center"
         >
           <div className="h-1 w-10 rounded-[99px] bg-line" />
-        </div>
+        </button>
         <p className="text-center text-[38px] font-extrabold tracking-[-0.4px]">
           {formatVolume(shownTotal)}
         </p>

@@ -97,7 +97,7 @@ export function Perfil() {
               aria-label={STRINGS.perfil.cores[accent]}
               disabled={busy}
               onClick={() => save({ accent })}
-              className={`h-11 w-11 rounded-full ${ACCENT_BG[accent]} ${
+              className={`h-11 w-11 rounded-full active:opacity-80 transition-opacity duration-100 ${ACCENT_BG[accent]} ${
                 accentOf(profile.accent) === accent ? 'border-2 border-ink' : 'border border-line'
               }`}
             />

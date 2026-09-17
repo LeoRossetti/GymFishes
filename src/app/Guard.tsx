@@ -12,7 +12,7 @@ export function Guard({ children }: { children: ReactNode }) {
 
   const coldStart = (
     <div className="flex min-h-dvh items-center justify-center bg-bg">
-      <p className="text-[20px] font-extrabold text-ink-3">{STRINGS.app.nome}</p>
+      <p className="text-[20px] font-extrabold text-ink-2">{STRINGS.app.nome}</p>
     </div>
   )
 

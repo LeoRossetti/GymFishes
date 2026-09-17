@@ -27,7 +27,7 @@ export function Hoje() {
           type="button"
           aria-label={STRINGS.hoje.abrirPerfil}
           onClick={() => navigate('/perfil')}
-          className="flex min-h-[44px] min-w-[44px] items-center justify-center"
+          className="flex min-h-[44px] min-w-[44px] items-center justify-center active:bg-line transition-colors duration-100"
         >
           <Fish variant={fishOf(me?.fish_variant ?? '')} size={36} state="still" />
         </button>

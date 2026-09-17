@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { fireEvent, screen } from '@testing-library/react'
+import { fireEvent, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '@/test/utils'
 import { ToastProvider } from '@/ui/Toast'
@@ -59,12 +59,13 @@ describe('RegisterSheet', () => {
     expect(screen.getByRole('button', { name: 'Registrar' })).toBeDisabled()
   })
 
-  it('the backdrop button is the accessible dismiss; the drag handle is decorative for assistive tech', () => {
-    const { container } = renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
-    expect(screen.getByRole('button', { name: 'Fechar' })).toBeInTheDocument()
-    expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true')
-    expect(screen.queryByLabelText('Arraste para fechar')).toBeNull()
-    expect(container.querySelector('[aria-hidden="true"][style*="touch-action"]')).not.toBeNull()
+  it('the dialog contains its own accessible dismiss; tapping it closes the sheet', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    const closeButton = within(dialog).getByRole('button', { name: 'Fechar' })
+    await userEvent.click(closeButton)
+    expect(onClose).toHaveBeenCalled()
   })
 
   it('tapping a bottle raises the running total; tapping again increments', async () => {

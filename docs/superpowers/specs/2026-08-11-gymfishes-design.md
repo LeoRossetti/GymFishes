@@ -220,9 +220,9 @@ as compact rows:
 
 ### 5.2 Registrar (modal sheet)
 
-Opened by the center "+". A bottom sheet, dismissible by swiping the handle down or
-tapping the backdrop; the content scrolls freely. Everything on one screen — no steps, no
-wizard.
+Opened by the center "+". A bottom sheet, dismissible by tapping or swiping the handle
+down, or tapping the backdrop; the content scrolls freely. Everything on one screen — no
+steps, no wizard.
 
 **Running total** — large, centered ("1,8 L"), with the composition beneath it in small
 muted text ("1 × Garrafa azul + 300 ml"). Counts up when it changes.
@@ -308,7 +308,9 @@ Answers *what happened before*.
 **Calendar** — a month grid with `‹ ›` month arrows. Each day cell is filled with one of
 five discrete flat blue steps based on that day's total (0, <1L, 1–2L, 2–3L, >3L). Flat
 steps, not a continuous gradient. Today gets a border. Days before the group's first
-register, and days after today, are blank. The toggle opens on "Você".
+register, and days after today, are blank. The toggle opens on "Você". Day numbers sit on
+the fills at the best available contrast; the 2–3 L step is a known 4.1:1 against AA's
+4.5:1 and is accepted.
 
 **Day detail** — tapping a day expands a panel below the calendar showing both members'
 totals for that day and the full register list, reusing the same compact-row component

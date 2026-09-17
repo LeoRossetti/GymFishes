@@ -7,7 +7,9 @@ type Props = {
   onNext: () => void
 }
 
-const ARROW = 'min-h-[44px] min-w-[44px] text-[24px] font-extrabold text-ink-2 disabled:opacity-40'
+const ARROW =
+  'min-h-[44px] min-w-[44px] text-[24px] font-extrabold text-ink-2 ' +
+  'active:bg-line transition-colors duration-100 disabled:text-ink-3'
 
 /** `‹ label ›` — the period and month steppers (spec §5.3, §5.4). */
 export function Stepper({ label, prevLabel, nextLabel, nextDisabled, onPrev, onNext }: Props) {

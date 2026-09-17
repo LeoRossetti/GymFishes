@@ -20,8 +20,8 @@ const VARIANTS: Record<Variant, string> = {
     'bg-surface-2 text-danger border border-line transition-colors duration-100 ' +
     'active:bg-line disabled:text-ink-3',
   armed:
-    'bg-danger text-ink-on-water border-b-4 border-danger ' +
-    'disabled:bg-surface-2 disabled:text-ink-2 disabled:border-line disabled:border-b',
+    'bg-danger text-ink-on-water border border-danger active:bg-danger/85 transition-colors duration-100 ' +
+    'disabled:bg-surface-2 disabled:text-ink-2 disabled:border-line',
 }
 
 export function Button({ variant = 'primary', className = '', ...rest }: Props) {

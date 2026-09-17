@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { MemoryRouter } from 'react-router'
 import { renderWithProviders } from '@/test/utils'
 import type { Entry } from '@/features/entries/cache'
 import type { Member } from '@/features/group/queries'
@@ -61,6 +63,23 @@ describe('DayDetail', () => {
       <DayDetail day="2026-08-10" userId="u1" groupId="g1" members={members} entries={entries} openRegister={vi.fn()} />,
     )
     expect(spy).toHaveBeenCalledWith({ block: 'nearest', behavior: 'smooth' })
+    spy.mockRestore()
+  })
+
+  it('scrolls itself into view again when a different day is tapped', () => {
+    const spy = vi.spyOn(HTMLElement.prototype, 'scrollIntoView')
+    const { client, rerender } = renderWithProviders(
+      <DayDetail day="2026-08-10" userId="u1" groupId="g1" members={members} entries={entries} openRegister={vi.fn()} />,
+    )
+    expect(spy).toHaveBeenCalledTimes(1)
+    rerender(
+      <QueryClientProvider client={client}>
+        <MemoryRouter>
+          <DayDetail day="2026-08-03" userId="u1" groupId="g1" members={members} entries={entries} openRegister={vi.fn()} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    )
+    expect(spy).toHaveBeenCalledTimes(2)
     spy.mockRestore()
   })
 })
