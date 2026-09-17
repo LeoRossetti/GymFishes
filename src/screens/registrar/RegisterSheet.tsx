@@ -80,7 +80,7 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
         style={{ paddingBottom: 'calc(16px + env(safe-area-inset-bottom))' }}
       >
         <div
-          aria-label={STRINGS.registrar.arrastarParaFechar}
+          aria-hidden="true"
           onPointerDown={(e) => dragControls.start(e)}
           className="mx-auto -mt-1 mb-2 flex min-h-[44px] w-11 items-center justify-center"
           style={{ touchAction: 'none' }}

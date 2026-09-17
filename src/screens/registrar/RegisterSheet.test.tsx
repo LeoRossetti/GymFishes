@@ -59,10 +59,12 @@ describe('RegisterSheet', () => {
     expect(screen.getByRole('button', { name: 'Registrar' })).toBeDisabled()
   })
 
-  it('has a drag handle for dismissal and modal semantics on the dialog', () => {
-    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
-    expect(screen.getByLabelText('Arraste para fechar')).toBeInTheDocument()
+  it('the backdrop button is the accessible dismiss; the drag handle is decorative for assistive tech', () => {
+    const { container } = renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    expect(screen.getByRole('button', { name: 'Fechar' })).toBeInTheDocument()
     expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true')
+    expect(screen.queryByLabelText('Arraste para fechar')).toBeNull()
+    expect(container.querySelector('[aria-hidden="true"][style*="touch-action"]')).not.toBeNull()
   })
 
   it('tapping a bottle raises the running total; tapping again increments', async () => {

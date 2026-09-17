@@ -191,7 +191,6 @@ export const STRINGS = {
     maximo: (volume: string) => `Máximo de ${volume} por registro`,
     apagar: 'Apagar',
     contador: (n: number, max: number) => `${n}/${max}`,
-    arrastarParaFechar: 'Arraste para fechar',
   },
   sync: {
     pendente: 'Aguardando envio',
