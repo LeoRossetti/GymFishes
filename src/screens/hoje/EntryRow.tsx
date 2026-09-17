@@ -35,6 +35,7 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
       <button
         type="button"
         onClick={toggle}
+        aria-expanded={expanded}
         className="flex min-h-[44px] w-full items-center gap-3 text-left"
       >
         {thumbUrl.data ? (
@@ -63,8 +64,14 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
             <span className="block truncate text-[11px] text-ink-2">{subtitle}</span>
           ) : null}
         </span>
-        <span className="text-[15px] font-extrabold text-water">
+        <span className="shrink-0 text-[15px] font-extrabold text-water">
           {formatVolume(entry.total_ml)}
+        </span>
+        <span
+          aria-hidden="true"
+          className={`shrink-0 text-ink-2 transition-transform duration-150 ${expanded ? 'rotate-90' : ''}`}
+        >
+          ›
         </span>
       </button>
       {failed ? (
@@ -102,7 +109,7 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
                 {STRINGS.registros.editar}
               </Button>
               <Button
-                variant="danger"
+                variant={confirmando ? 'armed' : 'danger'}
                 className="flex-1"
                 onClick={() => (confirmando ? onDelete() : setConfirmando(true))}
               >

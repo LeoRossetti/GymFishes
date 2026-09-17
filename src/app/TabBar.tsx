@@ -8,7 +8,7 @@ function Tab({ route }: { route: TabRoute }) {
       to={route.path}
       className={({ isActive }) =>
         `flex min-h-[44px] flex-1 flex-col items-center justify-center pt-2 text-center
-         text-[9px] font-bold ${isActive ? 'text-water' : 'text-ink-2'}`
+         text-[9px] font-bold active:bg-line transition-colors duration-100 ${isActive ? 'text-water' : 'text-ink-2'}`
       }
     >
       <span className="mb-0.5 block text-[15px]">{route.icon}</span>

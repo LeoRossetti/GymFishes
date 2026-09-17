@@ -35,7 +35,7 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
                 type="button"
                 onClick={() => dispatch({ type: 'tapBottle', name: b.name, volume_ml: b.volume_ml })}
                 className={`min-h-[44px] w-full rounded-control border p-2 text-left text-[13px]
-                            font-bold ${qty > 0 ? 'border-water text-water' : 'border-line text-ink-2'} bg-surface-2`}
+                            font-bold active:bg-line transition-colors duration-100 ${qty > 0 ? 'border-water text-water' : 'border-line text-ink-2'} bg-surface-2`}
               >
                 {b.emoji ? `${b.emoji} ` : ''}
                 {b.name}

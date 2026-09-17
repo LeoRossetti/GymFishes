@@ -49,7 +49,7 @@ export function CalendarGrid({ period, totals, today, firstDay, selected, onSele
             aria-pressed={day === selected}
             data-step={blank ? undefined : step}
             onClick={() => onSelect(day)}
-            className={`flex min-h-[44px] items-center justify-center rounded-key text-[13px] font-bold ${border} ${
+            className={`flex min-h-[44px] items-center justify-center rounded-key text-[13px] font-bold active:bg-line transition-colors duration-100 ${border} ${
               blank ? 'text-ink-3' : FILL[step]
             }`}
           >

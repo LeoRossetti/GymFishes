@@ -12,5 +12,5 @@ export const guppy: FishArt = {
     'M44.2 26a1.8 1.8 0 1 0 3.6 0a1.8 1.8 0 1 0-3.6 0Z',
   ],
   eyes: [[52, 17]],
-  colors: { body: 'accent-blue', tail: 'accent-orange', fins: 'accent-orange', marks: 'accent-orange' },
+  colors: { body: 'accent-green', tail: 'accent-orange', fins: 'accent-orange', marks: 'accent-orange' },
 }

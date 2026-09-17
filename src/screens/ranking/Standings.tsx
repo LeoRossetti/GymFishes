@@ -34,7 +34,7 @@ export function Standings({ rows, members, userId }: Props) {
             </span>
             <Fish variant={fishOf(member?.fish_variant ?? '')} size={22} state="still" />
             <span
-              className={`w-16 shrink-0 truncate text-[13px] font-extrabold ${ACCENT_TEXT[accentOf(member?.accent ?? 'blue')]}`}
+              className={`w-24 shrink-0 truncate text-[13px] font-extrabold ${ACCENT_TEXT[accentOf(member?.accent ?? 'blue')]}`}
             >
               {name}
             </span>

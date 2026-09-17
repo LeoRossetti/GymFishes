@@ -60,6 +60,14 @@ describe('EntryRow', () => {
     expect(screen.getByText('1,8 L')).toBeInTheDocument()
   })
 
+  it('marks the row aria-expanded and flips it on tap', async () => {
+    renderRow()
+    const row = screen.getByText(/Leo · 11:00/).closest('button')
+    expect(row).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.click(row!)
+    expect(row).toHaveAttribute('aria-expanded', 'true')
+  })
+
   it('expands to composition chips and actions on own rows', async () => {
     const onEdit = vi.fn()
     renderRow({ onEdit })

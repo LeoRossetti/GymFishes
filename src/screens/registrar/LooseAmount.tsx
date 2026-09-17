@@ -19,7 +19,7 @@ export function LooseAmount({ draft, dispatch }: { draft: Draft; dispatch: (a: D
             type="button"
             onClick={() => dispatch({ type: 'pill', amount })}
             className="min-h-[44px] flex-1 rounded-[99px] border border-line bg-surface-2
-                       text-[13px] font-bold text-ink-2"
+                       text-[13px] font-bold text-ink-2 active:bg-line transition-colors duration-100"
           >
             +{amount}
           </button>
@@ -36,7 +36,7 @@ export function LooseAmount({ draft, dispatch }: { draft: Draft; dispatch: (a: D
             aria-label={key === 'back' ? '⌫' : key}
             onClick={() => dispatch({ type: 'key', key })}
             className="min-h-[44px] rounded-key border border-line bg-surface-2
-                       text-[17px] font-bold"
+                       text-[17px] font-bold active:bg-line transition-colors duration-100"
           >
             {key === 'back' ? '⌫' : key}
           </button>

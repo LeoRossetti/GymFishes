@@ -102,7 +102,7 @@ export function Perfil() {
       <GroupCard groupId={bootstrap.data?.groupId} />
 
       <Button
-        variant="danger"
+        variant={confirmandoSaida ? 'armed' : 'danger'}
         className="mt-4"
         onClick={() => {
           if (!confirmandoSaida) return setConfirmandoSaida(true)

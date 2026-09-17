@@ -8,5 +8,5 @@ export const shark: FishArt = {
   fins: ['M28 8 L36 0 L44 6 Z', 'M32 30 L28 38 L42 32 Z'],
   marks: ['M28 27 C36 32 50 28 58 22 L56 25 C48 32 34 34 28 30 Z'],
   eyes: [[52, 15]],
-  colors: { body: 'ink-3', tail: 'ink-3', fins: 'ink-3', marks: 'ink-2' },
+  colors: { body: 'ink-2', tail: 'ink-2', fins: 'ink-2', marks: 'ink' },
 }
