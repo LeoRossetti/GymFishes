@@ -15,7 +15,7 @@ type Props = {
 }
 
 const CHIP = 'min-h-[44px] rounded-[99px] border px-4 text-[13px] font-bold'
-const CHIP_OFF = `${CHIP} border-dashed border-line text-ink-3`
+const CHIP_OFF = `${CHIP} border-dashed border-line text-ink-2`
 const CHIP_ON = `${CHIP} border-ok text-ok`
 
 /** 44px hit area around a visually compact badge — mirrors BottleGrid's decrement badge. */

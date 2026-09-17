@@ -65,7 +65,7 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
           type="button"
           onClick={() => setAdding((v) => !v)}
           className="min-h-[44px] rounded-control border border-dashed border-line p-2
-                     text-[13px] font-bold text-ink-3"
+                     text-[13px] font-bold text-ink-2"
         >
           {STRINGS.garrafas.novaGarrafa}
         </button>

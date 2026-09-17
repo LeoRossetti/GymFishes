@@ -31,7 +31,7 @@ export function TabBar({ onRegister }: { onRegister: () => void }) {
       {left.map((route) => (
         <Tab key={route.path} route={route} />
       ))}
-      <div className="flex-1 text-center">
+      <div className="flex-1 pt-2 text-center">
         <button
           type="button"
           aria-label={STRINGS.nav.registrarAgua}
