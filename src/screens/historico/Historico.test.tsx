@@ -86,14 +86,14 @@ describe('Historico', () => {
 
   it('opens a day detail with both totals and the rows', async () => {
     renderHistorico()
-    await userEvent.click(screen.getByRole('button', { name: 'segunda, 10 de agosto' }))
+    await userEvent.click(screen.getByRole('button', { name: 'segunda, 10 de agosto · 1,8 L' }))
     expect(screen.getByText('Você 1,8 L · Ana 2,3 L')).toBeInTheDocument()
     expect(screen.getByText(/Ana ·/)).toBeInTheDocument()
   })
 
   it('steps back a month and clears the selected day', async () => {
     renderHistorico()
-    await userEvent.click(screen.getByRole('button', { name: 'segunda, 3 de agosto' }))
+    await userEvent.click(screen.getByRole('button', { name: 'segunda, 3 de agosto · 3 L' }))
     expect(screen.getByText('Você 3 L · Ana 0 ml')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Mês anterior' }))
     expect(screen.getByText('Julho', { selector: 'p' })).toBeInTheDocument()

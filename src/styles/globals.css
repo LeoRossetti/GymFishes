@@ -23,6 +23,11 @@ button {
   touch-action: manipulation;
 }
 
+:focus-visible {
+  outline: 2px solid var(--color-water);
+  outline-offset: 2px;
+}
+
 @keyframes wave-back-drift {
   to { transform: translateX(-260px); }
 }

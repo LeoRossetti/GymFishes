@@ -68,8 +68,13 @@ export function Perfil() {
           onChange={(e) => setNome(e.target.value)}
         />
         {nomeMudou && nomeValido ? (
-          <Button variant="ghost" disabled={busy} onClick={() => save({ display_name: trimmed })}>
-            {STRINGS.perfil.salvar}
+          <Button
+            variant="ghost"
+            disabled={busy}
+            aria-busy={busy || undefined}
+            onClick={() => save({ display_name: trimmed })}
+          >
+            {busy ? STRINGS.perfil.salvando : STRINGS.perfil.salvar}
           </Button>
         ) : null}
 

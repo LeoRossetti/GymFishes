@@ -51,8 +51,8 @@ export function SignUp() {
         onChange={(e) => setPassword(e.target.value)}
       />
       {failure ? <p className="mb-4 text-[13px] text-danger">{failure}</p> : null}
-      <Button type="submit" disabled={busy}>
-        {STRINGS.auth.criarConta}
+      <Button type="submit" disabled={busy} aria-busy={busy || undefined}>
+        {busy ? STRINGS.auth.criandoConta : STRINGS.auth.criarConta}
       </Button>
       <Link to="/entrar" className="mt-6 block text-center text-[13px] font-bold text-ink-2">
         {STRINGS.auth.jaTenhoConta}

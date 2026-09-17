@@ -12,6 +12,8 @@ export const STRINGS = {
     jaTenhoConta: 'Já tenho conta',
     naoTenhoConta: 'Ainda não tenho conta',
     sair: 'Sair',
+    entrando: 'Entrando…',
+    criandoConta: 'Criando conta…',
   },
   onboarding: {
     tituloNome: 'Como você quer aparecer?',
@@ -26,6 +28,7 @@ export const STRINGS = {
     campoCodigo: 'Código do convite',
     codigoInvalido: 'Código inválido',
     continuar: 'Continuar',
+    salvando: 'Salvando…',
   },
   grupo: {
     codigoDoConvite: 'Código do convite',
@@ -86,11 +89,14 @@ export const STRINGS = {
     nenhumRegistro: 'Nenhum registro neste dia',
     rodape: (mes: string, total: string, media: string, dias: string) =>
       `${mes}: ${total} · média ${media}/dia · ${dias} dias`,
+    diaComTotal: (dia: string, total: string) => `${dia} · ${total}`,
+    semRegistro: 'sem registro',
   },
   perfil: {
     titulo: 'Perfil',
     nome: 'Nome',
     salvar: 'Salvar',
+    salvando: 'Salvando…',
     cor: 'Cor',
     cores: {
       blue: 'Azul',
@@ -182,6 +188,7 @@ export const STRINGS = {
   },
   sync: {
     pendente: 'Aguardando envio',
+    falhou: 'Falha ao enviar',
     falhaTentarNovamente: 'Falha ao enviar — tentar novamente',
     desatualizado: 'Dados desatualizados',
   },

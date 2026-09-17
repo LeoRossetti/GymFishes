@@ -54,13 +54,13 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
             {pending || failed ? (
               <span
                 role="img"
-                aria-label={STRINGS.sync.pendente}
+                aria-label={failed ? STRINGS.sync.falhou : STRINGS.sync.pendente}
                 className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-ink-3 align-middle"
               />
             ) : null}
           </span>
           {subtitle ? (
-            <span className="block truncate text-[11px] text-ink-3">{subtitle}</span>
+            <span className="block truncate text-[11px] text-ink-2">{subtitle}</span>
           ) : null}
         </span>
         <span className="text-[15px] font-extrabold text-water">

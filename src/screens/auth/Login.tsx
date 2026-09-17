@@ -59,8 +59,8 @@ export function Login() {
         onChange={(e) => setPassword(e.target.value)}
       />
       {failure ? <p className="mb-4 text-[13px] text-danger">{failure}</p> : null}
-      <Button type="submit" disabled={busy}>
-        {STRINGS.auth.entrar}
+      <Button type="submit" disabled={busy} aria-busy={busy || undefined}>
+        {busy ? STRINGS.auth.entrando : STRINGS.auth.entrar}
       </Button>
       <Link
         to="/criar-conta"

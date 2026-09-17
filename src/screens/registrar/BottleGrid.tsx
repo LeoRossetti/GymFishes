@@ -39,7 +39,7 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
               >
                 {b.emoji ? `${b.emoji} ` : ''}
                 {b.name}
-                <span className="block text-[11px] font-medium text-ink-3">
+                <span className="block text-[11px] font-medium text-ink-2">
                   {formatVolume(b.volume_ml)}
                 </span>
               </button>

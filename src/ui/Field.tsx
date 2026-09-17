@@ -19,7 +19,7 @@ export function Field({ label, error, id, ...rest }: Props) {
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${inputId}-erro` : undefined}
         className="min-h-[44px] w-full rounded-control border border-line bg-surface-2 px-3
-                   text-[15px] text-ink outline-none focus:border-water"
+                   text-[15px] text-ink focus:border-water"
         {...rest}
       />
       {error ? (

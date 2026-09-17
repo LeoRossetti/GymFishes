@@ -30,32 +30,53 @@ function setup(selected: DayKey | null = null) {
 describe('CalendarGrid', () => {
   it('renders every day of the month', () => {
     setup()
-    expect(screen.getByRole('button', { name: 'sábado, 1 de agosto' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'segunda, 31 de agosto' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'sábado, 1 de agosto · sem registro' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'segunda, 31 de agosto · sem registro' })).toBeInTheDocument()
   })
 
   it('fills days by step', () => {
     setup()
-    expect(screen.getByRole('button', { name: 'segunda, 3 de agosto' })).toHaveAttribute('data-step', '2')
-    expect(screen.getByRole('button', { name: 'sexta, 7 de agosto' })).toHaveAttribute('data-step', '4')
-    expect(screen.getByRole('button', { name: 'terça, 4 de agosto' })).toHaveAttribute('data-step', '0')
+    expect(screen.getByRole('button', { name: 'segunda, 3 de agosto · 1,5 L' })).toHaveAttribute('data-step', '2')
+    expect(screen.getByRole('button', { name: 'sexta, 7 de agosto · 3,2 L' })).toHaveAttribute('data-step', '4')
+    expect(screen.getByRole('button', { name: 'terça, 4 de agosto · sem registro' })).toHaveAttribute(
+      'data-step',
+      '0',
+    )
   })
 
   it('blanks days before the first register and after today', () => {
     setup()
-    expect(screen.getByRole('button', { name: 'sábado, 1 de agosto' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: 'terça, 11 de agosto' })).toBeDisabled()
-    expect(screen.getByRole('button', { name: 'segunda, 10 de agosto' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'sábado, 1 de agosto · sem registro' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'terça, 11 de agosto · sem registro' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'segunda, 10 de agosto · sem registro' })).toBeEnabled()
   })
 
   it('reports the tapped day', async () => {
     const onSelect = setup()
-    await userEvent.click(screen.getByRole('button', { name: 'segunda, 3 de agosto' }))
+    await userEvent.click(screen.getByRole('button', { name: 'segunda, 3 de agosto · 1,5 L' }))
     expect(onSelect).toHaveBeenCalledWith('2026-08-03')
   })
 
   it('marks the selected day pressed', () => {
     setup('2026-08-03')
-    expect(screen.getByRole('button', { name: 'segunda, 3 de agosto', pressed: true })).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: 'segunda, 3 de agosto · 1,5 L', pressed: true }),
+    ).toBeInTheDocument()
+  })
+
+  it('names each day with its total for screen readers', () => {
+    const single = new Map<DayKey, number>([['2026-08-03', 3000]])
+    render(
+      <CalendarGrid
+        period={month}
+        totals={single}
+        today={today}
+        firstDay="2026-08-02"
+        selected={null}
+        onSelect={vi.fn()}
+      />,
+    )
+    expect(screen.getByRole('button', { name: 'segunda, 3 de agosto · 3 L' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'terça, 4 de agosto · sem registro' })).toBeInTheDocument()
   })
 })

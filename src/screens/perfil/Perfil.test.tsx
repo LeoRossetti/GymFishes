@@ -97,7 +97,7 @@ describe('Perfil', () => {
     expect(screen.getByText('Guppy')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Baiacu' })).toBeNull()
     await userEvent.click(screen.getByRole('button', { name: /Trocar peixe/ }))
-    expect(screen.getByRole('button', { name: 'Baiacu' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveAttribute('aria-disabled', 'true')
     expect(screen.getByText('Sequência de 7 dias')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Guppy' })).toHaveAttribute('aria-pressed', 'true')
   })

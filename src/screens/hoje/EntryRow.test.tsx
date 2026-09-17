@@ -112,6 +112,11 @@ describe('EntryRow', () => {
     expect(screen.getByRole('img', { name: 'Aguardando envio' })).toBeInTheDocument()
   })
 
+  it('shows the failed dot with its own label', () => {
+    renderRow({ failed: true })
+    expect(screen.getByRole('img', { name: 'Falha ao enviar' })).toBeInTheDocument()
+  })
+
   it('a failed entry shows the retry line and taps call onRetry', async () => {
     const onRetry = vi.fn()
     renderRow({ failed: true, onRetry })

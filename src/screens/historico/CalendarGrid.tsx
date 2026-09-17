@@ -1,6 +1,6 @@
 import { fillStep, monthCells, type FillStep } from '@/lib/calendar'
 import { parseDayKey, type DayKey } from '@/lib/dates'
-import { formatDayLong } from '@/lib/format'
+import { formatDayLong, formatVolume } from '@/lib/format'
 import type { Period } from '@/lib/periods'
 import { STRINGS } from '@/lib/strings'
 
@@ -18,7 +18,7 @@ const FILL: Record<FillStep, string> = {
   0: 'bg-surface-2 text-ink',
   1: 'bg-water/25 text-ink',
   2: 'bg-water/50 text-ink',
-  3: 'bg-water/75 text-ink-on-water',
+  3: 'bg-water/75 text-ink',
   4: 'bg-water text-ink-on-water',
 }
 
@@ -33,7 +33,8 @@ export function CalendarGrid({ period, totals, today, firstDay, selected, onSele
       {monthCells(period).map((day, i) => {
         if (!day) return <span key={`blank-${i}`} />
         const blank = firstDay === undefined || day < firstDay || day > today
-        const step = fillStep(totals.get(day) ?? 0)
+        const total = totals.get(day) ?? 0
+        const step = fillStep(total)
         const border =
           day === selected ? 'border-2 border-ink' : day === today ? 'border border-water' : 'border border-transparent'
         return (
@@ -41,7 +42,10 @@ export function CalendarGrid({ period, totals, today, firstDay, selected, onSele
             key={day}
             type="button"
             disabled={blank}
-            aria-label={formatDayLong(day)}
+            aria-label={STRINGS.historico.diaComTotal(
+              formatDayLong(day),
+              total > 0 ? formatVolume(total) : STRINGS.historico.semRegistro,
+            )}
             aria-pressed={day === selected}
             data-step={blank ? undefined : step}
             onClick={() => onSelect(day)}

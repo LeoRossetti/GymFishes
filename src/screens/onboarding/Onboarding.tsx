@@ -100,8 +100,8 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
             error={error}
             onChange={(e) => setNome(e.target.value)}
           />
-          <Button onClick={submitNome} disabled={busy}>
-            {STRINGS.onboarding.continuar}
+          <Button onClick={submitNome} disabled={busy} aria-busy={busy || undefined}>
+            {busy ? STRINGS.onboarding.salvando : STRINGS.onboarding.continuar}
           </Button>
         </>
       ) : null}
@@ -148,8 +148,8 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
             error={error}
             onChange={(e) => setGrupo(e.target.value)}
           />
-          <Button onClick={submitCriar} disabled={busy}>
-            {STRINGS.onboarding.continuar}
+          <Button onClick={submitCriar} disabled={busy} aria-busy={busy || undefined}>
+            {busy ? STRINGS.onboarding.salvando : STRINGS.onboarding.continuar}
           </Button>
         </>
       ) : null}
@@ -167,8 +167,8 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
             error={error}
             onChange={(e) => setCodigo(e.target.value)}
           />
-          <Button onClick={submitEntrar} disabled={busy}>
-            {STRINGS.onboarding.continuar}
+          <Button onClick={submitEntrar} disabled={busy} aria-busy={busy || undefined}>
+            {busy ? STRINGS.onboarding.salvando : STRINGS.onboarding.continuar}
           </Button>
         </>
       ) : null}
@@ -181,7 +181,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           <p className="mb-2 text-center text-[38px] font-extrabold tracking-[6px]">
             {inviteCode}
           </p>
-          <p className="mb-8 text-center text-[13px] text-ink-3">
+          <p className="mb-8 text-center text-[13px] text-ink-2">
             {STRINGS.grupo.mostreEsteCodigo}
           </p>
           <Button
