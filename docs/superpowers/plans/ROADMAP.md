@@ -15,6 +15,7 @@ codebase rather than an imagined one.
 | M3 | Offline e sync | [`2026-09-06-m3-offline-sync.md`](2026-09-06-m3-offline-sync.md) | **code-complete** — pending owner verification: airplane-mode register survives a force-quit on a real iPhone |
 | M4 | Competição — Ranking e Histórico | [`2026-09-07-m4-competicao.md`](2026-09-07-m4-competicao.md) | **code-complete** — pending owner verification: step back one week on a real phone and sanity-check the standings; edit a past register from Histórico |
 | M5 | Peixes e celebrações | [`2026-09-08-m5-peixes-celebracoes.md`](2026-09-08-m5-peixes-celebracoes.md) | **code-complete** — pending owner verification: both fish on both phones; a round litre, an overtake, and the first real 7-day streak celebrating once; open Perfil › Trocar peixe and judge the 13 shapes (nudge `svg/<id>.ts` paths if any reads badly, keeping the five layers) |
+| M5.5 | Polimento de UX | [`2026-09-17-m5-polish.md`](2026-09-17-m5-polish.md) | **code-complete** — pending owner verification: swipe the sheet handle and scroll a tall sheet on a real phone; tap every control and feel the press state; VoiceOver on Histórico and on a celebration |
 | M6 | PWA e endurecimento | not written yet | ready |
 
 ---
@@ -129,6 +130,19 @@ the litre caption on the gap line, a hidden 0-day chip, tap-to-save in onboardin
 gallery — are recorded in the plan and folded into spec §3/§5/§6/§7/§8. Accepted edge: a
 brand-new device that registers before its first sync completes seeds `seen_unlocks` from an
 empty mirror and will celebrate already-earned fish at the following register.
+
+## M5.5 — Polimento de UX
+
+- Task 1 — Accessibility: contrast scoping, targets, focus, disabled state, screen-reader parity
+- Task 2 — Visual polish: press feedback, fish tones, disclosure, hierarchy
+- Task 3 — Copy and small behaviours: honest labels, feedback, recovery
+- Task 4 — The register sheet and dialogs: gesture conflict, modal semantics, announced celebrations
+- Task 5 — Docs: spec alignment and roadmap
+
+Re-examined 2026-09-17 and standing as designed: no password reset (§3), at-risk chip
+opacity (§4), no group exit (§3), the streak mechanic (§2). Rejected as mechanisms: a
+dismiss confirmation, remembering the Ranking period across tabs, an unarchive view, a
+keypad cap signal.
 
 ## M6 — PWA e endurecimento
 

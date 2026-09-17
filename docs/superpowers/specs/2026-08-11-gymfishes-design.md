@@ -40,7 +40,7 @@ GymRats. PWA mobile-only, interface em português (pt-BR).
 
 ### Goals
 
-- Register water intake in **two taps** from app open, many times per day.
+- Register water intake in **three taps** from app open, many times per day.
 - See the other person's progress **live**, without refreshing.
 - Answer, cleanly and separately: *who drank more today / this week / this month / ever*,
   and *who has the better daily average*.
@@ -57,7 +57,7 @@ GymRats. PWA mobile-only, interface em português (pt-BR).
 
 ### Success criteria
 
-1. A register with a known bottle takes ≤ 2 taps and ≤ 3 seconds.
+1. A register with a known bottle takes ≤ 3 taps (open, bottle, confirm) and ≤ 3 seconds.
 2. A register made by one person appears on the other's device in < 2 seconds while both
    are open.
 3. A register made with no connectivity is never lost, and syncs on next app open.
@@ -220,8 +220,9 @@ as compact rows:
 
 ### 5.2 Registrar (modal sheet)
 
-Opened by the center "+". A bottom sheet, dismissible by swipe-down or backdrop tap.
-Everything on one screen — no steps, no wizard.
+Opened by the center "+". A bottom sheet, dismissible by swiping the handle down or
+tapping the backdrop; the content scrolls freely. Everything on one screen — no steps, no
+wizard.
 
 **Running total** — large, centered ("1,8 L"), with the composition beneath it in small
 muted text ("1 × Garrafa azul + 300 ml"). Counts up when it changes.
@@ -328,7 +329,9 @@ Settings and identity. Nothing competitive lives here.
   and your avatar ring. The water itself is always `--water` blue — it's water.
 - **Minhas garrafas** — list with volume; add, rename, change volume, or archive.
   Archiving hides a bottle from the register sheet but never rewrites history, because
-  every register stores a snapshot of the bottle's name and volume at the time.
+  every register stores a snapshot of the bottle's name and volume at the time. The button
+  reads "Remover" — that is what the user experiences — while the row is archived, never
+  deleted.
 - **Grupo** — group name, members, and the invite code with a copy button.
 - **Sair** — sign out, with a confirm.
 - **Sobre** — app version and build date. Useful when debugging a stale service worker.
@@ -453,7 +456,7 @@ Tailwind v4's `@theme`. Dark only — there is no light palette to maintain.
 | `--line` | `#37464F` | all 1px borders |
 | `--ink` | `#F1F7FB` | primary text |
 | `--ink-2` | `#93AEBF` | secondary text |
-| `--ink-3` | `#6C838F` | labels, disabled |
+| `--ink-3` | `#6C838F` | labels, disabled — never content text |
 | `--water` | `#1CB0F6` | water, primary action, totals |
 | `--water-edge` | `#1899D6` | button bottom edge |
 | `--water-hi` | `#4FC3F9` | wave crest / surface highlight |
@@ -480,6 +483,9 @@ remain distinguishable from each other in the tubes.
   15 / 13 / 11 / 9. Tight tracking (`-0.4px` and below) on large numbers only.
 - **Labels** are 9px, uppercase, `letter-spacing: 1px`, `--ink-3`, weight 800.
 - **Touch targets** never below 44px.
+- **Press feedback:** every tappable control has a 100 ms flat `active` state; nothing
+  relies on the removed tap highlight.
+- **Focus:** a 2px `--water` focus-visible ring, globally.
 - **Safe areas:** `env(safe-area-inset-*)` on the tab bar and sheets.
 
 ### Motion
@@ -885,6 +891,9 @@ The principle: **never fail silently, and never block the fast path**.
 | Invalid invite code | Inline "Código inválido" on the field |
 | Realtime socket dropped | Silent. Focus-sync covers it. A stale-data pill appears after 5 minutes with no successful sync |
 | Unexpected render error | Error boundary per tab: "Algo quebrou nesta aba" plus a reload button, so one broken screen never takes down the app |
+| Name too short/long in Perfil | Inline field error, same strings as onboarding |
+| Register above 20 L | "Máximo de 20 L por registro" under the CTA; CTA disabled |
+| Sign-up returns no session | "Confira seu e-mail para confirmar a conta." |
 
 ---
 
