@@ -16,10 +16,20 @@ describe('CelebrationScreen', () => {
     expect(onClose).toHaveBeenCalledTimes(1)
   })
 
+  it('is a modal dialog that takes focus on mount and announces itself for screen readers', () => {
+    const onClose = vi.fn()
+    render(<CelebrationScreen celebration={{ kind: 'record', ml: 4200 }} onClose={onClose} onChoose={vi.fn()} />)
+    const dialog = screen.getByRole('dialog', { name: 'Novo recorde! 4,2 L' })
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(dialog).toHaveFocus()
+    expect(screen.getByRole('status')).toHaveTextContent('Novo recorde! 4,2 L')
+  })
+
   it('dismisses on tap', () => {
     const onClose = vi.fn()
     render(<CelebrationScreen celebration={{ kind: 'streak', days: 30 }} onClose={onClose} onChoose={vi.fn()} />)
-    expect(screen.getByText('🔥 30 dias seguidos!')).toBeInTheDocument()
+    // the text shows both on screen and in the hidden status announcement — assert on count, not uniqueness
+    expect(screen.getAllByText('🔥 30 dias seguidos!')).toHaveLength(2)
     fireEvent.click(screen.getByRole('dialog'))
     expect(onClose).toHaveBeenCalledTimes(1)
   })

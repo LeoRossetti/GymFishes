@@ -94,7 +94,8 @@ describe('CelebrationProvider', () => {
     renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
     expect(screen.getByRole('dialog', { name: 'Novo peixe! Baiacu' })).toBeInTheDocument()
-    expect(screen.getByRole('status')).toHaveTextContent('🔥 7 dias seguidos!')
+    // the full-screen dialog announces its own text too now — assert the toast is among the statuses, not the only one
+    expect(screen.getAllByRole('status').map((s) => s.textContent)).toContain('🔥 7 dias seguidos!')
     expect(JSON.parse(localStorage.getItem(SEEN_UNLOCKS_KEY) ?? '[]')).toContain('pufferfish')
 
     await userEvent.click(screen.getByRole('button', { name: 'Depois' }))
@@ -120,6 +121,9 @@ describe('CelebrationProvider', () => {
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
     expect(screen.queryByRole('dialog', { name: 'Novo peixe! Baiacu' })).toBeNull()
     expect(screen.getByRole('dialog', { name: '🔥 7 dias seguidos!' })).toBeInTheDocument()
-    expect(screen.queryByRole('status')).toBeNull()
+    // no toast fired — the only status is the full-screen dialog's own announcement
+    const statuses = screen.getAllByRole('status')
+    expect(statuses).toHaveLength(1)
+    expect(statuses[0]).toHaveTextContent('🔥 7 dias seguidos!')
   })
 })

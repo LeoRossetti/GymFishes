@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { fishName, type FishId } from '@/features/fish/catalog'
 import { Fish } from '@/features/fish/Fish'
@@ -27,6 +27,7 @@ type Props = {
  */
 export function CelebrationScreen({ celebration, onClose, onChoose }: Props) {
   const reduced = useReducedMotion()
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (celebration.kind === 'unlock') return
@@ -34,19 +35,29 @@ export function CelebrationScreen({ celebration, onClose, onChoose }: Props) {
     return () => window.clearTimeout(t)
   }, [celebration, onClose])
 
+  useEffect(() => {
+    ref.current?.focus()
+  }, [])
+
   const fade = { duration: reduced ? 0.12 : 0.25 }
   const spring = reduced ? { duration: 0.12 } : ({ type: 'spring', duration: 0.9, bounce: 0.35 } as const)
 
   return (
     <motion.div
+      ref={ref}
       role="dialog"
+      aria-modal="true"
       aria-label={celebrationText(celebration)}
+      tabIndex={-1}
       onClick={onClose}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={fade}
       className="fixed inset-0 z-50 mx-auto flex max-w-[430px] flex-col items-center justify-center overflow-hidden bg-bg/95 px-6 text-center"
     >
+      <p role="status" className="sr-only">
+        {celebrationText(celebration)}
+      </p>
       {reduced
         ? null
         : BUBBLES.map((left, i) => (

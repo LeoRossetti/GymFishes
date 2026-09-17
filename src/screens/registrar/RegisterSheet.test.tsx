@@ -59,6 +59,12 @@ describe('RegisterSheet', () => {
     expect(screen.getByRole('button', { name: 'Registrar' })).toBeDisabled()
   })
 
+  it('has a drag handle for dismissal and modal semantics on the dialog', () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    expect(screen.getByLabelText('Arraste para fechar')).toBeInTheDocument()
+    expect(screen.getByRole('dialog')).toHaveAttribute('aria-modal', 'true')
+  })
+
   it('tapping a bottle raises the running total; tapping again increments', async () => {
     renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
     const chip = screen.getByRole('button', { name: /Garrafa azul/ })
