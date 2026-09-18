@@ -1,3 +1,5 @@
+import { fishOf } from '@/features/fish/catalog'
+import { Fish } from '@/features/fish/Fish'
 import type { Member } from '@/features/group/queries'
 import { memberName } from '@/features/group/useGroupData'
 import { ACCENT_TEXT, accentOf } from '@/lib/accents'
@@ -9,7 +11,7 @@ type Props = { rows: Standing[]; members: Member[]; userId: string }
 
 /**
  * `[position] [fish] [name] [bar] [total]` (spec §5.3). The bar is each member's share of
- * the leader; first place is a flat yellow badge — no crown, no glow. 🐟 is the M5 placeholder.
+ * the leader; first place is a flat yellow badge — no crown, no glow. The fish is the member's chosen variant.
  */
 export function Standings({ rows, members, userId }: Props) {
   if (rows.every((r) => r.ml === 0)) {
@@ -30,11 +32,9 @@ export function Standings({ rows, members, userId }: Props) {
             >
               {r.position}
             </span>
-            <span aria-hidden className="text-[17px]">
-              🐟
-            </span>
+            <Fish variant={fishOf(member?.fish_variant ?? '')} size={22} state="still" />
             <span
-              className={`w-16 shrink-0 truncate text-[13px] font-extrabold ${ACCENT_TEXT[accentOf(member?.accent ?? 'blue')]}`}
+              className={`w-24 shrink-0 truncate text-[13px] font-extrabold ${ACCENT_TEXT[accentOf(member?.accent ?? 'blue')]}`}
             >
               {name}
             </span>

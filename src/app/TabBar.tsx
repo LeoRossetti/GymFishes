@@ -7,7 +7,8 @@ function Tab({ route }: { route: TabRoute }) {
     <NavLink
       to={route.path}
       className={({ isActive }) =>
-        `flex-1 text-center text-[9px] font-bold ${isActive ? 'text-water' : 'text-ink-3'}`
+        `flex min-h-[44px] flex-1 flex-col items-center justify-center pt-2 text-center
+         text-[9px] font-bold active:bg-line transition-colors duration-100 ${isActive ? 'text-water' : 'text-ink-2'}`
       }
     >
       <span className="mb-0.5 block text-[15px]">{route.icon}</span>
@@ -24,19 +25,20 @@ export function TabBar({ onRegister }: { onRegister: () => void }) {
   return (
     <nav
       className="fixed inset-x-0 bottom-0 mx-auto flex max-w-[430px] items-center
-                 border-t border-line bg-bg pt-2"
+                 border-t border-line bg-bg"
       style={{ paddingBottom: 'calc(10px + env(safe-area-inset-bottom))' }}
     >
       {left.map((route) => (
         <Tab key={route.path} route={route} />
       ))}
-      <div className="flex-1 text-center">
+      <div className="flex-1 pt-2 text-center">
         <button
           type="button"
           aria-label={STRINGS.nav.registrarAgua}
           onClick={onRegister}
           className="mx-auto -mt-3.5 block h-11 w-11 rounded-full border-b-[3px]
-                     border-water-edge bg-water text-[19px] font-extrabold text-ink-on-water"
+                     border-water-edge bg-water text-[19px] font-extrabold text-ink-on-water
+                     active:bg-water-edge transition-colors duration-100"
         >
           +
         </button>

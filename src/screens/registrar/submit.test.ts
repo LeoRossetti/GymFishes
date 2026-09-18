@@ -69,4 +69,10 @@ describe('submitDraft', () => {
     submitDraft(ops, 'u1', draft({ photo: { blob, thumb, previewUrl: 'blob:x' } }), entry)
     expect(ops.update.mock.calls[0]?.[2]).toEqual({ photo: blob, thumb })
   })
+
+  it('returns the optimistic row from an insert, and null from an update', () => {
+    ops.insert.mockReturnValue(entry)
+    expect(submitDraft(ops, 'u1', draft({}), undefined)).toBe(entry)
+    expect(submitDraft(ops, 'u1', draft({}), entry)).toBeNull()
+  })
 })

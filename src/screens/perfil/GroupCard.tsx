@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useGroup, useMembers } from '@/features/group/queries'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
@@ -7,9 +7,24 @@ export function GroupCard({ groupId }: { groupId: string | null | undefined }) {
   const group = useGroup(groupId)
   const members = useMembers(groupId)
   const [copiado, setCopiado] = useState(false)
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  useEffect(() => () => clearTimeout(timer.current), [])
 
   if (!group.data) return null
   const code = group.data.invite_code
+
+  function copy() {
+    if (typeof navigator === 'undefined' || !navigator.clipboard) return
+    navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        setCopiado(true)
+        clearTimeout(timer.current)
+        timer.current = setTimeout(() => setCopiado(false), 2000)
+      })
+      .catch(() => {})
+  }
 
   return (
     <section className="mb-3 rounded-card border border-line bg-surface p-4">
@@ -28,13 +43,7 @@ export function GroupCard({ groupId }: { groupId: string | null | undefined }) {
       </p>
       <p className="mt-4 text-center text-[24px] font-extrabold tracking-[6px]">{code}</p>
       {typeof navigator !== 'undefined' && navigator.clipboard ? (
-        <Button
-          variant="ghost"
-          className="mt-3"
-          onClick={() => {
-            navigator.clipboard.writeText(code).then(() => setCopiado(true)).catch(() => {})
-          }}
-        >
+        <Button variant="ghost" className="mt-3" onClick={copy}>
           {copiado ? STRINGS.grupo.copiado : STRINGS.grupo.copiarCodigo}
         </Button>
       ) : null}

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { fireEvent, screen } from '@testing-library/react'
+import { fireEvent, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '@/test/utils'
 import { ToastProvider } from '@/ui/Toast'
@@ -38,6 +38,12 @@ vi.mock('@/features/bottles/mutations', () => ({
 vi.mock('@/features/entries/mutations', () => ({
   useEntryOps: () => ({ insert: insertMutate, update: updateMutate, remove: vi.fn(), retry: vi.fn() }),
 }))
+vi.mock('@/features/group/queries', () => ({ useMembers: () => ({ data: [] }) }))
+vi.mock('@/features/entries/queries', () => ({ useEntries: () => ({ data: [] }) }))
+const celebrate = vi.fn()
+vi.mock('@/features/celebrations/CelebrationProvider', () => ({
+  useCelebrations: () => ({ celebrate: (...args: unknown[]) => celebrate(...args), inline: null }),
+}))
 
 describe('RegisterSheet', () => {
   beforeEach(() => {
@@ -45,11 +51,21 @@ describe('RegisterSheet', () => {
     updateMutate.mockReset()
     onClose.mockReset()
     createBottleMock.mockReset()
+    celebrate.mockReset()
   })
 
   it('disables the CTA at zero', () => {
     renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
     expect(screen.getByRole('button', { name: 'Registrar' })).toBeDisabled()
+  })
+
+  it('the dialog contains its own accessible dismiss; tapping it closes the sheet', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    const closeButton = within(dialog).getByRole('button', { name: 'Fechar' })
+    await userEvent.click(closeButton)
+    expect(onClose).toHaveBeenCalled()
   })
 
   it('tapping a bottle raises the running total; tapping again increments', async () => {
@@ -100,6 +116,24 @@ describe('RegisterSheet', () => {
     await userEvent.click(screen.getByRole('button', { name: '+100' }))
     await userEvent.click(screen.getByRole('button', { name: /Registrar/ }))
     expect(insertMutate.mock.calls[0]?.[0].note).toBe('pós treino')
+  })
+
+  it('shows a live character counter under the nota field', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: /nota/ }))
+    expect(screen.getByText('0/140')).toBeInTheDocument()
+    await userEvent.type(screen.getByRole('textbox'), 'pós treino')
+    expect(screen.getByText('10/140')).toBeInTheDocument()
+  })
+
+  it('shows the cap line and disables the CTA once the total exceeds the maximum', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    const chip = screen.getByRole('button', { name: /Garrafa azul/ })
+    for (let i = 0; i < 14; i++) {
+      fireEvent.click(chip)
+    }
+    expect(await screen.findByText('Máximo de 20 L por registro')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Registrar/ })).toBeDisabled()
   })
 
   it('edit mode prefills and submits an update', async () => {
@@ -156,6 +190,29 @@ describe('RegisterSheet', () => {
     const patch = updateMutate.mock.calls[0]?.[1]
     expect(patch.photo_path).toBeNull()
     expect(patch.thumb_path).toBeNull()
+  })
+
+  it('hands the mirror before and after the insert to the celebrations', async () => {
+    const inserted = {
+      id: 'e9',
+      profile_id: 'u1',
+      group_id: 'g1',
+      total_ml: 1500,
+      composition: [],
+      note: null,
+      photo_path: null,
+      thumb_path: null,
+      drank_at: new Date().toISOString(),
+      drank_on: '2026-09-08',
+      created_at: new Date().toISOString(),
+      updated_at: '',
+      deleted_at: null,
+    } as Entry
+    insertMutate.mockReturnValue(inserted)
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: /Garrafa azul/ }))
+    await userEvent.click(screen.getByRole('button', { name: /Registrar 1,5 L/ }))
+    expect(celebrate).toHaveBeenCalledWith([], [inserted])
   })
 
   it('surfaces a toast and keeps the form open when creating a bottle fails', async () => {

@@ -15,8 +15,9 @@ type Props = {
 }
 
 const CHIP = 'min-h-[44px] rounded-[99px] border px-4 text-[13px] font-bold'
-const CHIP_OFF = `${CHIP} border-dashed border-line text-ink-3`
+const CHIP_OFF = `${CHIP} border-dashed border-line text-ink-2`
 const CHIP_ON = `${CHIP} border-ok text-ok`
+const MAX_NOTE = 140
 
 /** 44px hit area around a visually compact badge — mirrors BottleGrid's decrement badge. */
 function RemoveBadge({ onClick }: { onClick: () => void }) {
@@ -25,7 +26,7 @@ function RemoveBadge({ onClick }: { onClick: () => void }) {
       type="button"
       aria-label={STRINGS.registrar.removerFoto}
       onClick={onClick}
-      className="absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center"
+      className="absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center active:bg-line transition-colors duration-100"
     >
       <span
         className="flex h-6 w-6 items-center justify-center rounded-[99px] border
@@ -110,14 +111,17 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
         </button>
       </div>
       {open === 'nota' ? (
-        <textarea
-          value={draft.note}
-          maxLength={140}
-          rows={2}
-          onChange={(e) => dispatch({ type: 'setNote', note: e.target.value })}
-          className="mt-2 w-full rounded-control border border-line bg-surface-2 p-3
-                     text-[15px] text-ink outline-none focus:border-water"
-        />
+        <>
+          <textarea
+            value={draft.note}
+            maxLength={MAX_NOTE}
+            rows={2}
+            onChange={(e) => dispatch({ type: 'setNote', note: e.target.value })}
+            className="mt-2 w-full rounded-control border border-line bg-surface-2 p-3
+                       text-[15px] text-ink focus:border-water"
+          />
+          <p className="mt-1 text-[11px] text-ink-2">{STRINGS.registrar.contador(draft.note.length, MAX_NOTE)}</p>
+        </>
       ) : null}
       {open === 'hora' ? (
         <input
@@ -125,7 +129,7 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
           value={toDatetimeLocal(draft.drankAt)}
           onChange={(e) => e.target.value && dispatch({ type: 'setDrankAt', at: fromDatetimeLocal(e.target.value) })}
           className="mt-2 min-h-[44px] w-full rounded-control border border-line bg-surface-2 px-3
-                     text-[15px] text-ink outline-none focus:border-water"
+                     text-[15px] text-ink focus:border-water"
         />
       ) : null}
     </section>

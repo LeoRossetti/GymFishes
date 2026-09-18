@@ -5,6 +5,7 @@ import { dayKey } from '@/lib/dates'
 import { allPeriod, dayPeriod, type Period } from '@/lib/periods'
 import { firstRegisterDay, standings, totalsForPeriod } from '@/lib/rankings'
 import { STRINGS } from '@/lib/strings'
+import { SyncPill } from '@/screens/hoje/SyncPill'
 import { MonthWrapUp } from './MonthWrapUp'
 import { PeriodControl } from './PeriodControl'
 import { Standings } from './Standings'
@@ -12,7 +13,7 @@ import { StatsCompare } from './StatsCompare'
 
 /** Answers "who is winning" and nothing else (spec §5.3). Everything is derived from the mirror. */
 export function Ranking() {
-  const { userId, members, entries } = useGroupData()
+  const { userId, groupId, members, entries } = useGroupData()
   const today = dayKey(new Date())
   const [period, setPeriod] = useState<Period>(() => dayPeriod(today))
   if (!userId) return null
@@ -29,6 +30,7 @@ export function Ranking() {
     <div className="px-3 pt-2">
       <header className="mb-4 px-1">
         <h1 className="text-[20px] font-extrabold tracking-tight">{STRINGS.ranking.titulo}</h1>
+        <SyncPill groupId={groupId} />
       </header>
       <MonthWrapUp entries={entries} members={members} userId={userId} today={today} />
       <section className="rounded-card border border-line bg-surface p-4">

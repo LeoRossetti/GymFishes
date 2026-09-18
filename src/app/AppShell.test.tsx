@@ -12,6 +12,8 @@ vi.mock('@/features/profile/useBootstrap', () => ({
   useBootstrap: () => ({ data: { profile: { id: 'u1' }, groupId: 'g1' } }),
 }))
 vi.mock('@/features/entries/realtime', () => ({ useRealtimeEntries: () => {} }))
+vi.mock('@/features/group/queries', () => ({ useMembers: () => ({ data: [] }) }))
+vi.mock('@/features/entries/queries', () => ({ useEntries: () => ({ data: [] }) }))
 
 function Boom(): never {
   throw new Error('boom')

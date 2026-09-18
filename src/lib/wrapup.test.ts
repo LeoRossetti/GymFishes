@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { monthPeriod } from './periods'
-import { monthWrapUp, wrapUpStorageKey } from './wrapup'
+import { monthVerdict, monthWrapUp, monthsWon, wrapUpStorageKey } from './wrapup'
 
 const e = (profile_id: string, total_ml: number, drank_on: string) => ({
   profile_id,
@@ -42,5 +42,40 @@ describe('monthWrapUp', () => {
 describe('wrapUpStorageKey', () => {
   it('is one key per month', () => {
     expect(wrapUpStorageKey(monthPeriod('2026-07-15'))).toBe('gymfishes:wrapup:2026-07')
+  })
+})
+
+describe('monthVerdict', () => {
+  it('is null for a month nobody registered in', () => {
+    expect(monthVerdict([e('a', 500, '2026-08-01')], ['a', 'b'], monthPeriod('2026-07-01'))).toBeNull()
+  })
+
+  it('names the outright leader, nobody on a tie', () => {
+    const july = monthPeriod('2026-07-01')
+    expect(monthVerdict([e('a', 500, '2026-07-01'), e('b', 200, '2026-07-02')], ['a', 'b'], july)?.winnerId).toBe('a')
+    expect(monthVerdict([e('a', 500, '2026-07-01'), e('b', 500, '2026-07-02')], ['a', 'b'], july)?.winnerId).toBeNull()
+  })
+})
+
+describe('monthsWon', () => {
+  const entries = [
+    e('a', 5000, '2026-06-10'), e('b', 4000, '2026-06-11'), // June: a
+    e('a', 1000, '2026-07-10'), e('b', 4000, '2026-07-11'), // July: b
+    e('a', 3000, '2026-08-10'), e('b', 3000, '2026-08-11'), // August: tie
+    e('a', 9000, '2026-09-01'), // September, still running: a leads but it does not count yet
+  ]
+
+  it('counts only completed months won outright', () => {
+    expect(monthsWon(entries, ['a', 'b'], 'a', '2026-09-08')).toBe(1)
+    expect(monthsWon(entries, ['a', 'b'], 'b', '2026-09-08')).toBe(1)
+  })
+
+  it('counts the running month once it has ended', () => {
+    expect(monthsWon(entries, ['a', 'b'], 'a', '2026-10-01')).toBe(2)
+  })
+
+  it('skips silent months and is 0 with no registers', () => {
+    expect(monthsWon([e('a', 500, '2026-05-01')], ['a', 'b'], 'a', '2026-09-08')).toBe(1)
+    expect(monthsWon([], ['a', 'b'], 'a', '2026-09-08')).toBe(0)
   })
 })

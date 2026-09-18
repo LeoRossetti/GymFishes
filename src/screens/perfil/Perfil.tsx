@@ -8,7 +8,9 @@ import { STRINGS } from '@/lib/strings'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
+import { SyncPill } from '@/screens/hoje/SyncPill'
 import { BottleManager } from './BottleManager'
+import { FishGallery } from './FishGallery'
 import { GroupCard } from './GroupCard'
 
 export function Perfil() {
@@ -27,8 +29,13 @@ export function Perfil() {
   const trimmed = shownNome.trim()
   const nomeValido = trimmed.length >= 2 && trimmed.length <= 20
   const nomeMudou = trimmed !== profile.display_name
+  const nomeErro = nomeMudou && !nomeValido
+    ? trimmed.length < 2
+      ? STRINGS.onboarding.nomeCurto
+      : STRINGS.onboarding.nomeLongo
+    : undefined
 
-  async function save(patch: { display_name?: string; accent?: string }) {
+  async function save(patch: { display_name?: string; accent?: string; fish_variant?: string }) {
     if (!userId) return
     setBusy(true)
     try {
@@ -47,7 +54,17 @@ export function Perfil() {
     <div className="px-3 pt-2">
       <header className="mb-4 px-1">
         <h1 className="text-[20px] font-extrabold tracking-tight">{STRINGS.perfil.titulo}</h1>
+        <SyncPill groupId={bootstrap.data?.groupId} />
       </header>
+
+      {userId ? (
+        <FishGallery
+          userId={userId}
+          current={profile.fish_variant}
+          busy={busy}
+          onSelect={(fish) => save({ fish_variant: fish })}
+        />
+      ) : null}
 
       <section className="mb-3 rounded-card border border-line bg-surface p-4">
         {erro ? <p className="mb-2 text-[13px] text-danger">{erro}</p> : null}
@@ -55,11 +72,17 @@ export function Perfil() {
           label={STRINGS.perfil.nome}
           value={shownNome}
           maxLength={20}
+          error={nomeErro}
           onChange={(e) => setNome(e.target.value)}
         />
         {nomeMudou && nomeValido ? (
-          <Button variant="ghost" disabled={busy} onClick={() => save({ display_name: trimmed })}>
-            {STRINGS.perfil.salvar}
+          <Button
+            variant="ghost"
+            disabled={busy}
+            aria-busy={busy || undefined}
+            onClick={() => save({ display_name: trimmed })}
+          >
+            {busy ? STRINGS.perfil.salvando : STRINGS.perfil.salvar}
           </Button>
         ) : null}
 
@@ -74,7 +97,7 @@ export function Perfil() {
               aria-label={STRINGS.perfil.cores[accent]}
               disabled={busy}
               onClick={() => save({ accent })}
-              className={`h-11 w-11 rounded-full ${ACCENT_BG[accent]} ${
+              className={`h-11 w-11 rounded-full active:opacity-80 transition-opacity duration-100 ${ACCENT_BG[accent]} ${
                 accentOf(profile.accent) === accent ? 'border-2 border-ink' : 'border border-line'
               }`}
             />
@@ -87,7 +110,7 @@ export function Perfil() {
       <GroupCard groupId={bootstrap.data?.groupId} />
 
       <Button
-        variant="danger"
+        variant={confirmandoSaida ? 'armed' : 'danger'}
         className="mt-4"
         onClick={() => {
           if (!confirmandoSaida) return setConfirmandoSaida(true)

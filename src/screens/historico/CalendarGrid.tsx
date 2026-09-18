@@ -1,6 +1,6 @@
 import { fillStep, monthCells, type FillStep } from '@/lib/calendar'
 import { parseDayKey, type DayKey } from '@/lib/dates'
-import { formatDayLong } from '@/lib/format'
+import { formatDayLong, formatVolume } from '@/lib/format'
 import type { Period } from '@/lib/periods'
 import { STRINGS } from '@/lib/strings'
 
@@ -33,19 +33,25 @@ export function CalendarGrid({ period, totals, today, firstDay, selected, onSele
       {monthCells(period).map((day, i) => {
         if (!day) return <span key={`blank-${i}`} />
         const blank = firstDay === undefined || day < firstDay || day > today
-        const step = fillStep(totals.get(day) ?? 0)
+        const total = totals.get(day) ?? 0
+        const step = fillStep(total)
         const border =
           day === selected ? 'border-2 border-ink' : day === today ? 'border border-water' : 'border border-transparent'
+        // press feedback never inverts a filled surface: only steps 0–2 get it (spec §8).
+        const feedback = step <= 2 ? 'active:bg-line transition-colors duration-100' : ''
         return (
           <button
             key={day}
             type="button"
             disabled={blank}
-            aria-label={formatDayLong(day)}
+            aria-label={STRINGS.historico.diaComTotal(
+              formatDayLong(day),
+              total > 0 ? formatVolume(total) : STRINGS.historico.semRegistro,
+            )}
             aria-pressed={day === selected}
             data-step={blank ? undefined : step}
             onClick={() => onSelect(day)}
-            className={`flex min-h-[44px] items-center justify-center rounded-key text-[13px] font-bold ${border} ${
+            className={`flex min-h-[44px] items-center justify-center rounded-key text-[13px] font-bold ${feedback} ${border} ${
               blank ? 'text-ink-3' : FILL[step]
             }`}
           >

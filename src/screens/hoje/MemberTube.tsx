@@ -1,27 +1,40 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import { fishOf } from '@/features/fish/catalog'
+import { Fish } from '@/features/fish/Fish'
 import { ACCENT_TEXT, accentOf } from '@/lib/accents'
 import { formatVolume } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
+import { useCountUp } from '@/ui/useCountUp'
 import { WaveSurface } from './WaveSurface'
 
-type Props = { name: string; isSelf: boolean; accent: string; totalMl: number; scaleMl: number }
-
-const FISH_KNEE = 70
-
-/**
- * Where the fish floats for a given fill %. It rides the surface until the
- * water nears the top, then decelerates tangentially (no kink) and stops at
- * 85% — submerged under the wave instead of clipped above the tube, which the
- * leader would otherwise hit at exactly 100% once past the 3 L scale floor.
- */
-export function fishLevel(pct: number): number {
-  if (pct <= FISH_KNEE) return pct
-  const x = pct - FISH_KNEE
-  return FISH_KNEE + x - x ** 2 / (2 * (100 - FISH_KNEE))
+type Props = {
+  name: string
+  isSelf: boolean
+  accent: string
+  fishVariant: string
+  totalMl: number
+  scaleMl: number
 }
 
-export function MemberTube({ name, isSelf, accent, totalMl, scaleMl }: Props) {
+/** Tube height in px (matches `h-[220px]` below). */
+export const TUBE_H = 220
+/** Fish width in px — about a third of the 160px tube. Height follows the 64×40 art box. */
+export const FISH_W = 44
+export const FISH_H = (FISH_W * 40) / 64
+/** Air between the fish's back and the surface, so the wave crest never cuts the fish. */
+const GAP = 4
+
+/**
+ * The fish's `bottom`, in px, for a given fill %: it swims just under the surface, and rests on
+ * the tube floor while the water is still shallower than the fish. Because it sits inside the
+ * water, a full tube never clips it — no special case is needed at 100%.
+ */
+export function fishBottomPx(pct: number): number {
+  return Math.max(0, (pct / 100) * TUBE_H - FISH_H - GAP)
+}
+
+export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl }: Props) {
   const pct = Math.min(100, (totalMl / scaleMl) * 100)
   const reduced = useReducedMotion()
   const spring = reduced
@@ -29,6 +42,7 @@ export function MemberTube({ name, isSelf, accent, totalMl, scaleMl }: Props) {
     : ({ type: 'spring', duration: 0.6, bounce: 0.25 } as const)
   const [splash, setSplash] = useState(false)
   const prev = useRef(totalMl)
+  const shownTotal = useCountUp(totalMl)
 
   useEffect(() => {
     const grew = totalMl > prev.current
@@ -58,16 +72,16 @@ export function MemberTube({ name, isSelf, accent, totalMl, scaleMl }: Props) {
         {totalMl > 0 ? (
           <motion.span
             aria-hidden
-            className="absolute left-1/2 -translate-x-1/2 text-[20px]"
-            animate={{ bottom: `${fishLevel(pct)}%` }}
+            className="absolute left-1/2 -translate-x-1/2"
+            animate={{ bottom: `${fishBottomPx(pct)}px` }}
             transition={spring}
           >
-            🐟
+            <Fish variant={fishOf(fishVariant)} size={FISH_W} state="idle" />
           </motion.span>
         ) : null}
       </div>
       <p className="mt-2 text-center text-[17px] font-extrabold tracking-[-0.4px]">
-        {formatVolume(totalMl)}
+        {formatVolume(shownTotal)}
       </p>
       <p
         className={`text-center text-[9px] font-extrabold uppercase tracking-[1px] ${ACCENT_TEXT[accentOf(accent)]}`}

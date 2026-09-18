@@ -39,11 +39,18 @@ vi.mock('@/features/bottles/mutations', () => ({
   updateBottle: vi.fn(),
   archiveBottle: vi.fn(),
 }))
+const syncStatus = vi.hoisted(() => ({ offline: false, stale: false }))
+vi.mock('@/features/entries/queries', () => ({
+  useEntries: () => ({ data: [] }),
+  useSyncStatus: () => ({ ...syncStatus }),
+}))
 
 describe('Perfil', () => {
   beforeEach(() => {
     updateProfile.mockReset().mockResolvedValue(undefined)
     signOut.mockReset().mockResolvedValue({ error: null })
+    syncStatus.offline = false
+    syncStatus.stale = false
   })
 
   it('shows group name, invite code and members', () => {
@@ -78,6 +85,21 @@ describe('Perfil', () => {
     expect(await screen.findByText('Algo deu errado. Tente de novo.')).toBeInTheDocument()
   })
 
+  it('says why the name cannot be saved yet', async () => {
+    renderWithProviders(<Perfil />)
+    const field = screen.getByLabelText('Nome')
+    await userEvent.clear(field)
+    await userEvent.type(field, 'L')
+    expect(screen.getByText('Use pelo menos 2 caracteres')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Salvar' })).not.toBeInTheDocument()
+  })
+
+  it('shows the offline pill in the header', () => {
+    syncStatus.offline = true
+    renderWithProviders(<Perfil />)
+    expect(screen.getByText('Sem conexão')).toBeInTheDocument()
+  })
+
   it('hides the copy button when the clipboard API is unavailable', () => {
     renderWithProviders(<Perfil />)
     expect(screen.queryByRole('button', { name: 'Copiar código' })).not.toBeInTheDocument()
@@ -89,5 +111,22 @@ describe('Perfil', () => {
     expect(signOut).not.toHaveBeenCalled()
     await userEvent.click(screen.getByRole('button', { name: 'Sair mesmo?' }))
     expect(signOut).toHaveBeenCalled()
+  })
+
+  it('shows your fish and opens the gallery in place', async () => {
+    renderWithProviders(<Perfil />)
+    expect(screen.getByText('Guppy')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Baiacu' })).toBeNull()
+    await userEvent.click(screen.getByRole('button', { name: /Trocar peixe/ }))
+    expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveAttribute('aria-disabled', 'true')
+    expect(screen.getByText('Sequência de 7 dias')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Guppy' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('picking an unlocked fish saves it', async () => {
+    renderWithProviders(<Perfil />)
+    await userEvent.click(screen.getByRole('button', { name: /Trocar peixe/ }))
+    await userEvent.click(screen.getByRole('button', { name: 'Betta' }))
+    expect(updateProfile).toHaveBeenCalledWith('u1', { fish_variant: 'betta' })
   })
 })

@@ -10,9 +10,15 @@ export function Guard({ children }: { children: ReactNode }) {
   const bootstrap = useBootstrap(session?.user.id)
   const location = useLocation()
 
-  if (loading) return null
+  const coldStart = (
+    <div className="flex min-h-dvh items-center justify-center bg-bg">
+      <p className="text-[20px] font-extrabold text-ink-2">{STRINGS.app.nome}</p>
+    </div>
+  )
+
+  if (loading) return coldStart
   if (!session) return <Navigate to="/entrar" replace />
-  if (bootstrap.isLoading) return null
+  if (bootstrap.isLoading) return coldStart
 
   if (bootstrap.isError && !bootstrap.data) {
     return (

@@ -70,7 +70,7 @@ export function BottleManager({ userId }: { userId: string | undefined }) {
                     onSave={(input) => void run(() => updateBottle(bottle.id, input))}
                   />
                   <Button
-                    variant="danger"
+                    variant={confirmando === bottle.id ? 'armed' : 'danger'}
                     disabled={busy}
                     onClick={() => {
                       if (confirmando !== bottle.id) return setConfirmando(bottle.id)

@@ -60,6 +60,14 @@ describe('EntryRow', () => {
     expect(screen.getByText('1,8 L')).toBeInTheDocument()
   })
 
+  it('marks the row aria-expanded and flips it on tap', async () => {
+    renderRow()
+    const row = screen.getByText(/Leo · 11:00/).closest('button')
+    expect(row).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.click(row!)
+    expect(row).toHaveAttribute('aria-expanded', 'true')
+  })
+
   it('expands to composition chips and actions on own rows', async () => {
     const onEdit = vi.fn()
     renderRow({ onEdit })
@@ -110,6 +118,11 @@ describe('EntryRow', () => {
   it('shows the pending dot while the entry waits in the outbox', () => {
     renderRow({ pending: true })
     expect(screen.getByRole('img', { name: 'Aguardando envio' })).toBeInTheDocument()
+  })
+
+  it('shows the failed dot with its own label', () => {
+    renderRow({ failed: true })
+    expect(screen.getByRole('img', { name: 'Falha ao enviar' })).toBeInTheDocument()
   })
 
   it('a failed entry shows the retry line and taps call onRetry', async () => {

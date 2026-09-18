@@ -11,19 +11,22 @@ export function SignUp() {
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState<CredentialErrors>({})
   const [failure, setFailure] = useState('')
+  const [confirmacao, setConfirmacao] = useState(false)
   const [busy, setBusy] = useState(false)
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault()
     setFailure('')
+    setConfirmacao(false)
     const found = validateCredentials(email, password)
     setErrors(found)
     if (found.email || found.password) return
 
     setBusy(true)
     try {
-      const { error } = await supabase.auth.signUp({ email: email.trim(), password })
+      const { data, error } = await supabase.auth.signUp({ email: email.trim(), password })
       if (error) setFailure(STRINGS.erro.generico)
+      else if (!data.session) setConfirmacao(true)
     } catch {
       setFailure(STRINGS.erro.generico)
     } finally {
@@ -51,8 +54,9 @@ export function SignUp() {
         onChange={(e) => setPassword(e.target.value)}
       />
       {failure ? <p className="mb-4 text-[13px] text-danger">{failure}</p> : null}
-      <Button type="submit" disabled={busy}>
-        {STRINGS.auth.criarConta}
+      {confirmacao ? <p className="mb-4 text-[13px] text-ok">{STRINGS.auth.confirmeEmail}</p> : null}
+      <Button type="submit" disabled={busy} aria-busy={busy || undefined}>
+        {busy ? STRINGS.auth.criandoConta : STRINGS.auth.criarConta}
       </Button>
       <Link to="/entrar" className="mt-6 block text-center text-[13px] font-bold text-ink-2">
         {STRINGS.auth.jaTenhoConta}

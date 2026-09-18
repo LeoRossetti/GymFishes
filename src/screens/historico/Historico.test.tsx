@@ -41,6 +41,7 @@ const row = (id: string, profile_id: string, total_ml: number, drank_on: string)
   updated_at: `${drank_on}T15:00:00+00:00`,
   deleted_at: null,
 })
+const syncStatus = vi.hoisted(() => ({ offline: false, stale: false }))
 vi.mock('@/features/entries/queries', () => ({
   useEntries: () => ({
     data: [
@@ -50,6 +51,7 @@ vi.mock('@/features/entries/queries', () => ({
       row('e4', 'u2', 500, '2026-07-15'),
     ],
   }),
+  useSyncStatus: () => ({ ...syncStatus }),
 }))
 
 function renderHistorico() {
@@ -66,8 +68,16 @@ describe('Historico', () => {
   beforeEach(() => {
     vi.useFakeTimers({ toFake: ['Date'] })
     vi.setSystemTime(new Date('2026-08-10T15:00:00Z'))
+    syncStatus.offline = false
+    syncStatus.stale = false
   })
   afterEach(() => vi.useRealTimers())
+
+  it('shows the offline pill in the header', () => {
+    syncStatus.offline = true
+    renderHistorico()
+    expect(screen.getByText('Sem conexão')).toBeInTheDocument()
+  })
 
   it('opens on your own current month with the footer', () => {
     renderHistorico()
@@ -86,14 +96,14 @@ describe('Historico', () => {
 
   it('opens a day detail with both totals and the rows', async () => {
     renderHistorico()
-    await userEvent.click(screen.getByRole('button', { name: 'segunda, 10 de agosto' }))
+    await userEvent.click(screen.getByRole('button', { name: 'segunda, 10 de agosto · 1,8 L' }))
     expect(screen.getByText('Você 1,8 L · Ana 2,3 L')).toBeInTheDocument()
     expect(screen.getByText(/Ana ·/)).toBeInTheDocument()
   })
 
   it('steps back a month and clears the selected day', async () => {
     renderHistorico()
-    await userEvent.click(screen.getByRole('button', { name: 'segunda, 3 de agosto' }))
+    await userEvent.click(screen.getByRole('button', { name: 'segunda, 3 de agosto · 3 L' }))
     expect(screen.getByText('Você 3 L · Ana 0 ml')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'Mês anterior' }))
     expect(screen.getByText('Julho', { selector: 'p' })).toBeInTheDocument()
