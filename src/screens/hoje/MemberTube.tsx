@@ -17,18 +17,21 @@ type Props = {
   scaleMl: number
 }
 
-const FISH_KNEE = 70
+/** Tube height in px (matches `h-[220px]` below). */
+export const TUBE_H = 220
+/** Fish width in px — about a third of the 160px tube. Height follows the 64×40 art box. */
+export const FISH_W = 44
+export const FISH_H = (FISH_W * 40) / 64
+/** Air between the fish's back and the surface, so the wave crest never cuts the fish. */
+const GAP = 4
 
 /**
- * Where the fish floats for a given fill %. It rides the surface until the
- * water nears the top, then decelerates tangentially (no kink) and stops at
- * 85% — submerged under the wave instead of clipped above the tube, which the
- * leader would otherwise hit at exactly 100% once past the 3 L scale floor.
+ * The fish's `bottom`, in px, for a given fill %: it swims just under the surface, and rests on
+ * the tube floor while the water is still shallower than the fish. Because it sits inside the
+ * water, a full tube never clips it — no special case is needed at 100%.
  */
-export function fishLevel(pct: number): number {
-  if (pct <= FISH_KNEE) return pct
-  const x = pct - FISH_KNEE
-  return FISH_KNEE + x - x ** 2 / (2 * (100 - FISH_KNEE))
+export function fishBottomPx(pct: number): number {
+  return Math.max(0, (pct / 100) * TUBE_H - FISH_H - GAP)
 }
 
 export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl }: Props) {
@@ -70,10 +73,10 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
           <motion.span
             aria-hidden
             className="absolute left-1/2 -translate-x-1/2"
-            animate={{ bottom: `${fishLevel(pct)}%` }}
+            animate={{ bottom: `${fishBottomPx(pct)}px` }}
             transition={spring}
           >
-            <Fish variant={fishOf(fishVariant)} size={28} state="idle" />
+            <Fish variant={fishOf(fishVariant)} size={FISH_W} state="idle" />
           </motion.span>
         ) : null}
       </div>

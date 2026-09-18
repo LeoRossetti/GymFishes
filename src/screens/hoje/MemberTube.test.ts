@@ -1,34 +1,34 @@
 import { describe, expect, it } from 'vitest'
-import { fishLevel } from './MemberTube'
+import { FISH_H, FISH_W, TUBE_H, fishBottomPx } from './MemberTube'
 
-describe('fishLevel', () => {
-  it('rides the surface exactly below the knee', () => {
-    expect(fishLevel(0)).toBe(0)
-    expect(fishLevel(40)).toBe(40)
-    expect(fishLevel(70)).toBe(70)
+describe('fishBottomPx', () => {
+  it('draws a fish a third of the tube wide', () => {
+    expect(FISH_W).toBe(44)
+    expect(FISH_H).toBeCloseTo((44 * 40) / 64)
   })
 
-  it('leaves the surface smoothly, with no jump at the knee', () => {
-    expect(fishLevel(71)).toBeGreaterThan(70.9)
-    expect(fishLevel(71)).toBeLessThan(71)
+  it('sits on the bottom while the water is shallower than the fish', () => {
+    expect(fishBottomPx(0)).toBe(0)
+    expect(fishBottomPx(5)).toBe(0)
   })
 
-  it('settles submerged at 85 when the tube is full', () => {
-    expect(fishLevel(100)).toBe(85)
-  })
-
-  it('always stays at or under the water surface', () => {
-    for (let pct = 0; pct <= 100; pct += 5) {
-      expect(fishLevel(pct)).toBeLessThanOrEqual(pct)
+  it('keeps the fish under the surface once there is room', () => {
+    for (let pct = 20; pct <= 100; pct += 5) {
+      const water = (pct / 100) * TUBE_H
+      expect(fishBottomPx(pct) + FISH_H).toBeLessThanOrEqual(water)
     }
+  })
+
+  it('stays fully inside the tube when the tube is full', () => {
+    expect(fishBottomPx(100) + FISH_H).toBeLessThanOrEqual(TUBE_H)
   })
 
   it('never moves down while the water rises', () => {
     let last = -1
     for (let pct = 0; pct <= 100; pct += 1) {
-      const level = fishLevel(pct)
-      expect(level).toBeGreaterThanOrEqual(last)
-      last = level
+      const bottom = fishBottomPx(pct)
+      expect(bottom).toBeGreaterThanOrEqual(last)
+      last = bottom
     }
   })
 })

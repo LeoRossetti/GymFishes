@@ -191,7 +191,8 @@ avatar on the right (tap → Perfil).
 **Progress card** — a horizontally scrollable strip of member columns. Each column is a
 tube: flat dark base, 2px border, and a flat blue fill whose height is that member's total
 for today. The top of the fill is a **live wave surface**, not a straight edge — see
-[Water surface](#water-surface). The member's fish rides at that surface. Below the tube:
+[Water surface](#water-surface). The member's fish swims just under that surface, and rests on
+the bottom while the water is still shallower than the fish. Below the tube:
 the total ("1,8 L") and the name ("VOCÊ", "ELA").
 
 The tube's full height is scaled to `max(3000, highestTotalToday)` ml, so the columns stay
