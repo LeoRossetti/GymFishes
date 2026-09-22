@@ -3,7 +3,7 @@
 Criterion: *cold start to interactive on 4G, installed to home screen: < 2 seconds.*
 
 Run date: 2026-09-22 (America/Sao_Paulo project; Lighthouse `fetchTime` in the raw JSON
-spans UTC ~04:37–05:57 across both rounds below).
+spans UTC ~04:37–04:57 across both rounds below).
 
 **Status: revised after fix round 1.** Round 1 shipped four vendor chunks (react, supabase,
 motion, query) and measured only the uncached path, which showed the split landing slightly
@@ -86,12 +86,12 @@ what it claims to.
 | uncached first load — one vendor chunk (shipped) | 2.4 s | 2.5 s | 390 ms | 2.4 s | 3.1 s |
 | cold start, shell precached — one vendor chunk (shipped) | 1.1 s | 1.1 s | 0 ms | 1.1 s | 1.1 s |
 
-TBT is the noisiest of the five metrics on this shared, non-dedicated machine — round 1's
-four-chunk build showed TBT ranging 70/310/100 ms across three back-to-back runs of the same
-build, so the 390 ms on the shipped single-vendor row should be read as "elevated and noisy,"
-not as a precise value; FCP/LCP/SI/interactive were the steadier signal across repeats. The
-precached row's numbers were not repeated (each installed-prime + installed pair is expensive
-to set up); they are a single measurement, reported as measured.
+TBT is the noisiest of the five metrics on this shared, non-dedicated machine: it was 70 ms
+before any split, then 310 ms and 100 ms across two runs of the four-chunk build, so the
+390 ms on the shipped single-vendor row should be read as "elevated and noisy," not as a
+precise value; FCP/LCP/SI/interactive were the steadier signal across repeats. The precached
+row's numbers were not repeated (each installed-prime + installed pair is expensive to set
+up); they are a single measurement, reported as measured.
 
 ## Chunk sizes — JS and CSS assets only (`vite build` output, shipped single-vendor config)
 
