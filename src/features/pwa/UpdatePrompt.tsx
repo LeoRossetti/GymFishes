@@ -26,7 +26,7 @@ export function UpdatePrompt() {
           aria-busy={busy || undefined}
           onClick={() => {
             setBusy(true)
-            void apply()
+            apply().catch(() => setBusy(false))
           }}
         >
           {busy ? STRINGS.atualizacao.atualizando : STRINGS.atualizacao.atualizar}
