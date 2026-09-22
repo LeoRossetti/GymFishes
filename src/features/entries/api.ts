@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import type { TablesInsert } from '@/lib/database.types'
+import { fetchAllPages } from './sync'
 import type { Entry } from './cache'
 
 export type EntryPatch = Partial<
@@ -13,14 +14,21 @@ export async function updateEntry(id: string, patch: EntryPatch): Promise<void> 
 
 /**
  * Watermark read (spec §12): everything that changed since `since`, INCLUDING soft-deleted
- * rows — that is what makes deletions sync. Ordered ascending so the newest lands last.
+ * rows — that is what makes deletions sync. On the first-ever sync there is nothing to
+ * un-delete, so deleted rows are skipped; any newer than the resulting watermark are
+ * fetched (and dropped) on every incremental pass until a newer live row moves the watermark. Paged, because PostgREST caps at 1000.
  */
-export async function fetchEntriesSince(groupId: string, since: string | undefined): Promise<Entry[]> {
-  let query = supabase.from('entries').select('*').eq('group_id', groupId)
-  if (since !== undefined) query = query.gt('updated_at', since)
-  const { data, error } = await query.order('updated_at', { ascending: true })
-  if (error) throw error
-  return data
+export function fetchEntriesSince(groupId: string, since: string | undefined): Promise<Entry[]> {
+  return fetchAllPages(async (from, to) => {
+    let query = supabase.from('entries').select('*').eq('group_id', groupId)
+    query = since === undefined ? query.is('deleted_at', null) : query.gt('updated_at', since)
+    const { data, error } = await query
+      .order('updated_at', { ascending: true })
+      .order('id', { ascending: true })
+      .range(from, to)
+    if (error) throw error
+    return data
+  })
 }
 
 /** Entry ids are client-generated, so a re-sent insert is an idempotent upsert (spec §12). */

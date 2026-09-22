@@ -4,8 +4,10 @@ import { useSession } from '@/features/auth/AuthProvider'
 import { useBootstrap } from '@/features/profile/useBootstrap'
 import { updateProfile } from '@/features/profile/mutations'
 import { ACCENTS, ACCENT_BG, accentOf } from '@/lib/accents'
+import { formatBuildDate } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
 import { supabase } from '@/lib/supabase'
+import { APP_VERSION, BUILD_DATE } from '@/lib/version'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
 import { SyncPill } from '@/screens/hoje/SyncPill'
@@ -119,6 +121,10 @@ export function Perfil() {
       >
         {confirmandoSaida ? STRINGS.perfil.sairMesmo : STRINGS.auth.sair}
       </Button>
+
+      <p className="mt-6 pb-2 text-center text-[11px] text-ink-2">
+        {STRINGS.perfil.sobre(APP_VERSION, formatBuildDate(BUILD_DATE))}
+      </p>
     </div>
   )
 }

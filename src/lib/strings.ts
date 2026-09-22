@@ -112,6 +112,7 @@ export const STRINGS = {
     grupo: 'Grupo',
     membros: 'Membros',
     sairMesmo: 'Sair mesmo?',
+    sobre: (versao: string, data: string) => `Versão ${versao} · ${data}`,
   },
   peixes: {
     seuPeixe: 'Seu peixe',
@@ -197,5 +198,10 @@ export const STRINGS = {
     falhou: 'Falha ao enviar',
     falhaTentarNovamente: 'Falha ao enviar — tentar novamente',
     desatualizado: 'Dados desatualizados',
+  },
+  atualizacao: {
+    disponivel: 'Nova versão disponível',
+    atualizar: 'Atualizar',
+    atualizando: 'Atualizando…',
   },
 } as const

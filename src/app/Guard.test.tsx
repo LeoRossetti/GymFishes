@@ -1,13 +1,14 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router'
+import { MemoryRouter, Route, Routes } from 'react-router'
 import { Guard } from './Guard'
 
 const refetch = vi.fn()
 let bootstrapState: {
-  isLoading: boolean
+  isPending: boolean
   isError: boolean
+  fetchStatus: 'fetching' | 'paused' | 'idle'
   data: unknown
   refetch: () => void
 }
@@ -24,7 +25,7 @@ describe('Guard', () => {
   beforeEach(() => {
     refetch.mockReset()
     sessionState = { session: { user: { id: 'user-1' } }, loading: false }
-    bootstrapState = { isLoading: false, isError: true, data: undefined, refetch }
+    bootstrapState = { isPending: false, isError: true, fetchStatus: 'idle', data: undefined, refetch }
   })
 
   it('shows the app name while the session is resolving', () => {
@@ -40,8 +41,8 @@ describe('Guard', () => {
     expect(screen.queryByText('Conteúdo protegido')).not.toBeInTheDocument()
   })
 
-  it('shows the app name while bootstrap is loading', () => {
-    bootstrapState = { isLoading: true, isError: false, data: undefined, refetch }
+  it('shows the app name while bootstrap has no data yet', () => {
+    bootstrapState = { isPending: true, isError: false, fetchStatus: 'idle', data: undefined, refetch }
     render(
       <MemoryRouter initialEntries={['/hoje']}>
         <Guard>
@@ -51,6 +52,27 @@ describe('Guard', () => {
     )
     expect(screen.getByText('GymFishes')).toBeInTheDocument()
     expect(screen.queryByText('Conteúdo protegido')).not.toBeInTheDocument()
+  })
+
+  it('does not redirect to onboarding while bootstrap is pending', () => {
+    bootstrapState = { isPending: true, isError: false, fetchStatus: 'idle', data: undefined, refetch }
+    render(
+      <MemoryRouter initialEntries={['/ranking']}>
+        <Routes>
+          <Route
+            path="/ranking"
+            element={
+              <Guard>
+                <div>Conteúdo protegido</div>
+              </Guard>
+            }
+          />
+          <Route path="/inicio" element={<div>Onboarding</div>} />
+        </Routes>
+      </MemoryRouter>,
+    )
+    expect(screen.queryByText('Onboarding')).not.toBeInTheDocument()
+    expect(screen.getByText('GymFishes')).toBeInTheDocument()
   })
 
   it('shows the retry UI instead of redirecting to /inicio when bootstrap fails', async () => {
@@ -70,7 +92,7 @@ describe('Guard', () => {
   })
 
   it('shows the retry UI when bootstrap fails and there is no cached data', () => {
-    bootstrapState = { isLoading: false, isError: true, data: undefined, refetch }
+    bootstrapState = { isPending: false, isError: true, fetchStatus: 'idle', data: undefined, refetch }
     render(
       <MemoryRouter initialEntries={['/hoje']}>
         <Guard>
@@ -85,8 +107,9 @@ describe('Guard', () => {
 
   it('renders children instead of the error screen when a cached bootstrap survives a refetch error', () => {
     bootstrapState = {
-      isLoading: false,
+      isPending: false,
       isError: true,
+      fetchStatus: 'idle',
       data: { profile: { id: 'user-1' }, groupId: 'group-1' },
       refetch,
     }
@@ -100,5 +123,20 @@ describe('Guard', () => {
 
     expect(screen.getByText('Conteúdo protegido')).toBeInTheDocument()
     expect(screen.queryByText('Algo deu errado. Tente de novo.')).not.toBeInTheDocument()
+  })
+
+  it('says "Sem conexão" with a retry when bootstrap is paused offline with no data', () => {
+    bootstrapState = { isPending: true, isError: false, fetchStatus: 'paused', data: undefined, refetch }
+    render(
+      <MemoryRouter initialEntries={['/hoje']}>
+        <Guard>
+          <div>Conteúdo protegido</div>
+        </Guard>
+      </MemoryRouter>,
+    )
+    expect(screen.getByText('Sem conexão')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Recarregar' })).toBeInTheDocument()
+    expect(screen.queryByText('GymFishes')).not.toBeInTheDocument()
+    expect(screen.queryByText('Conteúdo protegido')).not.toBeInTheDocument()
   })
 })

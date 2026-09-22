@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { Entry } from './cache'
-import { runEntriesSync } from './sync'
+import { fetchAllPages, runEntriesSync } from './sync'
 
 function makeEntry(overrides: Partial<Entry>): Entry {
   return {
@@ -46,5 +46,34 @@ describe('runEntriesSync', () => {
     const fetchSince = vi.fn().mockResolvedValue([])
     await runEntriesSync({ groupId: 'g1', prev: [], queued: new Set(), fetchSince })
     expect(fetchSince).toHaveBeenCalledWith('g1', undefined)
+  })
+})
+
+describe('fetchAllPages', () => {
+  it('keeps asking until a page comes back short', async () => {
+    const calls: Array<[number, number]> = []
+    const rows = await fetchAllPages(async (from, to) => {
+      calls.push([from, to])
+      return from === 0 ? [0, 1, 2] : [3]
+    }, 3)
+    expect(rows).toEqual([0, 1, 2, 3])
+    expect(calls).toEqual([
+      [0, 2],
+      [3, 5],
+    ])
+  })
+
+  it('stops after a single short page', async () => {
+    const calls: Array<[number, number]> = []
+    const rows = await fetchAllPages(async (from, to) => {
+      calls.push([from, to])
+      return ['a', 'b']
+    }, 3)
+    expect(rows).toEqual(['a', 'b'])
+    expect(calls).toEqual([[0, 2]])
+  })
+
+  it('returns an empty list for an empty first page', async () => {
+    expect(await fetchAllPages(async () => [], 3)).toEqual([])
   })
 })

@@ -6,6 +6,8 @@ import { CelebrationProvider } from '@/features/celebrations/CelebrationProvider
 import type { Entry } from '@/features/entries/cache'
 import { useRealtimeEntries } from '@/features/entries/realtime'
 import { useOutboxFlush } from '@/features/entries/flush'
+import { useAppUpdate } from '@/features/pwa/registerSW'
+import { UpdatePrompt } from '@/features/pwa/UpdatePrompt'
 import { useBootstrap } from '@/features/profile/useBootstrap'
 import { RegisterSheet } from '@/screens/registrar/RegisterSheet'
 import { ToastProvider } from '@/ui/Toast'
@@ -21,15 +23,18 @@ export function AppShell() {
   const bootstrap = useBootstrap(session?.user.id)
   useRealtimeEntries(bootstrap.data?.groupId)
   useOutboxFlush()
+  const update = useAppUpdate()
   return (
     <ToastProvider>
       <CelebrationProvider>
-        <div className="min-h-dvh pb-24">
+        <div className={`min-h-dvh ${update.ready ? 'pb-48' : 'pb-24'}`}>
           <ErrorBoundary key={location.pathname}>
             <Outlet
               context={{ openRegister: (entry?: Entry) => setSheet({ entry }) } satisfies ShellContext}
             />
           </ErrorBoundary>
+          {/* Lives in the shell so the page can reserve its space; a waiting build applies itself on the next cold open anyway, so the login screen does not need it. */}
+          <UpdatePrompt {...update} />
           <AnimatePresence>
             {sheet ? <RegisterSheet entry={sheet.entry} onClose={() => setSheet(null)} /> : null}
           </AnimatePresence>
