@@ -199,4 +199,9 @@ export const STRINGS = {
     falhaTentarNovamente: 'Falha ao enviar — tentar novamente',
     desatualizado: 'Dados desatualizados',
   },
+  atualizacao: {
+    disponivel: 'Nova versão disponível',
+    atualizar: 'Atualizar',
+    atualizando: 'Atualizando…',
+  },
 } as const
