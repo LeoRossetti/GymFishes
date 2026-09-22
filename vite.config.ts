@@ -22,7 +22,7 @@ export default defineConfig({
       manifest: false,
       workbox: {
         // App shell only. No runtimeCaching: Supabase is never cached by the worker (spec §9).
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest}'],
         navigateFallback: '/index.html',
       },
     }),

@@ -49,7 +49,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PersistQueryClientProvider
       client={queryClient}
-      // A version bump discards the persisted mirror, so a changed Entry shape can never rehydrate old rows (roadmap M6). The outbox and seen_unlocks live elsewhere and survive.
+      // A version bump discards the persisted mirror, so a changed Entry shape can never rehydrate old rows (roadmap M6). The outbox and seen_unlocks live elsewhere and survive. The outbox survives, so a changed Entry shape still needs a migration for queued ops.
       persistOptions={{ persister, maxAge: PERSIST_MAX_AGE, buster: APP_VERSION }}
     >
       <BrowserRouter>

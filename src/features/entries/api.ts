@@ -16,7 +16,7 @@ export async function updateEntry(id: string, patch: EntryPatch): Promise<void> 
  * Watermark read (spec §12): everything that changed since `since`, INCLUDING soft-deleted
  * rows — that is what makes deletions sync. On the first-ever sync there is nothing to
  * un-delete, so deleted rows are skipped; any newer than the resulting watermark are
- * fetched (and dropped) on the next incremental pass. Paged, because PostgREST caps at 1000.
+ * fetched (and dropped) on every incremental pass until a newer live row moves the watermark. Paged, because PostgREST caps at 1000.
  */
 export function fetchEntriesSince(groupId: string, since: string | undefined): Promise<Entry[]> {
   return fetchAllPages(async (from, to) => {

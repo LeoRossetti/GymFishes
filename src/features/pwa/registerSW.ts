@@ -18,7 +18,7 @@ export function useAppUpdate(): AppUpdate {
   useEffect(() => {
     const check = () => {
       if (document.visibilityState !== 'visible') return
-      void navigator.serviceWorker?.getRegistration().then((registration) => registration?.update())
+      void navigator.serviceWorker?.getRegistration().then((registration) => registration?.update()).catch(() => {})
     }
     document.addEventListener('visibilitychange', check)
     return () => document.removeEventListener('visibilitychange', check)

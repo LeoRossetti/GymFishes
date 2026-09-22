@@ -8,6 +8,7 @@ const refetch = vi.fn()
 let bootstrapState: {
   isPending: boolean
   isError: boolean
+  fetchStatus: 'fetching' | 'paused' | 'idle'
   data: unknown
   refetch: () => void
 }
@@ -24,7 +25,7 @@ describe('Guard', () => {
   beforeEach(() => {
     refetch.mockReset()
     sessionState = { session: { user: { id: 'user-1' } }, loading: false }
-    bootstrapState = { isPending: false, isError: true, data: undefined, refetch }
+    bootstrapState = { isPending: false, isError: true, fetchStatus: 'idle', data: undefined, refetch }
   })
 
   it('shows the app name while the session is resolving', () => {
@@ -41,7 +42,7 @@ describe('Guard', () => {
   })
 
   it('shows the app name while bootstrap has no data yet', () => {
-    bootstrapState = { isPending: true, isError: false, data: undefined, refetch }
+    bootstrapState = { isPending: true, isError: false, fetchStatus: 'idle', data: undefined, refetch }
     render(
       <MemoryRouter initialEntries={['/hoje']}>
         <Guard>
@@ -54,7 +55,7 @@ describe('Guard', () => {
   })
 
   it('does not redirect to onboarding while bootstrap is pending', () => {
-    bootstrapState = { isPending: true, isError: false, data: undefined, refetch }
+    bootstrapState = { isPending: true, isError: false, fetchStatus: 'idle', data: undefined, refetch }
     render(
       <MemoryRouter initialEntries={['/ranking']}>
         <Routes>
@@ -91,7 +92,7 @@ describe('Guard', () => {
   })
 
   it('shows the retry UI when bootstrap fails and there is no cached data', () => {
-    bootstrapState = { isPending: false, isError: true, data: undefined, refetch }
+    bootstrapState = { isPending: false, isError: true, fetchStatus: 'idle', data: undefined, refetch }
     render(
       <MemoryRouter initialEntries={['/hoje']}>
         <Guard>
@@ -108,6 +109,7 @@ describe('Guard', () => {
     bootstrapState = {
       isPending: false,
       isError: true,
+      fetchStatus: 'idle',
       data: { profile: { id: 'user-1' }, groupId: 'group-1' },
       refetch,
     }
@@ -121,5 +123,20 @@ describe('Guard', () => {
 
     expect(screen.getByText('Conteúdo protegido')).toBeInTheDocument()
     expect(screen.queryByText('Algo deu errado. Tente de novo.')).not.toBeInTheDocument()
+  })
+
+  it('says "Sem conexão" with a retry when bootstrap is paused offline with no data', () => {
+    bootstrapState = { isPending: true, isError: false, fetchStatus: 'paused', data: undefined, refetch }
+    render(
+      <MemoryRouter initialEntries={['/hoje']}>
+        <Guard>
+          <div>Conteúdo protegido</div>
+        </Guard>
+      </MemoryRouter>,
+    )
+    expect(screen.getByText('Sem conexão')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Recarregar' })).toBeInTheDocument()
+    expect(screen.queryByText('GymFishes')).not.toBeInTheDocument()
+    expect(screen.queryByText('Conteúdo protegido')).not.toBeInTheDocument()
   })
 })
