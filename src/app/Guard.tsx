@@ -18,7 +18,9 @@ export function Guard({ children }: { children: ReactNode }) {
 
   if (loading) return coldStart
   if (!session) return <Navigate to="/entrar" replace />
-  if (bootstrap.isLoading) return coldStart
+  // isPending = no data yet, whatever the fetch status; isLoading is false for a tick after the
+  // query is enabled and would send a reloading tab through onboarding.
+  if (bootstrap.isPending) return coldStart
 
   if (bootstrap.isError && !bootstrap.data) {
     return (

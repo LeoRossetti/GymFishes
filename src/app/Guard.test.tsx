@@ -1,12 +1,12 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router'
+import { MemoryRouter, Route, Routes } from 'react-router'
 import { Guard } from './Guard'
 
 const refetch = vi.fn()
 let bootstrapState: {
-  isLoading: boolean
+  isPending: boolean
   isError: boolean
   data: unknown
   refetch: () => void
@@ -24,7 +24,7 @@ describe('Guard', () => {
   beforeEach(() => {
     refetch.mockReset()
     sessionState = { session: { user: { id: 'user-1' } }, loading: false }
-    bootstrapState = { isLoading: false, isError: true, data: undefined, refetch }
+    bootstrapState = { isPending: false, isError: true, data: undefined, refetch }
   })
 
   it('shows the app name while the session is resolving', () => {
@@ -40,8 +40,8 @@ describe('Guard', () => {
     expect(screen.queryByText('Conteúdo protegido')).not.toBeInTheDocument()
   })
 
-  it('shows the app name while bootstrap is loading', () => {
-    bootstrapState = { isLoading: true, isError: false, data: undefined, refetch }
+  it('shows the app name while bootstrap has no data yet', () => {
+    bootstrapState = { isPending: true, isError: false, data: undefined, refetch }
     render(
       <MemoryRouter initialEntries={['/hoje']}>
         <Guard>
@@ -51,6 +51,27 @@ describe('Guard', () => {
     )
     expect(screen.getByText('GymFishes')).toBeInTheDocument()
     expect(screen.queryByText('Conteúdo protegido')).not.toBeInTheDocument()
+  })
+
+  it('does not redirect to onboarding while bootstrap is pending', () => {
+    bootstrapState = { isPending: true, isError: false, data: undefined, refetch }
+    render(
+      <MemoryRouter initialEntries={['/ranking']}>
+        <Routes>
+          <Route
+            path="/ranking"
+            element={
+              <Guard>
+                <div>Conteúdo protegido</div>
+              </Guard>
+            }
+          />
+          <Route path="/inicio" element={<div>Onboarding</div>} />
+        </Routes>
+      </MemoryRouter>,
+    )
+    expect(screen.queryByText('Onboarding')).not.toBeInTheDocument()
+    expect(screen.getByText('GymFishes')).toBeInTheDocument()
   })
 
   it('shows the retry UI instead of redirecting to /inicio when bootstrap fails', async () => {
@@ -70,7 +91,7 @@ describe('Guard', () => {
   })
 
   it('shows the retry UI when bootstrap fails and there is no cached data', () => {
-    bootstrapState = { isLoading: false, isError: true, data: undefined, refetch }
+    bootstrapState = { isPending: false, isError: true, data: undefined, refetch }
     render(
       <MemoryRouter initialEntries={['/hoje']}>
         <Guard>
@@ -85,7 +106,7 @@ describe('Guard', () => {
 
   it('renders children instead of the error screen when a cached bootstrap survives a refetch error', () => {
     bootstrapState = {
-      isLoading: false,
+      isPending: false,
       isError: true,
       data: { profile: { id: 'user-1' }, groupId: 'group-1' },
       refetch,
