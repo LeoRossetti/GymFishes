@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { useAppUpdate } from '@/features/pwa/registerSW'
+import type { AppUpdate } from '@/features/pwa/registerSW'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
 
 /** "Nova versão disponível — atualizar" (spec §9). Informs and offers; never reloads on its own. */
-export function UpdatePrompt() {
-  const { ready, apply } = useAppUpdate()
+export function UpdatePrompt({ ready, apply }: AppUpdate) {
   const reduced = useReducedMotion()
   const [busy, setBusy] = useState(false)
   if (!ready) return null
