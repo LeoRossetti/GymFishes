@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
 export type AppUpdate = { ready: boolean; apply: () => Promise<void> }
@@ -12,13 +13,16 @@ export function useAppUpdate(): AppUpdate {
   const {
     needRefresh: [ready],
     updateServiceWorker,
-  } = useRegisterSW({
-    onRegisteredSW(_url, registration) {
-      if (!registration) return
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') void registration.update()
-      })
-    },
-  })
+  } = useRegisterSW()
+
+  useEffect(() => {
+    const check = () => {
+      if (document.visibilityState !== 'visible') return
+      void navigator.serviceWorker?.getRegistration().then((registration) => registration?.update())
+    }
+    document.addEventListener('visibilitychange', check)
+    return () => document.removeEventListener('visibilitychange', check)
+  }, [])
+
   return { ready, apply: () => updateServiceWorker(true) }
 }
