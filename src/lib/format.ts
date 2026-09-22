@@ -24,6 +24,18 @@ export function formatDateLong(d: Date): string {
   return `${weekday}, ${get('day')} de ${get('month')}`
 }
 
+const SHORT_DATE = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: APP_TZ,
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+})
+
+/** Build stamp for Perfil › Sobre — the one place the app shows a year. */
+export function formatBuildDate(iso: string): string {
+  return SHORT_DATE.format(new Date(iso))
+}
+
 const TIME = new Intl.DateTimeFormat('pt-BR', {
   timeZone: APP_TZ,
   hour: '2-digit',

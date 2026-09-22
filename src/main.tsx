@@ -8,6 +8,7 @@ import { QueryClient, useQueryClient } from '@tanstack/react-query'
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { idbStorage } from '@/lib/idb'
+import { APP_VERSION } from '@/lib/version'
 import './styles/tokens.css'
 import './styles/globals.css'
 import { AuthProvider } from '@/features/auth/AuthProvider'
@@ -48,7 +49,8 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister, maxAge: PERSIST_MAX_AGE }}
+      // A version bump discards the persisted mirror, so a changed Entry shape can never rehydrate old rows (roadmap M6). The outbox and seen_unlocks live elsewhere and survive.
+      persistOptions={{ persister, maxAge: PERSIST_MAX_AGE, buster: APP_VERSION }}
     >
       <BrowserRouter>
         <AuthProvider>

@@ -112,6 +112,7 @@ export const STRINGS = {
     grupo: 'Grupo',
     membros: 'Membros',
     sairMesmo: 'Sair mesmo?',
+    sobre: (versao: string, data: string) => `Versão ${versao} · ${data}`,
   },
   peixes: {
     seuPeixe: 'Seu peixe',

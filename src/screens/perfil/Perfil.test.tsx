@@ -129,4 +129,9 @@ describe('Perfil', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Betta' }))
     expect(updateProfile).toHaveBeenCalledWith('u1', { fish_variant: 'betta' })
   })
+
+  it('shows the app version and build date under Sair', () => {
+    renderWithProviders(<Perfil />)
+    expect(screen.getByText(/^Versão \d+\.\d+\.\d+ · \d{2}\/\d{2}\/\d{4}$/)).toBeInTheDocument()
+  })
 })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatDateLong, formatDayLong, formatDayShort, formatMonthTitle, formatPeriodLabel, formatTime, formatVolume } from './format'
+import { formatBuildDate, formatDateLong, formatDayLong, formatDayShort, formatMonthTitle, formatPeriodLabel, formatTime, formatVolume } from './format'
 import { allPeriod, dayPeriod, monthPeriod, weekPeriod } from './periods'
 
 describe('formatVolume', () => {
@@ -87,5 +87,12 @@ describe('formatPeriodLabel', () => {
   it('renders all-time from the first register', () => {
     expect(formatPeriodLabel(allPeriod('2026-06-12', today), today)).toBe('Desde 12 de junho')
     expect(formatPeriodLabel(allPeriod('2025-06-12', today), today)).toBe('Desde 12 de junho de 2025')
+  })
+})
+
+describe('formatBuildDate', () => {
+  it('formats the build stamp as dd/mm/yyyy in São Paulo time', () => {
+    // 02:30 UTC on the 22nd is still the 21st in America/Sao_Paulo (UTC-3)
+    expect(formatBuildDate('2026-09-22T02:30:00.000Z')).toBe('21/09/2026')
   })
 })
