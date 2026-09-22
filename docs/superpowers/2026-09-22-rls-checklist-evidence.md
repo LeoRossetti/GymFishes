@@ -97,14 +97,37 @@ model means `deleted_at` rows stay in the table. Only the two new rows (E's `580
 | 5b | F cannot upload into the real group's prefix (`POST /storage/v1/object/photos/<real gid>/<F>/x.jpg`) | **PASS** | 400 | Body: `{"statusCode":"403","error":"Unauthorized","message":"new row violates row-level security policy","code":"AccessDenied"}` — same wrapped-403 shape as September |
 | 5c | *Positive control:* E signs its own photo (`POST /storage/v1/object/sign/photos/<E path>` `{"expiresIn":60}`) | **PASS** | 200 | `signedURL` present (token redacted) |
 | 5c | *Positive control:* F, same group, signs the same path | **PASS** | 200 | `signedURL` present (token redacted) |
-| 5d | F cannot sign a path under the real prefix | **PASS** | 400 | Body: `{"statusCode":"404","error":"not_found","message":"Object not found","code":"NoSuchKey"}` |
+| 5d | F cannot sign a path under the real prefix | **PASS**\* | 400 | Body: `{"statusCode":"404","error":"not_found","message":"Object not found","code":"NoSuchKey"}` — \*caveated, see note below the table |
 | 6 | F cannot insert itself into the real group directly (`POST /group_members`) | **PASS** | 403 `42501` | `new row violates row-level security policy for table "group_members"`. Confirmed via F's own read: `group_members` = `{E's group}` only |
-| 7 | Invalid invite code (`rpc/join_group {"code":"XXXXXX"}`) | **PASS** | 400 `P0001` | `message: "invalid_code"`. Confirmed via F's own read: memberships unchanged |
+| 7 | Invalid invite code (`rpc/join_group {"code":"XXXXXX"}`) | **PASS** | 400 `P0001` | `message: "invalid_code"`. Confirmed via F's own read, recorded at the time: `GET /rest/v1/group_members?profile_id=eq.<F>&select=group_id` → 200, `[{"group_id":"fac9ffe0-9a80-4515-8d38-e3f7647db914"}]` — the same single row as right after F legitimately joined via the valid code (setup, above); the invalid-code attempt added nothing |
 | — | *Positive control:* F **can** read E's entry in the shared group | **PASS** | 200, 9 rows (incl. E's and F's test entries) | |
 | — | *Positive control:* F **can** insert its own 300 ml entry | **PASS** | 201 | id `5b9f2571-4434-4f8c-8c0a-3e473a2af8bf` |
 | — | *Positive control:* E **can** read both test entries | **PASS** | 200, same 9 rows | |
 
 **All 7 negative checks pass, all positive controls pass. No BLOCKED items.**
+
+### Check 3 nuance
+
+The first `PATCH /rest/v1/entries?id=eq.<E entry>` attempt (as F, no `Prefer` header) returned
+`204` with no body — PostgREST's default response shape for an update, which does not by itself
+distinguish "0 rows matched" from "N rows matched but the response was suppressed." That 204 was
+re-run with `Prefer: return=representation` to get the `200 []` shown in the table, which is
+conclusive: an empty array means literally no row was returned to F for updating. Either response
+form is conclusive only together with the follow-up read (as E) that shows the entry's
+`deleted_at` is still `null` — which the table already records.
+
+### Check 5d caveat
+
+A `400`/`NoSuchKey`/`Object not found` when F tries to sign a path under the real group's prefix
+cannot, by itself, distinguish "RLS denied the read" from "no object exists at that literal path" —
+Supabase Storage's `sign` endpoint masks both cases behind the same 404-style body (this matches
+the September document's note on its analogous check). So 5d does not carry the negative on its
+own; it's included for completeness because the brief asks for it ("record what comes back"). The
+conclusive negative for reads under the real group's storage prefix is **check 5a**: F's
+`POST /storage/v1/object/list/photos` with `{"prefix":"<real gid>/","limit":100}` returns `200 []`,
+which is governed directly by RLS on `storage.objects` `select` — a real, populated prefix (the
+admin verification below shows 2 real photo objects exist under it) returning empty to F only
+because RLS filters them out, not because they don't exist.
 
 No PostgREST quirk was hit this run (unlike September's `Prefer: return=representation` on a bare
 insert triggering a false-negative `403`) — every `POST` (insert) in this run was sent **without**
@@ -192,9 +215,14 @@ POST /storage/v1/object/list/photos  {"prefix":"<E group>/<E>/","limit":100}  [B
   -> 200, []                                              (photo object gone)
 ```
 
-Nothing was ever written under the real group: every negative-check write attempt against it
-(checks 3, 4, 5b, 5d, 6, 7) was rejected by RLS as shown in the results table above, and the
-closing admin queries confirm zero rows/objects under the real group id or its storage prefix
-attributable to F's or E's uid.
+Nothing was ever written under the real group: the two checks that actually attempt a write
+against the real group id (5b — upload; 6 — `group_members` insert) were both rejected by RLS as
+shown in the results table above, and the closing admin queries confirm zero rows/objects under
+the real group id or its storage prefix attributable to F's or E's uid. Checks 1, 5a and 5d are
+reads against the real group (also all correctly denied or, for 5d, inconclusive on its own — see
+the caveat above). Checks 3 and 4 target a different boundary entirely: they show F cannot write
+E's rows even though both accounts share a group — E's throwaway "E2E" group, never the real
+group — so they are not part of the "real group" write list at all. Check 7 writes nothing
+anywhere (an invalid code short-circuits before any `insert`).
 
 **All 7 negative checks pass. All positive controls pass. Clean-up confirmed. No BLOCKED items.**
