@@ -37,6 +37,9 @@ npm run dev                 # abre o app em http://localhost:5173
 As duas chaves ficam no painel do projeto em [supabase.com](https://supabase.com)
 (Settings → API): a "Project URL" e a chave "anon public".
 
+Para rodar o teste ponta a ponta (abre o app num iPhone simulado e registra 500 ml):
+`npm run e2e`, com `E2E_EMAIL` e `E2E_PASSWORD` preenchidos no `.env.local`.
+
 ## 🗂️ Como o projeto é organizado
 
 ```

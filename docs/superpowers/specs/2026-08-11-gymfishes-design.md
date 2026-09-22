@@ -100,6 +100,7 @@ Every decision below was explicitly settled during design. Recorded so we don't 
 | i18n | None — pt-BR strings in one module | Single locale forever |
 | Overriding constraint | **Never overcomplicate anything** | Simplicity is a product feature, not a tradeoff |
 | Display font | Nunito, self-hosted | System stack read generic on first real use (2026-09-01); ~30 KB buys the rounded Duolingo feel |
+| App version | `package.json` version, injected at build, shown in Perfil › Sobre with the build date, and used as the persister `buster` | One number answers "which build is this phone on?" and a bump is what discards an old-shaped mirror |
 
 ---
 
@@ -586,7 +587,7 @@ hatch is a Postgres view plus a windowed query, without changing the UI.
 
 | Concern | Choice |
 |---|---|
-| Build | Vite 6 |
+| Build | Vite 8 (rolldown) |
 | Language | TypeScript, `strict` |
 | UI | React 19 |
 | Styling | Tailwind v4 + CSS custom properties |
@@ -612,8 +613,16 @@ hatch is a Postgres view plus a windowed query, without changing the UI.
   which is why photos are compressed to ~200 KB before they ever enter the outbox.
 - No Background Sync API on iOS. The outbox flushes on app start, `visibilitychange` to
   visible, the `online` event, and after each successful mutation. Never in the background.
-- A version string is displayed in Perfil and an update prompt appears when the service
-  worker finds a new build ("Nova versão disponível — atualizar").
+- A version string and build date are displayed in Perfil › Sobre. The worker is registered in
+  prompt mode: when a new build is waiting, a flat bar above the tab bar reads "Nova versão
+  disponível" with an "Atualizar" button. The bar lives in the app shell, which reserves its
+  space so it never covers content; the worker registers on the first authenticated screen, so
+  the login screen shows no prompt — a waiting build applies itself on the next cold open
+  anyway. Nothing reloads on its own — a reload mid-register would drop the draft. New builds
+  are checked for when the app returns to the foreground. The persisted query cache is keyed
+  by the app version, so a version bump discards it; the outbox and seen unlocks are stored
+  separately and survive.
+- Only the latin Nunito subsets ship; pt-BR needs nothing else, and the precache stays small.
 
 ---
 
@@ -808,6 +817,9 @@ On app start and on regaining focus, sync incrementally:
 3. Merge into the mirror by `id`; drop rows with `deleted_at` set.
 4. Nothing extra is stored: because the watermark is derived from the mirror itself, a
    crash between fetch and persist can never leave it ahead of the data.
+5. Reads are paged in 1000-row windows (PostgREST caps a response there). The first-ever
+   sync skips soft-deleted rows — an empty mirror has nothing to un-delete — and any
+   deleted row newer than the resulting watermark is fetched and dropped on the next pass.
 
 Soft deletes are what make this correct — a hard delete would be invisible to a watermark
 query. Profiles, group and bottles are small and refetched whole on focus.
@@ -922,8 +934,10 @@ winning. Those are cheap to test and expensive to get wrong.
 - Compact row: expand/collapse, edit and delete only on own entries
 - Outbox: enqueue → optimistic render → confirm clears the pending dot
 
-**Playwright — one smoke flow**, mobile viewport (iPhone 14 preset):
-login → register 500 ml → appears in Hoje → appears in Ranking → survives reload.
+**Playwright — one smoke flow**, iPhone 14 preset, against the production build and the
+cloud project with a throwaway account alone in its own group: login → register 500 ml →
+appears in Hoje → appears in Ranking → survives reload → the register is deleted so the
+run is idempotent. `npm run e2e`; credentials in `.env.local` without the `VITE_` prefix.
 
 **Manual:** the RLS checklist in §11, plus installing to a real iPhone home screen and
 verifying standalone display, safe areas, and an offline register surviving a force-quit.
@@ -941,6 +955,7 @@ too much.
 ```
 src/
   main.tsx
+  globals.d.ts           declare of the Vite `define` globals: version and build date
   app/
     router.tsx            routes: /hoje /ranking /historico /perfil
                            (register sheet is an AppShell overlay, not a route —
@@ -964,12 +979,15 @@ src/
     group/                queries.ts joinGroup.ts createGroup.ts useGroupData.ts
     fish/                 catalog.ts unlocks.ts Fish.tsx FishGrid.tsx svg/
     celebrations/         engine.ts dayState.ts seenUnlocks.ts CelebrationProvider.tsx CelebrationScreen.tsx
+    pwa/                  registerSW.ts UpdatePrompt.tsx
   lib/
     supabase.ts  idb.ts  dates.ts  periods.ts  rankings.ts  averages.ts  calendar.ts  wrapup.ts
-    streaks.ts  composition.ts  format.ts  image.ts  strings.ts
+    streaks.ts  composition.ts  format.ts  image.ts  strings.ts  version.ts
   styles/
     tokens.css  globals.css
   ui/                     shadcn primitives + Button, Field, Card, Sheet, Segmented, Stepper, Toast, useCountUp
+e2e/                    smoke.spec.ts (Playwright)
+playwright.config.ts
 docs/
   superpowers/specs/      this document
 ```

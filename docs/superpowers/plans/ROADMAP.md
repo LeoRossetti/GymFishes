@@ -16,7 +16,7 @@ codebase rather than an imagined one.
 | M4 | Competição — Ranking e Histórico | [`2026-09-07-m4-competicao.md`](2026-09-07-m4-competicao.md) | **code-complete** — pending owner verification: step back one week on a real phone and sanity-check the standings; edit a past register from Histórico |
 | M5 | Peixes e celebrações | [`2026-09-08-m5-peixes-celebracoes.md`](2026-09-08-m5-peixes-celebracoes.md) | **code-complete** — pending owner verification: both fish on both phones; a round litre, an overtake, and the first real 7-day streak celebrating once; open Perfil › Trocar peixe and judge the 13 shapes (nudge `svg/<id>.ts` paths if any reads badly, keeping the five layers) |
 | M5.5 | Polimento de UX | [`2026-09-17-m5-polish.md`](2026-09-17-m5-polish.md) | **code-complete** — pending owner verification: swipe the sheet handle and scroll a tall sheet on a real phone; tap every control and feel the press state; VoiceOver on Histórico and on a celebration |
-| M6 | PWA e endurecimento | not written yet | ready |
+| M6 | PWA e endurecimento | [`2026-09-22-m6-pwa-endurecimento.md`](2026-09-22-m6-pwa-endurecimento.md) | **code-complete** — pending owner verification: deploy, open the installed app on both phones and see the update bar appear after the next deploy; airplane mode → the app opens to yesterday's data; Perfil › Sobre shows the new version |
 
 ---
 
@@ -148,13 +148,28 @@ keypad cap signal.
 
 **Done when:** installed, offline-capable, and the RLS checklist passes clean.
 
-- `vite-plugin-pwa` precache of the app shell, Supabase never SW-cached
-- Update prompt: "Nova versão disponível — atualizar"
-- Version and build date in Perfil
-- Playwright smoke: login → registrar 500 ml → Hoje → Ranking → reload
-- Re-run the §11 RLS checklist against production
-- Performance pass against the §1 success criteria
-- Persister `buster` tied to the app version, so an `Entry` shape change can't rehydrate
-  old-shaped rows for up to 30 days
-- First-ever sync fetches full history including soft-deleted rows — revisit if it ever
-  gets slow (pagination or a deleted-rows cutoff)
+- Task 1 — Version, build date and Perfil › Sobre; the app version doubles as the
+  TanStack persister `buster`
+- Task 2 — `vite-plugin-pwa` precache of the app shell in prompt mode, Supabase never
+  SW-cached; latin-only Nunito subsets; the `useAppUpdate()` hook
+- Task 3 — The update bar: "Nova versão disponível" / "Atualizar", living in `AppShell`
+- Task 4 — Paged read sync in 1000-row windows; the first-ever sync skips soft-deleted rows
+- Task 5 — Playwright smoke: login → registrar 500 ml → Hoje → Ranking → reload → limpar,
+  against the production build and the cloud project with a throwaway account
+- Task 6 — Vendor chunk split for precache stability; Lighthouse pass against §1 criterion 4
+- Task 7 — Re-run of the §11 RLS checklist against the live project, now with real entries
+  and photos
+- Task 8 — Docs: spec alignment, roadmap, README
+
+Calls made here: version 1.0.0 doubles as the persister buster; the update bar has no
+dismiss, never auto-reloads, and lives in the shell (which reserves its space — the login
+screen shows none); one vendor chunk is split off so a deploy re-downloads only app code
+(~27 kB gzip instead of ~206 kB), screens are not lazy-loaded; the first sync skips
+soft-deleted rows and all reads are paged in 1000-row windows. Measured (see
+[`../2026-09-22-m6-performance.md`](../2026-09-22-m6-performance.md)): precached cold start
+LCP and interactive 1.1 s — §1 criterion 4 met; uncached first load LCP 2.5 s, over the
+mark, and not the path the criterion names. The smoke exposed and M6 fixed a real bug: the
+route guard read a pending bootstrap as finished, so a reload on any tab bounced through
+onboarding to Hoje. RLS re-run 2026-09-22: 7/7 negative checks pass, admin-verified —
+[`../2026-09-22-rls-checklist-evidence.md`](../2026-09-22-rls-checklist-evidence.md). The
+e2e account lives in a throwaway group and doubled as account E of that run.

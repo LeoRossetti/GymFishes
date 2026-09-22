@@ -704,3 +704,12 @@ If any negative check does **not** pass, stop, do not fix the policy inside this
 2. Deploy once more (any commit): background the app, bring it back — the bar "Nova versão disponível" appears above the tab bar; "Atualizar" reloads onto the new build and Sobre shows the new date.
 3. Airplane mode, force-quit, reopen: the app opens to yesterday's data with the "Sem conexão" pill; a register made there appears after reconnecting.
 4. Skim `docs/superpowers/2026-09-22-rls-checklist-evidence.md` and `docs/superpowers/2026-09-22-m6-performance.md`.
+
+## Rulings during execution (2026-09-22)
+
+- Task 2: the visibility update check moved out of `onRegisteredSW` into a `useEffect` with cleanup that calls `navigator.serviceWorker.getRegistration()` — a hook owns its listener.
+- Task 3: `busy` resets when `apply()` rejects; no timeout and no error text, because the "worker never takes control" case has no signal to act on.
+- Task 3: the bar lives in `AppShell`, which owns `useAppUpdate()` and reserves `pb-48` while a build waits; the login screen shows no bar. Found by the controller's WebKit visual check — the root-mounted bar covered "Sair" and the Sobre line on Perfil.
+- Task 5: the smoke exposed a real bug — `Guard` gated on `isLoading`, which is false for a tick after the bootstrap query is enabled, so a reload on any tab bounced through `/inicio` to `/hoje`. Fixed with `isPending` plus a regression test (`34e53bf`). `dismissCelebration` uses `waitFor` and scopes the celebration dialog apart from the register sheet's; the onboarding fish step has no "Continuar", so the one-off setup tapped the fish.
+- Task 6: one `vendor` chunk instead of four — fewer requests on a high-latency link. Lighthouse measured both paths: uncached first load LCP 2.5 s, precached cold start LCP 1.1 s (the path §1 criterion 4 names); the precached run needed one persistent Chrome profile shared by a priming and a measured pass.
+- Task 7: check 7's recorded read and the check-5d masked-404 caveat were added to the evidence after review.
