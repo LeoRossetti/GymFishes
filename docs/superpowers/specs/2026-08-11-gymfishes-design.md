@@ -621,7 +621,9 @@ hatch is a Postgres view plus a windowed query, without changing the UI.
   anyway. Nothing reloads on its own — a reload mid-register would drop the draft. New builds
   are checked for when the app returns to the foreground. The persisted query cache is keyed
   by the app version, so a version bump discards it; the outbox and seen unlocks are stored
-  separately and survive.
+  separately and survive. The outbox surviving means a changed `Entry` shape still needs a
+  migration for queued ops, and a register queued at the very moment of a bump is invisible
+  until its op lands and the next sync brings it back — accepted.
 - Only the latin Nunito subsets ship; pt-BR needs nothing else, and the precache stays small.
 
 ---
@@ -818,8 +820,11 @@ On app start and on regaining focus, sync incrementally:
 4. Nothing extra is stored: because the watermark is derived from the mirror itself, a
    crash between fetch and persist can never leave it ahead of the data.
 5. Reads are paged in 1000-row windows (PostgREST caps a response there). The first-ever
-   sync skips soft-deleted rows — an empty mirror has nothing to un-delete — and any
-   deleted row newer than the resulting watermark is fetched and dropped on the next pass.
+   sync skips soft-deleted rows — an empty mirror has nothing to un-delete — and a
+   deleted row newer than the resulting watermark is fetched and dropped on every pass
+   until a newer live row moves the watermark. Windows are offset-based, so a row the
+   other member updates between two pages of one first sync can shift out of a window and
+   be missed until it changes again — accepted for two people.
 
 Soft deletes are what make this correct — a hard delete would be invisible to a watermark
 query. Profiles, group and bottles are small and refetched whole on focus.
@@ -955,7 +960,7 @@ too much.
 ```
 src/
   main.tsx
-  globals.d.ts           declare of the Vite `define` globals: version and build date
+  globals.d.ts           declares the Vite `define` globals (version, build date)
   app/
     router.tsx            routes: /hoje /ranking /historico /perfil
                            (register sheet is an AppShell overlay, not a route —

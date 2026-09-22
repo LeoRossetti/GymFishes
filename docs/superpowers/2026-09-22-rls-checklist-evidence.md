@@ -12,7 +12,7 @@ real group, never to write). The permission prompt for `db query --linked` was *
 run (unlike a denial that would have required verifying negatives through the accounts' own reads
 only) — four read-only admin queries were run in total, all reported below.
 
-All access/refresh tokens and the storage signed-URL tokens are REDACTED below. The anon key used
+All access/refresh tokens, invite codes, and the storage signed-URL tokens are REDACTED below. The anon key used
 as `apikey` on every call is the public client key (`VITE_SUPABASE_ANON_KEY`), not a secret, but is
 redacted too per instructions.
 
@@ -31,7 +31,7 @@ GET /rest/v1/group_members?profile_id=eq.<E>&select=group_id                    
   -> 200, [{"group_id":"fac9ffe0-9a80-4515-8d38-e3f7647db914"}]
 
 GET /rest/v1/groups?id=eq.<E group>&select=id,name,invite_code,created_by        [Bearer <E_REDACTED>]
-  -> 200, [{"id":"fac9ffe0-...","name":"E2E","invite_code":"F86WWZ","created_by":"<E>"}]
+  -> 200, [{"id":"fac9ffe0-...","name":"E2E","invite_code":"<REDACTED>","created_by":"<E>"}]
 
 POST /auth/v1/signup  {"email":"gymfishes-rls-f@example.com","password":"<redacted>"}
   -> 200, access_token=<REDACTED>, user.id=57b27d53-8d92-460f-a713-1b74061acb65   (F)
@@ -39,7 +39,7 @@ POST /auth/v1/signup  {"email":"gymfishes-rls-f@example.com","password":"<redact
 POST /rest/v1/profiles  {"id":"<F>","display_name":"RLS F"}                      [Bearer <F_REDACTED>]
   -> 201
 
-POST /rest/v1/rpc/join_group  {"code":"F86WWZ"}                                  [Bearer <F_REDACTED>]
+POST /rest/v1/rpc/join_group  {"code":"<REDACTED>"}                              [Bearer <F_REDACTED>]
   -> 200, "fac9ffe0-9a80-4515-8d38-e3f7647db914"
 
 GET /rest/v1/group_members?profile_id=eq.<F>&select=group_id                     [Bearer <F_REDACTED>]
