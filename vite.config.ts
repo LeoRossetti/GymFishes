@@ -35,12 +35,7 @@ export default defineConfig({
     rolldownOptions: {
       output: {
         codeSplitting: {
-          groups: [
-            { name: 'react', test: /node_modules[\\/](react|react-dom|scheduler|react-router)[\\/]/ },
-            { name: 'supabase', test: /node_modules[\\/]@supabase[\\/]/ },
-            { name: 'motion', test: /node_modules[\\/](motion|motion-dom|motion-utils|framer-motion)[\\/]/ },
-            { name: 'query', test: /node_modules[\\/]@tanstack[\\/]/ },
-          ],
+          groups: [{ name: 'vendor', test: /node_modules[\\/]/ }],
         },
       },
     },
