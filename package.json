@@ -10,7 +10,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "typecheck": "tsc -b --noEmit",
-    "e2e": "npm run build && playwright test"
+    "e2e": "npm run build && playwright test",
+    "fish:sheet": "node scripts/fish-sheet.mjs"
   },
   "dependencies": {
     "@fontsource/nunito": "^5.0.20",

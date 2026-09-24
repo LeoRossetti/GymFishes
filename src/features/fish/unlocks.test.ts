@@ -22,8 +22,8 @@ describe('unlockedFish', () => {
     expect(unlockedFish(run(7), 'a', 0).has('pufferfish')).toBe(true)
     expect(unlockedFish(run(29), 'a', 0).has('clownfish')).toBe(false)
     expect(unlockedFish(run(30), 'a', 0).has('clownfish')).toBe(true)
-    expect(unlockedFish(run(99), 'a', 0).has('angelfish')).toBe(false)
-    expect(unlockedFish(run(100), 'a', 0).has('angelfish')).toBe(true)
+    expect(unlockedFish(run(99), 'a', 0).has('tambaqui')).toBe(false)
+    expect(unlockedFish(run(100), 'a', 0).has('tambaqui')).toBe(true)
   })
 
   it('keeps a streak fish after the streak breaks — the longest run ever counts', () => {

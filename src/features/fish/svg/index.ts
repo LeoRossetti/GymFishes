@@ -1,5 +1,4 @@
 import type { FishId } from '../catalog'
-import { angelfish } from './angelfish'
 import { betta } from './betta'
 import { clownfish } from './clownfish'
 import { dolphin } from './dolphin'
@@ -10,11 +9,12 @@ import { octopus } from './octopus'
 import { pufferfish } from './pufferfish'
 import { seahorse } from './seahorse'
 import { shark } from './shark'
-import { turtle } from './turtle'
+import { tambaqui } from './tambaqui'
 import type { FishArt } from './types'
+import { turtle } from './turtle'
 import { whale } from './whale'
 
-export type { FishArt, Tone } from './types'
+export type { FishArt } from './types'
 
 export const ART: Record<FishId, FishArt> = {
   guppy,
@@ -23,7 +23,7 @@ export const ART: Record<FishId, FishArt> = {
   neon,
   pufferfish,
   clownfish,
-  angelfish,
+  tambaqui,
   octopus,
   seahorse,
   turtle,

@@ -138,7 +138,7 @@ export const STRINGS = {
       neon: 'Neon',
       pufferfish: 'Baiacu',
       clownfish: 'Peixe-palhaço',
-      angelfish: 'Peixe-anjo',
+      tambaqui: 'Tambaqui',
       octopus: 'Polvo',
       seahorse: 'Cavalo-marinho',
       turtle: 'Tartaruga',

@@ -78,7 +78,7 @@ button {
 [data-waves='paused'] .fish-tail,
 [data-waves='paused'] .fish-bob { animation-play-state: paused; }
 .fish-locked path,
-.fish-locked circle { fill: var(--color-ink-3); }
+.fish-locked circle { fill: var(--color-ink-3); stroke: none; }
 @media (prefers-reduced-motion: reduce) {
   .fish-tail, .fish-bob { animation: none; }
 }
