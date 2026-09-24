@@ -4,19 +4,19 @@ import { Fish } from '@/features/fish/Fish'
 import { FishGrid } from '@/features/fish/FishGrid'
 import { availableFish } from '@/features/fish/unlocks'
 import { useGroupData } from '@/features/group/useGroupData'
-import { dayKey } from '@/lib/dates'
 import { STRINGS } from '@/lib/strings'
-import { monthsWon } from '@/lib/wrapup'
 
 type Props = { userId: string; current: string; busy: boolean; onSelect: (fish: FishId) => void }
 
-/** "Seu peixe" (spec §5.5): your fish large; tap to expand the gallery in place. Unlocks are derived here. */
+/**
+ * "Seu peixe" (spec §5.5): your fish large; tap to expand the gallery in place. Unlocks are derived here;
+ * the fish you already wear is always yours, so a choice made while every fish was open never shows locked.
+ */
 export function FishGallery({ userId, current, busy, onSelect }: Props) {
-  const { members, entries } = useGroupData()
+  const { entries } = useGroupData()
   const [open, setOpen] = useState(false)
   const fish = fishOf(current)
-  const wins = monthsWon(entries, members.map((m) => m.id), userId, dayKey(new Date()))
-  const unlocked = availableFish(entries, userId, wins)
+  const unlocked = new Set([...availableFish(entries, userId), fish])
 
   return (
     <section className="mb-3 rounded-card border border-line bg-surface p-4">

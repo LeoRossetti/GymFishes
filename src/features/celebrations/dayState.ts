@@ -1,13 +1,12 @@
-import { availableFish } from '@/features/fish/unlocks'
+import { availableFish, type UnlockEntry } from '@/features/fish/unlocks'
 import type { DayKey } from '@/lib/dates'
-import { dayTotals, totalsForDay, type RankableEntry } from '@/lib/rankings'
+import { dayTotals, totalsForDay } from '@/lib/rankings'
 import { streakOf } from '@/lib/streaks'
-import { monthsWon } from '@/lib/wrapup'
 import type { DayState } from './engine'
 
 /** Snapshot of "your day" from the mirror — computed before and after a register (spec §7). */
 export function dayStateOf(
-  entries: readonly RankableEntry[],
+  entries: readonly UnlockEntry[],
   memberIds: readonly string[],
   userId: string,
   today: DayKey,
@@ -25,6 +24,6 @@ export function dayStateOf(
     bestOtherDayMl,
     leading: partnerBest > 0 && mine > partnerBest,
     streakDays: streakOf(new Set(byDay.keys()), today).days,
-    unlocked: availableFish(entries, userId, monthsWon(entries, memberIds, userId, today)),
+    unlocked: availableFish(entries, userId),
   }
 }

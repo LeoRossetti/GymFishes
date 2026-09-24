@@ -18,7 +18,7 @@ describe('FishGrid', () => {
     render(<FishGrid variants={FISH_IDS} unlocked={unlocked} selected={null} onSelect={vi.fn()} />)
     const shark = screen.getByRole('button', { name: 'Tubarão' })
     expect(shark).toHaveAttribute('aria-disabled', 'true')
-    expect(shark).toHaveTextContent('Ganhar 1 mês')
+    expect(shark).toHaveTextContent('50 registros')
     expect(shark.querySelector('svg')).toHaveAttribute('data-state', 'locked')
     expect(screen.getByRole('button', { name: 'Baiacu' })).toBeEnabled()
   })
@@ -37,9 +37,9 @@ describe('FishGrid', () => {
     expect(onSelect).not.toHaveBeenCalled()
   })
 
-  it('the 100-day fish is the tambaqui; the angelfish is gone', () => {
+  it('the 7-day fish is the tambaqui; the angelfish is gone', () => {
     render(<FishGrid variants={FISH_IDS} unlocked={unlocked} selected={null} onSelect={vi.fn()} />)
-    expect(screen.getByRole('button', { name: 'Tambaqui' })).toHaveTextContent('Sequência de 100 dias')
+    expect(screen.getByRole('button', { name: 'Tambaqui' })).toHaveTextContent('Sequência de 7 dias')
     expect(screen.queryByRole('button', { name: 'Peixe-anjo' })).toBeNull()
   })
 
