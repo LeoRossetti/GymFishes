@@ -1,7 +1,7 @@
 import { tone } from './helpers'
 import type { FishArt } from './types'
 
-/** Tambaqui — migrated from the M5 angelfish sticker; redrawn in a later task (sequência de 100 dias). */
+/** Tambaqui — migrated from the retired M5 sticker; redrawn in Task 12 (sequência de 100 dias). */
 export const tambaqui: FishArt = {
   view: [64, 40],
   body: 'M20 20 C20 12 28 8 36 8 C46 8 54 14 58 20 C54 26 46 32 36 32 C28 32 20 28 20 20 Z',

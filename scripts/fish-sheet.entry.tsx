@@ -9,8 +9,12 @@ export function renderSheet(only: readonly string[]): string {
   const ids = only.length ? FISH_IDS.filter((id) => only.includes(id)) : FISH_IDS
   const rows = ids
     .map((id: FishId) => {
-      const cells = SIZES.map((s) => renderToStaticMarkup(<Fish variant={id} size={s} state="still" />)).join('')
-      const locked = renderToStaticMarkup(<Fish variant={id} size={96} state="locked" />)
+      const cells = SIZES.map((s) =>
+        renderToStaticMarkup(<Fish variant={id} size={s} state="still" />, { identifierPrefix: `${id}-${s}-` }),
+      ).join('')
+      const locked = renderToStaticMarkup(<Fish variant={id} size={96} state="locked" />, {
+        identifierPrefix: `${id}-locked-`,
+      })
       return `<section><div class="row">${cells}${locked}</div><p>${fishName(id)}</p></section>`
     })
     .join('')
