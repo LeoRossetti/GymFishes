@@ -21,7 +21,7 @@ export function Hoje() {
       <header className="mb-4 flex items-start justify-between px-1">
         <div>
           <h1 className="text-[24px] font-extrabold tracking-[-0.4px]">{STRINGS.hoje.titulo}</h1>
-          <p className="mt-1 text-[13px] text-ink-2">{formatDateLong(new Date())}</p>
+          <p className="mt-1 text-[13px] font-medium text-ink-2">{formatDateLong(new Date())}</p>
           <SyncPill groupId={groupId} />
         </div>
         <button
