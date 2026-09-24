@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import type { Entry } from '@/features/entries/cache'
-import type { FishId } from '@/features/fish/catalog'
+import { ALL_FISH_AVAILABLE, type FishId } from '@/features/fish/catalog'
 import { useGroupData } from '@/features/group/useGroupData'
 import { updateProfile } from '@/features/profile/mutations'
 import { dayKey } from '@/lib/dates'
@@ -51,7 +51,10 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
       const ids = members.map((m) => m.id)
       const b = dayStateOf(before, ids, userId, today)
       const a = dayStateOf(after, ids, userId, today)
-      const seen = loadSeenUnlocks() ?? b.unlocked
+      // While every fish is available there is nothing new to celebrate, whatever this device
+      // stored before the change — otherwise a phone holding a partial `seen_unlocks` would
+      // announce the remaining fish as new on its first register.
+      const seen = ALL_FISH_AVAILABLE ? a.unlocked : (loadSeenUnlocks() ?? b.unlocked)
       const shown = present(celebrationsFor({ ...b, unlocked: seen }, a))
       saveSeenUnlocks(new Set([...seen, ...a.unlocked]))
       if (shown.fullScreen) setFull(shown.fullScreen)

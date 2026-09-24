@@ -21,7 +21,7 @@ e desde o início — com peixinhos que sobem conforme a água enche. 🐠
 - 📱 Feito para celular — instala direto na tela de início do iPhone
 - 🇧🇷 Todo em português
 - 🏆 Ranking diário, semanal, mensal e total
-- 🐡 Peixes novos desbloqueados com sequências e recordes
+- 🐡 Treze peixes desenhados para escolher o seu
 - 🎨 Seis temas escuros para escolher no Perfil
 - ✈️ Funciona até sem internet — sincroniza quando a conexão voltar
 

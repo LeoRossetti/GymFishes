@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { FISH_IDS } from '@/features/fish/catalog'
 import { addDays } from '@/lib/dates'
 import { dayStateOf } from './dayState'
 
@@ -7,13 +8,13 @@ const ids = ['a', 'b']
 const e = (profile_id: string, total_ml: number, drank_on: string) => ({ profile_id, total_ml, drank_on, deleted_at: null })
 
 describe('dayStateOf', () => {
-  it('starts empty with the starters unlocked', () => {
+  it('starts empty with every fish available', () => {
     expect(dayStateOf([], ids, 'a', today)).toEqual({
       todayMl: 0,
       bestOtherDayMl: 0,
       leading: false,
       streakDays: 0,
-      unlocked: new Set(['guppy', 'betta', 'goldfish', 'neon']),
+      unlocked: new Set(FISH_IDS),
     })
   })
 
@@ -41,8 +42,8 @@ describe('dayStateOf', () => {
     expect(dayStateOf([...run, e('a', 500, today)], ids, 'a', today).streakDays).toBe(3)
   })
 
-  it('derives the unlocked set from the same entries', () => {
+  it('keeps every fish available whatever the registers say', () => {
     const week = Array.from({ length: 7 }, (_, i) => e('a', 500, addDays(today, -i)))
-    expect(dayStateOf(week, ids, 'a', today).unlocked.has('pufferfish')).toBe(true)
+    expect(dayStateOf(week, ids, 'a', today).unlocked.size).toBe(FISH_IDS.length)
   })
 })

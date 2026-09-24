@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { addDays } from '@/lib/dates'
-import { unlockFacts, unlockedFish } from './unlocks'
+import { FISH_IDS } from './catalog'
+import { availableFish, unlockFacts, unlockedFish } from './unlocks'
+
+describe('availableFish', () => {
+  it('offers all thirteen fish from day one, with no registers at all', () => {
+    expect([...availableFish([], 'a', 0)]).toEqual([...FISH_IDS])
+  })
+})
 
 const e = (profile_id: string, total_ml: number, drank_on: string, deleted_at: string | null = null) => ({
   profile_id,

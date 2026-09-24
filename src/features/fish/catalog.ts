@@ -45,6 +45,12 @@ export const UNLOCKS: Record<FishId, Unlock> = {
 
 export const STARTERS: readonly FishId[] = FISH_IDS.filter((id) => UNLOCKS[id].kind === 'starter')
 
+/**
+ * Every fish is selectable from the start (Leo, 2026-09-24). The unlock conditions above stay:
+ * they still drive the streak milestones, and flipping this back re-gates the gallery.
+ */
+export const ALL_FISH_AVAILABLE = true
+
 /** 7, 30, 100 — read off the catalog so the streak celebration and the streak fish can never disagree. */
 export const STREAK_MILESTONES: readonly number[] = FISH_IDS.flatMap((id) => {
   const u = UNLOCKS[id]
