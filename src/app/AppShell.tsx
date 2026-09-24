@@ -34,7 +34,7 @@ export function AppShell() {
     <ToastProvider>
       <CelebrationProvider>
         <div className="flex min-h-0 flex-1 flex-col">
-          <main className="scroll-region">
+          <main className="scroll-region pb-6">
             <ErrorBoundary key={location.pathname}>
               <Outlet
                 context={{ openRegister: (entry?: Entry) => setSheet({ entry }) } satisfies ShellContext}

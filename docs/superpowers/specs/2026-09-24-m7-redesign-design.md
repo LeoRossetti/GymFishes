@@ -422,11 +422,13 @@ Manual, on both installed iPhones after deploy:
 1. Scroll each tab to both ends: no rubber-band, header and tab bar never move.
 2. Pinch and double-tap on Hoje and on the register sheet: no zoom.
 3. Focus the note field and the login e-mail: no zoom.
-4. Try to pan sideways on every tab: nothing moves.
-5. Tab bar flush with the home indicator; the plus centred on the border.
-6. Switch through all six themes in Perfil; force-quit and reopen: the choice survives and
+4. Focus the note field in the register sheet and the name field in Perfil, then dismiss the
+   keyboard: the tab bar returns flush to the home indicator and the page is not left shifted.
+5. Try to pan sideways on every tab: nothing moves.
+6. Tab bar flush with the home indicator; the plus centred on the border.
+7. Switch through all six themes in Perfil; force-quit and reopen: the choice survives and
    the status bar colour matches.
-7. Both fish visible in the tubes; the gallery shows 13 with Tambaqui at 100 dias.
+8. Both fish visible in the tubes; the gallery shows 13 with Tambaqui at 100 dias.
 
 ## 12. Files
 

@@ -178,10 +178,10 @@ re-measured, since that is the path §1 criterion 4 names and the one the task c
 
 | metric | M6 | M7 |
 |---|---|---|
-| FCP | — | 1053.7 ms |
+| FCP | 1.1 s | 1053.7 ms |
 | LCP | 1.1 s | **1.1 s** (1053.7 ms) |
 | TBT | 0 ms | 0 ms |
-| Speed Index | — | 1053.7 ms |
+| Speed Index | 1.1 s | 1053.7 ms |
 | Interactive | 1.1 s | **1.1 s** (1064.6 ms) |
 
 Verified the same way as the M6 run: in the measured pass's `network-requests` audit, every

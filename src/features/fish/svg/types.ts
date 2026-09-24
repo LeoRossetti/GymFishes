@@ -4,9 +4,9 @@ export const VIEW_H = 100
 
 /**
  * One drawn shape. `fill` and `stroke` are any CSS colour: species palettes are hex (the
- * documented exception to tokens-only); eyes, locked silhouettes and the migrated old art
- * use `var(--color-…)`. `clip: true` clips the layer to the body silhouette — shading, scales
- * and markings use it so they never spill past the fish.
+ * documented exception to tokens-only); `tone()` stays available for art that wants a token.
+ * `clip: true` clips the layer to the body silhouette — shading, scales and markings use it
+ * so they never spill past the fish.
  */
 export type Layer = {
   d: string
