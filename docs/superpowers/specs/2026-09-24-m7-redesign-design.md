@@ -1,7 +1,7 @@
 # GymFishes — M7: Redesign visual e casca do PWA
 
 **Data:** 2026-09-24
-**Status:** aguardando revisão do Leo
+**Status:** implementado — aguardando verificação do Leo nos dois iPhones
 **Autor:** Leonardo Rossetti Francatto (com Claude)
 **Amends:** [`2026-08-11-gymfishes-design.md`](2026-08-11-gymfishes-design.md) §5.1, §5.5, §6, §8, §9, §16
 **Mockups:** Design canvas "GymFishes M7 direções visuais" (private artifact, Leo's account)
@@ -314,7 +314,7 @@ push with membranes and forked rays.
 
 ### 9.2 Species and palettes
 
-| Id | pt-BR | Identity to draw | Palette (base / shade / light) |
+| Id | pt-BR | Identity to draw | Starting palette (base / shade / light) |
 |---|---|---|---|
 | `guppy` | Guppy | slim body, huge orange spotted fan tail, small dorsal | body `#22B8F0 / #1793CC / #8ADCFF`, fins `#FF9600 / #D96E00 / #FFC27A` |
 | `betta` | Betta | slim body, veil tail, tall dorsal, long anal fin, two ventral fins | body `#2B5FC7 / #173C8F / #5A93EE`, fins `#D8385A / #A5213F / #F27C93` |
@@ -329,6 +329,14 @@ push with membranes and forked rays.
 | `dolphin` | Golfinho | sleek, curved dorsal, beak, light belly, smile | `#6F8FA8 / #486A85 / #A9C1D3`, belly `#E4ECF2` |
 | `shark` | Tubarão | torpedo, tall dorsal, crescent tail, gill slits, white belly | `#7C8B99 / #55636F / #A7B4C0`, belly `#F0F3F5` |
 | `whale` | Baleia | blue whale, long flat body, tiny dorsal far back, throat grooves | `#4C7DA6 / #2F5A7E / #7EA8CC`, belly `#D6E3EE` |
+
+This is the starting palette, not a snapshot of what shipped: tambaqui's tones were widened
+during implementation (a lighter back tone, plus separate low-body, deep-belly, fin and
+pectoral tones) so it reads against the tube background, and every fish's outline uses its
+own darkest tone rather than a shared black. The values as drawn live in each
+`svg/<id>.ts` file; the contrast/lightness audit (§7.6) only governs theme tokens, not fish
+palettes, so nothing here is machine-checked — a look at the contact sheet (§9.2 helper
+`npm run fish:sheet`) is the verification.
 
 All thirteen face right in a shared 160×100 box, the same 1.6:1 as the old 64×40 so every
 size in §9.4 and the tube geometry hold; the seahorse stands upright inside it. The

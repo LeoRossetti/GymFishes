@@ -22,6 +22,7 @@ e desde o início — com peixinhos que sobem conforme a água enche. 🐠
 - 🇧🇷 Todo em português
 - 🏆 Ranking diário, semanal, mensal e total
 - 🐡 Peixes novos desbloqueados com sequências e recordes
+- 🎨 Seis temas escuros para escolher no Perfil
 - ✈️ Funciona até sem internet — sincroniza quando a conexão voltar
 
 ## 🚀 Como rodar no computador
@@ -48,7 +49,7 @@ src/
   features/   cada funcionalidade (registros, garrafas, grupo, peixes…)
   lib/        lógica pura: datas, períodos, formatação
   ui/         botões e componentes visuais básicos
-  styles/     cores e estilos do tema
+  styles/     cores dos seis temas e estilos globais
 supabase/     banco de dados (mudanças no banco)
 docs/         especificação e planos do projeto
 ```
@@ -60,6 +61,7 @@ docs/         especificação e planos do projeto
 | `npm run dev` | abre o app para desenvolver |
 | `npm run test:run` | roda os testes |
 | `npm run build` | gera a versão final |
+| `npm run fish:sheet` | desenha os 13 peixes numa imagem para conferir |
 
 Detalhes técnicos (banco de dados, decisões de design) estão na
 [especificação](docs/superpowers/specs/2026-08-11-gymfishes-design.md).
