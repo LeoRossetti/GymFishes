@@ -57,6 +57,7 @@ export const STRINGS = {
     ranking: 'Ranking',
     historico: 'Histórico',
     perfil: 'Perfil',
+    abas: 'Abas',
     registrarAgua: 'Registrar água',
   },
   ranking: {
