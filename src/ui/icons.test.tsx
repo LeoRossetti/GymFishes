@@ -23,12 +23,56 @@ describe('icons', () => {
     expect(container.querySelector('svg')).toHaveAttribute('width', '24')
   })
 
-  it('filled fills the drop, an outline leaves it hollow', () => {
-    const hollow = render(<Drop />)
-    expect(hollow.container.querySelector('path')).toHaveAttribute('fill', 'none')
-    hollow.unmount()
-    const solid = render(<Drop filled />)
-    expect(solid.container.querySelector('path')).toHaveAttribute('fill', 'currentColor')
+  it('filled and hollow behavior for Drop, Trophy, Calendar, FishIcon', () => {
+    // Drop: first path's fill toggles
+    const dropHollow = render(<Drop />)
+    expect(dropHollow.container.querySelector('path')).toHaveAttribute('fill', 'none')
+    dropHollow.unmount()
+    const dropSolid = render(<Drop filled />)
+    expect(dropSolid.container.querySelector('path')).toHaveAttribute('fill', 'currentColor')
+    dropSolid.unmount()
+
+    // Trophy: first path (cup) fill toggles
+    const trophyHollow = render(<Trophy />)
+    expect(trophyHollow.container.querySelector('path')).toHaveAttribute('fill', 'none')
+    trophyHollow.unmount()
+    const trophySolid = render(<Trophy filled />)
+    expect(trophySolid.container.querySelector('path')).toHaveAttribute('fill', 'currentColor')
+    trophySolid.unmount()
+
+    // Calendar: filled state adds a path with fill="currentColor"
+    const calendarHollow = render(<Calendar />)
+    expect(calendarHollow.container.querySelector('path[fill="currentColor"]')).toBeNull()
+    calendarHollow.unmount()
+    const calendarSolid = render(<Calendar filled />)
+    expect(calendarSolid.container.querySelector('path[fill="currentColor"]')).toBeTruthy()
+    calendarSolid.unmount()
+
+    // FishIcon: first two paths and circle fill toggle
+    const fishHollow = render(<FishIcon />)
+    const fishHollowPaths = fishHollow.container.querySelectorAll('path')
+    expect(fishHollowPaths[0]).toHaveAttribute('fill', 'none')
+    expect(fishHollowPaths[1]).toHaveAttribute('fill', 'none')
+    expect(fishHollow.container.querySelector('circle')).toHaveAttribute('fill', 'currentColor')
+    fishHollow.unmount()
+    const fishSolid = render(<FishIcon filled />)
+    const fishSolidPaths = fishSolid.container.querySelectorAll('path')
+    expect(fishSolidPaths[0]).toHaveAttribute('fill', 'currentColor')
+    expect(fishSolidPaths[1]).toHaveAttribute('fill', 'currentColor')
+    expect(fishSolid.container.querySelector('circle')).toHaveAttribute('fill', 'var(--color-bg)')
+    fishSolid.unmount()
+  })
+
+  it('stroke-only icons ignore the filled prop', () => {
+    const strokeIcons = [Plus, Camera, Note, Clock, Check, Close]
+    for (const Icon of strokeIcons) {
+      const hollow = render(<Icon />)
+      const solid = render(<Icon filled />)
+      expect(hollow.container.innerHTML).toBe(solid.container.innerHTML)
+      expect(solid.container.querySelector('svg')).not.toHaveAttribute('filled')
+      hollow.unmount()
+      solid.unmount()
+    }
   })
 
   it('the flame is always solid', () => {
