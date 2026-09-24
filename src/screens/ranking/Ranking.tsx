@@ -29,7 +29,7 @@ export function Ranking() {
   return (
     <div className="px-3 pt-2">
       <header className="mb-4 px-1">
-        <h1 className="text-[20px] font-extrabold tracking-tight">{STRINGS.ranking.titulo}</h1>
+        <h1 className="text-[24px] font-extrabold tracking-[-0.4px]">{STRINGS.ranking.titulo}</h1>
         <SyncPill groupId={groupId} />
       </header>
       <MonthWrapUp entries={entries} members={members} userId={userId} today={today} />

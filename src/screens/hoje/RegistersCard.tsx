@@ -3,6 +3,7 @@ import type { Member } from '@/features/group/queries'
 import { dayKey } from '@/lib/dates'
 import { registeredDays, streakOf } from '@/lib/streaks'
 import { STRINGS } from '@/lib/strings'
+import { Flame } from '@/ui/icons'
 import { EntryList } from './EntryList'
 
 type Props = {
@@ -21,15 +22,16 @@ export function RegistersCard({ userId, groupId, members, entries, openRegister 
   return (
     <section className="mt-3 rounded-card border border-line bg-surface p-4">
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-[9px] font-extrabold uppercase tracking-[1px] text-ink-3">
+        <h2 className="text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">
           {STRINGS.hoje.registrosDeHoje} · {todays.length}
         </h2>
         {streak.days > 0 ? (
           <span
-            className={`rounded-[99px] bg-streak px-2 py-0.5 text-[11px] font-extrabold text-ink-on-water ${
+            className={`inline-flex h-6 items-center gap-1 rounded-[99px] border border-streak px-2.5 text-[12px] font-extrabold text-streak ${
               streak.atRisk ? 'opacity-50' : ''
             }`}
           >
+            <Flame size={14} />
             {STRINGS.hoje.streak(streak.days)}
           </span>
         ) : null}

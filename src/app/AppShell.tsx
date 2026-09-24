@@ -16,6 +16,12 @@ import { TabBar } from './TabBar'
 
 export type ShellContext = { openRegister: (entry?: Entry) => void }
 
+/**
+ * The frame (spec M7 §4): a flex column filling `#root`. The screen scrolls inside `<main>`;
+ * the update bar and the tab bar are ordinary siblings below it, so nothing is fixed to the
+ * window and iOS standalone has no document to rubber-band. Sheets and celebrations stay
+ * fixed overlays on top.
+ */
 export function AppShell() {
   const [sheet, setSheet] = useState<{ entry?: Entry } | null>(null)
   const location = useLocation()
@@ -27,13 +33,15 @@ export function AppShell() {
   return (
     <ToastProvider>
       <CelebrationProvider>
-        <div className={`min-h-dvh ${update.ready ? 'pb-48' : 'pb-24'}`}>
-          <ErrorBoundary key={location.pathname}>
-            <Outlet
-              context={{ openRegister: (entry?: Entry) => setSheet({ entry }) } satisfies ShellContext}
-            />
-          </ErrorBoundary>
-          {/* Lives in the shell so the page can reserve its space; a waiting build applies itself on the next cold open anyway, so the login screen does not need it. */}
+        <div className="flex min-h-0 flex-1 flex-col">
+          <main className="scroll-region pb-6">
+            <ErrorBoundary key={location.pathname}>
+              <Outlet
+                context={{ openRegister: (entry?: Entry) => setSheet({ entry }) } satisfies ShellContext}
+              />
+            </ErrorBoundary>
+          </main>
+          {/* A waiting build applies itself on the next cold open anyway, so the login screen needs no bar. */}
           <UpdatePrompt {...update} />
           <AnimatePresence>
             {sheet ? <RegisterSheet entry={sheet.entry} onClose={() => setSheet(null)} /> : null}

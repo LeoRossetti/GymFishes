@@ -17,6 +17,7 @@ codebase rather than an imagined one.
 | M5 | Peixes e celebrações | [`2026-09-08-m5-peixes-celebracoes.md`](2026-09-08-m5-peixes-celebracoes.md) | **code-complete** — pending owner verification: both fish on both phones; a round litre, an overtake, and the first real 7-day streak celebrating once; open Perfil › Trocar peixe and judge the 13 shapes (nudge `svg/<id>.ts` paths if any reads badly, keeping the five layers) |
 | M5.5 | Polimento de UX | [`2026-09-17-m5-polish.md`](2026-09-17-m5-polish.md) | **code-complete** — pending owner verification: swipe the sheet handle and scroll a tall sheet on a real phone; tap every control and feel the press state; VoiceOver on Histórico and on a celebration |
 | M6 | PWA e endurecimento | [`2026-09-22-m6-pwa-endurecimento.md`](2026-09-22-m6-pwa-endurecimento.md) | **code-complete** — pending owner verification: deploy, open the installed app on both phones and see the update bar appear after the next deploy; airplane mode → the app opens to yesterday's data; Perfil › Sobre shows the new version |
+| M7 | Redesign visual e casca do PWA | [`2026-09-24-m7-redesign.md`](2026-09-24-m7-redesign.md) | **code-complete** — pending owner verification: the §11 manual checklist of the M7 spec on both installed phones |
 
 ---
 
@@ -173,3 +174,44 @@ route guard read a pending bootstrap as finished, so a reload on any tab bounced
 onboarding to Hoje. RLS re-run 2026-09-22: 7/7 negative checks pass, admin-verified —
 [`../2026-09-22-rls-checklist-evidence.md`](../2026-09-22-rls-checklist-evidence.md). The
 e2e account lives in a throwaway group and doubled as account E of that run.
+
+## M7 — Redesign visual e casca do PWA
+
+**Done when:** the installed app on both iPhones no longer rubber-bands, zooms or pans; six
+themes are pickable in Perfil; every icon-role emoji is an SVG; Hoje reads as the hero
+screen; and all thirteen fish are flat, cel-shaded illustrations of the real species.
+
+- Cluster 1 — Frame and icons: `src/ui/icons.tsx` (11 SVG icons, `currentColor`); the tab
+  bar rebuilt on them with 11px labels; the app frame (`#root` a fixed `100dvh` flex column,
+  `AppShell` and `AuthFrame` each owning a `<main class="scroll-region">`), the zoom lock
+  (`maximum-scale=1, user-scalable=no`, `touch-action: manipulation`, 16px inputs) and the
+  safe-area handling
+- Cluster 2 — Themes and type: six token sets (`src/features/theme/themes.ts` mirrored in
+  `styles/tokens.css` under `html[data-theme]`, a parity test enforces it), the pre-paint
+  boot script, `useTheme()`, the "Tema" picker in Perfil (six previewing tiles), the
+  `lib/contrast.ts` WCAG/L* audit gating every theme, and the type-size bump (screen titles
+  24px, labels 10px, tab labels 11px)
+- Cluster 3 — Hoje hero: two tubes side by side (the scroll strip returns only with a third
+  member), 56px fish, 4px/3px wave crests, the avatar ringed in the member accent (three
+  rising bubbles per tube shipped and were removed the same day at Leo's request)
+- Cluster 4 — Fish: all 13 redrawn as flat cel-shaded illustrations in a 160×100 box behind
+  the unchanged `<Fish>` interface, `tambaqui` replacing `angelfish` as the 100-day fish,
+  `npm run fish:sheet` for a contact-sheet check, larger placements everywhere (two-column
+  gallery, Perfil hero, celebration, standings)
+
+Calls made here: the app frame is a fixed shell with an inner scroll region — the only
+reliable fix for iOS's document rubber-band in standalone mode. Six themes live in
+`localStorage` per device, no sync and no schema change; Fundo do mar stays the default for
+continuity with the pre-M7 look, and Breu is a soft black (`#0D0F12`), not pure black, which
+read as too much on the mockup canvas. Emoji were removed everywhere they played an icon
+role and kept only inside copy. The fish are drawn at the level of the mockup canvas's first
+realistic betta sample — real silhouette, three tones, scales, fin rays, a real eye — not the
+naturalist push, as a stopgap until Leo draws them in Rive; per-species palettes stay the one
+documented exception to the tokens-only rule. `tambaqui` replaced `angelfish` as the 100-day
+streak fish at Leo's request; no migration needed since `fish_variant` is free text and
+nobody could hold a 100-day streak yet. Version bumped to 1.1.0, which doubles as the
+persister buster, so the first open after the update re-syncs the mirror from the server.
+Measured (see [`../2026-09-22-m6-performance.md`](../2026-09-22-m6-performance.md), the M7
+addendum): precached cold start LCP and interactive both 1.1 s, essentially unchanged from
+M6 despite ~31 kB raw / ~12 kB gzip added by the fish, icons, theme tokens and the contrast
+audit — §1 criterion 4 stays met.

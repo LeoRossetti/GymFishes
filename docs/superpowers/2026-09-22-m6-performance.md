@@ -161,3 +161,60 @@ first install has to catch every chunk before the shell is fully offline-capable
 that already needs all of this code on first render, with no byte reduction on the uncached
 path and no effect at all on the precached path (already the metric that matters) to justify
 it.
+
+---
+
+## M7
+
+Run date: 2026-09-24. Same method as above — one persistent headless Chrome launched via
+`CHROME_PATH` on a fixed profile directory and a fixed `--port`, a priming navigation to
+install and activate the service worker, then a second Lighthouse invocation against that
+warm profile — repeated against the M7 build (`npm run build && npm run preview`, port
+4173, route `/entrar`) to check what the fish redraw, the icon set and the six themes add to
+the shell. Lighthouse version in both JSONs: **13.5.0**. Only the precached cold start was
+re-measured, since that is the path §1 criterion 4 names and the one the task called for.
+
+### Precached cold start (shell served from the service worker's Cache Storage)
+
+| metric | M6 | M7 |
+|---|---|---|
+| FCP | 1.1 s | 1053.7 ms |
+| LCP | 1.1 s | **1.1 s** (1053.7 ms) |
+| TBT | 0 ms | 0 ms |
+| Speed Index | 1.1 s | 1053.7 ms |
+| Interactive | 1.1 s | **1.1 s** (1064.6 ms) |
+
+Verified the same way as the M6 run: in the measured pass's `network-requests` audit, every
+asset's `transferSize` collapses to ~180 bytes (HTTP overhead only) while `resourceSize`
+still matches the real build output (e.g. `vendor-OMQdtl4Z.js` resourceSize 611,348 bytes) —
+a service-worker Cache Storage hit, not a network transfer.
+
+### Bundle size delta (JS + CSS, `vite build` output)
+
+| asset | M6 (shipped) | M7 | delta |
+|---|---|---|---|
+| JS total (raw / gzip) | 700.44 kB / 209.45 kB | 727.59 kB / 221.06 kB | +27.15 kB / +11.61 kB |
+| CSS total (raw / gzip) | 24.35 kB / 5.82 kB | 28.11 kB / 6.65 kB | +3.76 kB / +0.83 kB |
+| **Combined (raw / gzip)** | **724.79 kB / 215.27 kB** | **755.70 kB / 227.71 kB** | **+30.91 kB / +12.44 kB** |
+
+`vendor-OMQdtl4Z.js` (611.34 kB raw / 182.06 kB gzip) is byte-for-byte the same file M6
+shipped — no dependency moved — so the whole delta lives in app code and CSS: the icon set
+(`ui/icons.tsx`), the theme mechanism and six token blocks, `lib/contrast.ts`, and the
+layered redraw of all thirteen fish. This is the "few kilobytes of paths" the task brief
+anticipated, not a step change.
+
+### Verdict against §1 criterion 4
+
+Met, comfortably. The precached cold start — the scenario criterion 4 actually names,
+"installed to home screen" — measures LCP 1.1 s and interactive 1.1 s, both essentially
+unchanged from M6 despite the ~31 kB raw / ~12 kB gzip added: the whole shell is read from
+the service worker's Cache Storage on this path, so a modest byte increase costs nothing
+measurable. Well under the 2 s mark.
+
+### Verification
+
+- `npm run test:run` — 75 test files, 467 tests, all passed (with `package.json` version
+  bumped to `1.1.0`; nothing pins the version number in a test).
+- `npm run typecheck` — clean, no errors.
+- `npm run e2e` — rebuilt `dist/`, Playwright smoke spec `e2e/smoke.spec.ts` passed (entrar →
+  500 ml → Hoje → Ranking → reload → cleanup), unchanged.

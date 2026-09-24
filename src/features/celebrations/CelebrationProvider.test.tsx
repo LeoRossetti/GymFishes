@@ -89,41 +89,28 @@ describe('CelebrationProvider', () => {
     expect(screen.getByTestId('inline')).toHaveTextContent('')
   })
 
-  it('unlocks the pufferfish full screen once and remembers it; the streak takes the screen next time', async () => {
+  it('the 7-day streak takes the full screen; no fish is new because every fish is already available', async () => {
     const six = sixDays()
     renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
-    expect(screen.getByRole('dialog', { name: 'Novo peixe! Baiacu' })).toBeInTheDocument()
-    // the full-screen dialog announces its own text too now — assert the toast is among the statuses, not the only one
-    expect(screen.getAllByRole('status').map((s) => s.textContent)).toContain('🔥 7 dias seguidos!')
-    expect(JSON.parse(localStorage.getItem(SEEN_UNLOCKS_KEY) ?? '[]')).toContain('pufferfish')
-
-    await userEvent.click(screen.getByRole('button', { name: 'Depois' }))
-    expect(screen.queryByRole('dialog')).toBeNull()
-    await userEvent.click(screen.getByRole('button', { name: 'go' }))
-    expect(screen.queryByRole('dialog', { name: 'Novo peixe! Baiacu' })).toBeNull()
-    expect(screen.getByRole('dialog', { name: '🔥 7 dias seguidos!' })).toBeInTheDocument()
-  })
-
-  it('"Escolher agora" saves the new fish and closes', async () => {
-    const six = sixDays()
-    renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
-    await userEvent.click(screen.getByRole('button', { name: 'go' }))
-    await userEvent.click(screen.getByRole('button', { name: 'Escolher agora' }))
-    expect(updateProfile).toHaveBeenCalledWith('u1', { fish_variant: 'pufferfish' })
-    expect(screen.queryByRole('dialog')).toBeNull()
-  })
-
-  it('never re-celebrates a fish this device already saw', async () => {
-    localStorage.setItem(SEEN_UNLOCKS_KEY, JSON.stringify(['guppy', 'betta', 'goldfish', 'neon', 'pufferfish']))
-    const six = sixDays()
-    renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
-    await userEvent.click(screen.getByRole('button', { name: 'go' }))
-    expect(screen.queryByRole('dialog', { name: 'Novo peixe! Baiacu' })).toBeNull()
+    expect(screen.queryByRole('dialog', { name: /Novo peixe!/ })).toBeNull()
     expect(screen.getByRole('dialog', { name: '🔥 7 dias seguidos!' })).toBeInTheDocument()
     // no toast fired — the only status is the full-screen dialog's own announcement
     const statuses = screen.getAllByRole('status')
     expect(statuses).toHaveLength(1)
     expect(statuses[0]).toHaveTextContent('🔥 7 dias seguidos!')
+    // this device now remembers the whole set, so a later re-gate never re-celebrates them
+    expect(JSON.parse(localStorage.getItem(SEEN_UNLOCKS_KEY) ?? '[]')).toHaveLength(13)
+    expect(updateProfile).not.toHaveBeenCalled()
+  })
+
+  it('a device that stored a partial seen set before the change is not shown the rest as new', async () => {
+    localStorage.setItem(SEEN_UNLOCKS_KEY, JSON.stringify(['guppy', 'betta', 'goldfish', 'neon', 'pufferfish']))
+    const six = sixDays()
+    renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
+    await userEvent.click(screen.getByRole('button', { name: 'go' }))
+    expect(screen.queryByRole('dialog', { name: /Novo peixe!/ })).toBeNull()
+    expect(screen.getByRole('dialog', { name: '🔥 7 dias seguidos!' })).toBeInTheDocument()
+    expect(screen.getAllByRole('status')).toHaveLength(1)
   })
 })

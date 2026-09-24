@@ -9,7 +9,7 @@ export const FISH_IDS = [
   'neon',
   'pufferfish',
   'clownfish',
-  'angelfish',
+  'tambaqui',
   'octopus',
   'seahorse',
   'turtle',
@@ -34,7 +34,7 @@ export const UNLOCKS: Record<FishId, Unlock> = {
   neon: { kind: 'starter' },
   pufferfish: { kind: 'streak', days: 7 },
   clownfish: { kind: 'streak', days: 30 },
-  angelfish: { kind: 'streak', days: 100 },
+  tambaqui: { kind: 'streak', days: 100 },
   octopus: { kind: 'record', ml: 5000 },
   seahorse: { kind: 'volume', ml: 100_000 },
   turtle: { kind: 'volume', ml: 500_000 },
@@ -44,6 +44,12 @@ export const UNLOCKS: Record<FishId, Unlock> = {
 }
 
 export const STARTERS: readonly FishId[] = FISH_IDS.filter((id) => UNLOCKS[id].kind === 'starter')
+
+/**
+ * Every fish is selectable from the start (Leo, 2026-09-24). The unlock conditions above stay:
+ * they still drive the streak milestones, and flipping this back re-gates the gallery.
+ */
+export const ALL_FISH_AVAILABLE = true
 
 /** 7, 30, 100 — read off the catalog so the streak celebration and the streak fish can never disagree. */
 export const STREAK_MILESTONES: readonly number[] = FISH_IDS.flatMap((id) => {

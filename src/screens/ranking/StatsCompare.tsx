@@ -31,7 +31,7 @@ export function StatsCompare({ members, userId, stats }: Props) {
   const ordered = selfFirst(members, userId)
   return (
     <section className="mt-3 rounded-card border border-line bg-surface p-4">
-      <h2 className="mb-2 text-[9px] font-extrabold uppercase tracking-[1px] text-ink-3">
+      <h2 className="mb-2 text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">
         {STRINGS.ranking.mediasERecordes}
       </h2>
       <table className="w-full text-[13px]">
@@ -42,7 +42,7 @@ export function StatsCompare({ members, userId, stats }: Props) {
               <th
                 key={m.id}
                 scope="col"
-                className={`pb-2 text-right text-[9px] font-extrabold uppercase tracking-[1px] ${ACCENT_TEXT[accentOf(m.accent)]}`}
+                className={`pb-2 text-right text-[10px] font-extrabold uppercase tracking-[1px] ${ACCENT_TEXT[accentOf(m.accent)]}`}
               >
                 {memberName(members, userId, m.id)}
               </th>

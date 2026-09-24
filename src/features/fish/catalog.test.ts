@@ -31,4 +31,10 @@ describe('catalog', () => {
     expect(unlockLabel(UNLOCKS.shark)).toBe('Ganhar 1 mês')
     expect(unlockLabel(UNLOCKS.whale)).toBe('Ganhar 3 meses')
   })
+
+  it('the 100-day fish is the tambaqui; the old angelfish id falls back to guppy', () => {
+    expect(UNLOCKS.tambaqui).toEqual({ kind: 'streak', days: 100 })
+    expect(fishName('tambaqui')).toBe('Tambaqui')
+    expect(fishOf('angelfish')).toBe('guppy')
+  })
 })

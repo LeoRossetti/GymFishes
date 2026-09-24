@@ -1,28 +1,32 @@
-/** Only existing tokens: the six member accents plus the ink scale (spec §8). */
-export type Tone =
-  | 'accent-blue'
-  | 'accent-green'
-  | 'accent-yellow'
-  | 'accent-orange'
-  | 'accent-purple'
-  | 'accent-pink'
-  | 'ink'
-  | 'ink-2'
-  | 'ink-3'
-  | 'ink-on-water'
+/** The art box: 160×100, facing right (spec M7 §9.2). Same 1.6:1 as the old 64×40, so layout math holds. */
+export const VIEW_W = 160
+export const VIEW_H = 100
 
 /**
- * Every fish is the same five layers, drawn in this order: tail, body, fins, marks, eyes.
- * Paths live in the shared 64×40 viewBox, facing right. Keep to these layers and any fish can
- * be redrawn — or swapped for a Rive file — without touching `Fish.tsx`.
+ * One drawn shape. `fill` and `stroke` are any CSS colour: species palettes are hex (the
+ * documented exception to tokens-only); `tone()` stays available for art that wants a token.
+ * `clip: true` clips the layer to the body silhouette — shading, scales and markings use it
+ * so they never spill past the fish.
+ */
+export type Layer = {
+  d: string
+  fill: string
+  stroke?: string
+  strokeWidth?: number
+  clip?: boolean
+}
+
+export type Eye = { cx: number; cy: number; r: number }
+
+/**
+ * Every fish is: the body silhouette (also the clip path), the tail layers (rotated by the idle
+ * wag around `tailPivot`), the remaining layers in paint order, then the eyes. A fish can be
+ * redrawn — or swapped for a Rive file — without touching `Fish.tsx`.
  */
 export type FishArt = {
   body: string
-  tail: string
-  /** Where the tail wag rotates around, in viewBox units. */
   tailPivot: readonly [number, number]
-  fins: readonly string[]
-  marks: readonly string[]
-  eyes: readonly (readonly [number, number])[]
-  colors: { body: Tone; tail: Tone; fins: Tone; marks: Tone }
+  tail: readonly Layer[]
+  layers: readonly Layer[]
+  eyes: readonly Eye[]
 }

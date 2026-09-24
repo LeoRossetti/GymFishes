@@ -3,6 +3,7 @@ import type { ShellContext } from '@/app/AppShell'
 import { fishOf } from '@/features/fish/catalog'
 import { Fish } from '@/features/fish/Fish'
 import { useGroupData } from '@/features/group/useGroupData'
+import { ACCENT_BORDER, accentOf } from '@/lib/accents'
 import { STRINGS } from '@/lib/strings'
 import { formatDateLong } from '@/lib/format'
 import { ProgressStrip } from './ProgressStrip'
@@ -19,17 +20,17 @@ export function Hoje() {
     <div className="px-3 pt-2">
       <header className="mb-4 flex items-start justify-between px-1">
         <div>
-          <h1 className="text-[20px] font-extrabold tracking-tight">{STRINGS.hoje.titulo}</h1>
-          <p className="mt-1 text-[11px] text-ink-2">{formatDateLong(new Date())}</p>
+          <h1 className="text-[24px] font-extrabold tracking-[-0.4px]">{STRINGS.hoje.titulo}</h1>
+          <p className="mt-1 text-[13px] font-medium text-ink-2">{formatDateLong(new Date())}</p>
           <SyncPill groupId={groupId} />
         </div>
         <button
           type="button"
           aria-label={STRINGS.hoje.abrirPerfil}
           onClick={() => navigate('/perfil')}
-          className="flex min-h-[44px] min-w-[44px] items-center justify-center active:bg-line transition-colors duration-100"
+          className={`flex h-11 w-11 items-center justify-center rounded-full border-2 bg-surface-2 active:bg-line transition-colors duration-100 ${ACCENT_BORDER[accentOf(me?.accent ?? 'blue')]}`}
         >
-          <Fish variant={fishOf(me?.fish_variant ?? '')} size={36} state="still" />
+          <Fish variant={fishOf(me?.fish_variant ?? '')} size={30} state="still" />
         </button>
       </header>
       {userId ? <ProgressStrip userId={userId} members={members} entries={entries} /> : null}

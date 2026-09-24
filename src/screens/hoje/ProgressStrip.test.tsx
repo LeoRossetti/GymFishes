@@ -32,6 +32,7 @@ const row = (id: string, profile_id: string, total_ml: number) =>
     deleted_at: null,
   }) as Entry
 const entries = [row('e1', 'u1', 1800), row('e2', 'u2', 2300)]
+const third: Member = { id: 'u3', display_name: 'Bia', fish_variant: 'neon', accent: 'green', joined_at: '3' }
 
 describe('ProgressStrip', () => {
   it('shows the gap line when nothing is being celebrated', () => {
@@ -45,5 +46,21 @@ describe('ProgressStrip', () => {
     render(<ProgressStrip userId="u1" members={members} entries={entries} />)
     expect(screen.getByText('2 L hoje')).toBeInTheDocument()
     expect(screen.queryByText('Ana está 500 ml na frente')).toBeNull()
+  })
+
+  it('two members sit side by side with no strip scroll (spec M7 §8.2)', () => {
+    inline.value = null
+    render(<ProgressStrip userId="u1" members={members} entries={entries} />)
+    const row = document.querySelector('[data-layout]')
+    expect(row).toHaveAttribute('data-layout', 'side-by-side')
+    expect(row).not.toHaveClass('overflow-x-auto')
+  })
+
+  it('a third member brings the horizontal strip back', () => {
+    inline.value = null
+    render(<ProgressStrip userId="u1" members={[...members, third]} entries={entries} />)
+    const row = document.querySelector('[data-layout]')
+    expect(row).toHaveAttribute('data-layout', 'strip')
+    expect(row).toHaveClass('overflow-x-auto')
   })
 })

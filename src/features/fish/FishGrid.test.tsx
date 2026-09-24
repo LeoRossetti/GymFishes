@@ -36,4 +36,16 @@ describe('FishGrid', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Tubarão' }))
     expect(onSelect).not.toHaveBeenCalled()
   })
+
+  it('the 100-day fish is the tambaqui; the angelfish is gone', () => {
+    render(<FishGrid variants={FISH_IDS} unlocked={unlocked} selected={null} onSelect={vi.fn()} />)
+    expect(screen.getByRole('button', { name: 'Tambaqui' })).toHaveTextContent('Sequência de 100 dias')
+    expect(screen.queryByRole('button', { name: 'Peixe-anjo' })).toBeNull()
+  })
+
+  it('shows the fish large in two columns so the drawing can be seen (spec M7 §9.4)', () => {
+    render(<FishGrid variants={FISH_IDS} unlocked={unlocked} selected={null} onSelect={vi.fn()} />)
+    expect(screen.getByRole('list', { name: 'Galeria de peixes' })).toHaveClass('grid-cols-2')
+    expect(screen.getByRole('button', { name: 'Guppy' }).querySelector('svg')).toHaveAttribute('width', '140')
+  })
 })

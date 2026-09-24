@@ -32,7 +32,7 @@ export function DayDetail({ day, userId, groupId, members, entries, openRegister
 
   return (
     <section ref={ref} className="mt-3 rounded-card border border-line bg-surface p-4">
-      <h2 className="text-[9px] font-extrabold uppercase tracking-[1px] text-ink-3">{formatDayLong(day)}</h2>
+      <h2 className="text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">{formatDayLong(day)}</h2>
       <p className="mt-1 mb-2 text-[13px] font-bold text-ink-2">{summary}</p>
       <EntryList
         userId={userId}

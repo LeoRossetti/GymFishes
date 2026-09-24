@@ -15,8 +15,7 @@ export function UpdatePrompt({ ready, apply }: AppUpdate) {
       initial={{ opacity: 0, y: reduced ? 0 : 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: reduced ? 0.12 : 0.2 }}
-      className="fixed inset-x-3 bottom-28 z-40 mx-auto flex max-w-[406px] items-center gap-3
-                 rounded-control border border-line bg-surface-2 p-2 pl-4"
+      className="flex shrink-0 items-center gap-3 border-t border-line bg-surface-2 px-4 py-2"
     >
       <p className="min-w-0 flex-1 text-[13px] font-bold text-ink">{STRINGS.atualizacao.disponivel}</p>
       <div className="w-[128px] shrink-0">

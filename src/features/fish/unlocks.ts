@@ -1,6 +1,6 @@
 import { dayTotals, type RankableEntry } from '@/lib/rankings'
 import { longestStreak } from '@/lib/streaks'
-import { FISH_IDS, UNLOCKS, type FishId, type Unlock } from './catalog'
+import { ALL_FISH_AVAILABLE, FISH_IDS, UNLOCKS, type FishId, type Unlock } from './catalog'
 
 export type UnlockFacts = {
   longestStreak: number
@@ -43,4 +43,9 @@ export function meets(u: Unlock, f: UnlockFacts): boolean {
 export function unlockedFish(entries: readonly RankableEntry[], profileId: string, monthsWon: number): Set<FishId> {
   const facts = unlockFacts(entries, profileId, monthsWon)
   return new Set(FISH_IDS.filter((id) => meets(UNLOCKS[id], facts)))
+}
+
+/** What the gallery and the celebrations use: all thirteen while `ALL_FISH_AVAILABLE`, else the earned set. */
+export function availableFish(entries: readonly RankableEntry[], profileId: string, monthsWon: number): Set<FishId> {
+  return ALL_FISH_AVAILABLE ? new Set(FISH_IDS) : unlockedFish(entries, profileId, monthsWon)
 }

@@ -106,7 +106,7 @@ function Body({ celebration }: { celebration: FullScreenCelebration }) {
       return (
         <>
           <div className="flex justify-center">
-            <Fish variant={celebration.fish} size={160} state="idle" />
+            <Fish variant={celebration.fish} size={200} state="idle" />
           </div>
           <p className="mt-6 text-[24px] font-extrabold tracking-tight">{STRINGS.celebracoes.novoPeixe}</p>
           <p className="mt-1 text-[17px] font-bold text-ink-2">{fishName(celebration.fish)}</p>

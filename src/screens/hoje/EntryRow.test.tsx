@@ -140,4 +140,11 @@ describe('EntryRow', () => {
     await userEvent.click(screen.getByText(/Leo · 11:00/))
     expect(screen.getByRole('button', { name: 'Editar' })).toBeInTheDocument()
   })
+
+  it('a register without a photo shows a drop tile, never an emoji', () => {
+    renderRow() // the file's fixture has thumb_path: null
+    const row = screen.getByRole('button', { expanded: false })
+    expect(row.querySelector('svg[data-icon="drop"]')).not.toBeNull()
+    expect(row.textContent).not.toMatch(/\p{Extended_Pictographic}/u)
+  })
 })

@@ -26,7 +26,7 @@ export function CalendarGrid({ period, totals, today, firstDay, selected, onSele
   return (
     <div className="mt-3 grid grid-cols-7 gap-1">
       {STRINGS.historico.diasSemana.map((d, i) => (
-        <span key={i} className="text-center text-[9px] font-extrabold uppercase tracking-[1px] text-ink-3">
+        <span key={i} className="text-center text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">
           {d}
         </span>
       ))}

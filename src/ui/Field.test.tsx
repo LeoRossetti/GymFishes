@@ -15,4 +15,8 @@ describe('Field', () => {
     expect(input).not.toHaveAttribute('aria-invalid')
     expect(input).not.toHaveAttribute('aria-describedby')
   })
+  it('renders the input at 16px so iOS never zooms on focus (spec M7 §4.2)', () => {
+    render(<Field label="E-mail" />)
+    expect(screen.getByLabelText('E-mail')).toHaveClass('text-[16px]')
+  })
 })

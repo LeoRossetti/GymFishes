@@ -19,11 +19,11 @@ type Props = {
 
 /** Tube height in px (matches `h-[220px]` below). */
 export const TUBE_H = 220
-/** Fish width in px — about a third of the 160px tube. Height follows the 64×40 art box. */
-export const FISH_W = 44
-export const FISH_H = (FISH_W * 40) / 64
+/** Fish width in px — about a third of the tube (spec M7 §8.2). Height follows the 1.6:1 art box. */
+export const FISH_W = 56
+export const FISH_H = FISH_W * 0.625
 /** Air between the fish's back and the surface, so the wave crest never cuts the fish. */
-const GAP = 4
+const GAP = 6
 
 /**
  * The fish's `bottom`, in px, for a given fill %: it swims just under the surface, and rests on
@@ -54,7 +54,7 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
   }, [totalMl, reduced])
 
   return (
-    <div className="w-[160px] shrink-0">
+    <div className="min-w-[140px] max-w-[160px] flex-1 shrink-0">
       <div className="relative h-[220px] overflow-hidden rounded-card border-2 border-line bg-surface-2">
         <motion.div className="absolute inset-x-0 bottom-0" animate={{ height: `${pct}%` }} transition={spring}>
           <span
@@ -80,11 +80,11 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
           </motion.span>
         ) : null}
       </div>
-      <p className="mt-2 text-center text-[17px] font-extrabold tracking-[-0.4px]">
+      <p className="mt-2 text-center text-[24px] font-extrabold tracking-[-0.4px]">
         {formatVolume(shownTotal)}
       </p>
       <p
-        className={`text-center text-[9px] font-extrabold uppercase tracking-[1px] ${ACCENT_TEXT[accentOf(accent)]}`}
+        className={`text-center text-[10px] font-extrabold uppercase tracking-[1px] ${ACCENT_TEXT[accentOf(accent)]}`}
       >
         {isSelf ? STRINGS.hoje.voce : name}
       </p>

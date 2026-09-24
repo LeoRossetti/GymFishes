@@ -1,4 +1,4 @@
-import { unlockedFish } from '@/features/fish/unlocks'
+import { availableFish } from '@/features/fish/unlocks'
 import type { DayKey } from '@/lib/dates'
 import { dayTotals, totalsForDay, type RankableEntry } from '@/lib/rankings'
 import { streakOf } from '@/lib/streaks'
@@ -25,6 +25,6 @@ export function dayStateOf(
     bestOtherDayMl,
     leading: partnerBest > 0 && mine > partnerBest,
     streakDays: streakOf(new Set(byDay.keys()), today).days,
-    unlocked: unlockedFish(entries, userId, monthsWon(entries, memberIds, userId, today)),
+    unlocked: availableFish(entries, userId, monthsWon(entries, memberIds, userId, today)),
   }
 }

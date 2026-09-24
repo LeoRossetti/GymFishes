@@ -113,13 +113,14 @@ describe('Perfil', () => {
     expect(signOut).toHaveBeenCalled()
   })
 
-  it('shows your fish and opens the gallery in place', async () => {
+  it('shows your fish and opens the gallery in place with every fish available', async () => {
     renderWithProviders(<Perfil />)
     expect(screen.getByText('Guppy')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Baiacu' })).toBeNull()
     await userEvent.click(screen.getByRole('button', { name: /Trocar peixe/ }))
-    expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveAttribute('aria-disabled', 'true')
-    expect(screen.getByText('Sequência de 7 dias')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Baiacu' })).not.toHaveAttribute('aria-disabled')
+    expect(screen.getByRole('button', { name: 'Baleia' })).not.toHaveAttribute('aria-disabled')
+    expect(screen.queryByText('Sequência de 7 dias')).toBeNull()
     expect(screen.getByRole('button', { name: 'Guppy' })).toHaveAttribute('aria-pressed', 'true')
   })
 
@@ -133,5 +134,11 @@ describe('Perfil', () => {
   it('shows the app version and build date under Sair', () => {
     renderWithProviders(<Perfil />)
     expect(screen.getByText(/^Versão \d+\.\d+\.\d+ · \d{2}\/\d{2}\/\d{4}$/)).toBeInTheDocument()
+  })
+
+  it('offers the theme picker under the colours', () => {
+    renderWithProviders(<Perfil />)
+    expect(screen.getByRole('heading', { name: 'Tema' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Aquário' })).toBeInTheDocument()
   })
 })

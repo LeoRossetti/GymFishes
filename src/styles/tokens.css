@@ -1,17 +1,18 @@
 @import "tailwindcss";
 
+/* Fundo do mar — the default theme (spec M7 §7.2). The other five override these below. */
 @theme {
-  --color-bg: #131F24;
-  --color-surface: #1F2C34;
-  --color-surface-2: #25353E;
-  --color-line: #37464F;
-  --color-ink: #F1F7FB;
-  --color-ink-2: #93AEBF;
-  --color-ink-3: #6C838F;
+  --color-bg: #0A1421;
+  --color-surface: #162638;
+  --color-surface-2: #213850;
+  --color-line: #32496A;
+  --color-ink: #F2F7FB;
+  --color-ink-2: #A3B9CB;
+  --color-ink-3: #6F879B;
   --color-water: #1CB0F6;
-  --color-water-edge: #1899D6;
-  --color-water-hi: #4FC3F9;
-  --color-ink-on-water: #0A2A3A;
+  --color-water-edge: #1791CC;
+  --color-water-hi: #62CDFF;
+  --color-ink-on-water: #072536;
   --color-ok: #58CC02;
   --color-streak: #FFC800;
   --color-danger: #FF4B4B;
@@ -28,4 +29,76 @@
   --radius-key: 10px;
 
   --font-sans: 'Nunito', -apple-system, "Segoe UI", system-ui, sans-serif;
+}
+
+/* Themes: the same variables, redefined under `data-theme` on <html>. Utilities read var(--color-*),
+   so nothing else changes. Keep these blocks equal to src/features/theme/themes.ts — a test checks. */
+html[data-theme='tinta'] {
+  --color-bg: #0B0E12;
+  --color-surface: #1A2028;
+  --color-surface-2: #262E38;
+  --color-line: #3B4552;
+  --color-ink: #F4F6F8;
+  --color-ink-2: #A0ADBA;
+  --color-ink-3: #6F7D8A;
+  --color-water: #22C4F5;
+  --color-water-edge: #1A9CC6;
+  --color-water-hi: #7ADDFF;
+  --color-ink-on-water: #06232E;
+}
+
+html[data-theme='aquario'] {
+  --color-bg: #04171D;
+  --color-surface: #0F2C36;
+  --color-surface-2: #17404D;
+  --color-line: #255A6B;
+  --color-ink: #EEF8FA;
+  --color-ink-2: #94BAC4;
+  --color-ink-3: #628B96;
+  --color-water: #14B5EC;
+  --color-water-edge: #0F91BE;
+  --color-water-hi: #66DBFF;
+  --color-ink-on-water: #052330;
+}
+
+html[data-theme='meia-noite'] {
+  --color-bg: #0C0E1C;
+  --color-surface: #1A1D36;
+  --color-surface-2: #262A4C;
+  --color-line: #3B4070;
+  --color-ink: #F3F3FB;
+  --color-ink-2: #A6A9CC;
+  --color-ink-3: #74789C;
+  --color-water: #2AB3F7;
+  --color-water-edge: #1F8FCB;
+  --color-water-hi: #7FD3FF;
+  --color-ink-on-water: #071B33;
+}
+
+html[data-theme='areia'] {
+  --color-bg: #141210;
+  --color-surface: #23201C;
+  --color-surface-2: #302B26;
+  --color-line: #48413A;
+  --color-ink: #F6F1EA;
+  --color-ink-2: #B5AA9C;
+  --color-ink-3: #83796C;
+  --color-water: #1CB0F6;
+  --color-water-edge: #1791CC;
+  --color-water-hi: #62CDFF;
+  --color-ink-on-water: #072536;
+}
+
+html[data-theme='breu'] {
+  --color-bg: #0D0F12;
+  --color-surface: #181B20;
+  --color-surface-2: #23272D;
+  --color-line: #373C44;
+  --color-ink: #F3F5F7;
+  --color-ink-2: #A2ABB3;
+  --color-ink-3: #6F7880;
+  --color-water: #1CB0F6;
+  --color-water-edge: #1791CC;
+  --color-water-hi: #62CDFF;
+  --color-ink-on-water: #072536;
 }

@@ -4,6 +4,7 @@ import { fromDatetimeLocal, toDatetimeLocal } from '@/lib/dates'
 import { processPhoto } from '@/lib/image'
 import { STRINGS } from '@/lib/strings'
 import { useToast } from '@/ui/Toast'
+import { Camera, Clock, Close, Note } from '@/ui/icons'
 import type { Draft, DraftAction } from './draft'
 
 type Props = {
@@ -14,7 +15,7 @@ type Props = {
   entryHasPhoto: boolean
 }
 
-const CHIP = 'min-h-[44px] rounded-[99px] border px-4 text-[13px] font-bold'
+const CHIP = 'inline-flex min-h-[44px] items-center gap-1.5 rounded-[99px] border px-4 text-[13px] font-bold'
 const CHIP_OFF = `${CHIP} border-dashed border-line text-ink-2`
 const CHIP_ON = `${CHIP} border-ok text-ok`
 const MAX_NOTE = 140
@@ -30,9 +31,9 @@ function RemoveBadge({ onClick }: { onClick: () => void }) {
     >
       <span
         className="flex h-6 w-6 items-center justify-center rounded-[99px] border
-                   border-water bg-water text-[11px] font-extrabold text-ink-on-water"
+                   border-water bg-water text-ink-on-water"
       >
-        ✕
+        <Close size={12} strokeWidth={3} />
       </span>
     </button>
   )
@@ -86,12 +87,14 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
         ) : entryHasPhoto && !draft.photoRemoved ? (
           <span className="relative">
             <button type="button" className={CHIP_ON} onClick={() => fileRef.current?.click()}>
+              <Camera size={16} />
               {STRINGS.registrar.foto}
             </button>
             <RemoveBadge onClick={() => dispatch({ type: 'clearPhoto' })} />
           </span>
         ) : (
           <button type="button" className={CHIP_OFF} onClick={() => fileRef.current?.click()}>
+            <Camera size={16} />
             {STRINGS.registrar.foto}
           </button>
         )}
@@ -100,6 +103,7 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
           className={draft.note ? CHIP_ON : CHIP_OFF}
           onClick={() => setOpen(open === 'nota' ? null : 'nota')}
         >
+          <Note size={16} />
           {STRINGS.registrar.nota}
         </button>
         <button
@@ -107,7 +111,8 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
           className={draft.drankAtEdited ? CHIP_ON : CHIP_OFF}
           onClick={() => setOpen(open === 'hora' ? null : 'hora')}
         >
-          {draft.drankAtEdited ? `🕐 ${formatTime(draft.drankAt)}` : STRINGS.registrar.agora}
+          <Clock size={16} />
+          {draft.drankAtEdited ? formatTime(draft.drankAt) : STRINGS.registrar.agora}
         </button>
       </div>
       {open === 'nota' ? (
@@ -118,7 +123,7 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
             rows={2}
             onChange={(e) => dispatch({ type: 'setNote', note: e.target.value })}
             className="mt-2 w-full rounded-control border border-line bg-surface-2 p-3
-                       text-[15px] text-ink focus:border-water"
+                       text-[16px] text-ink focus:border-water"
           />
           <p className="mt-1 text-[11px] text-ink-2">{STRINGS.registrar.contador(draft.note.length, MAX_NOTE)}</p>
         </>
@@ -129,7 +134,7 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
           value={toDatetimeLocal(draft.drankAt)}
           onChange={(e) => e.target.value && dispatch({ type: 'setDrankAt', at: fromDatetimeLocal(e.target.value) })}
           className="mt-2 min-h-[44px] w-full rounded-control border border-line bg-surface-2 px-3
-                     text-[15px] text-ink focus:border-water"
+                     text-[16px] text-ink focus:border-water"
         />
       ) : null}
     </section>

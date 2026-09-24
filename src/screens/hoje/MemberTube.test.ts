@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { FISH_H, FISH_W, TUBE_H, fishBottomPx } from './MemberTube'
 
 describe('fishBottomPx', () => {
-  it('draws a fish a third of the tube wide', () => {
-    expect(FISH_W).toBe(44)
-    expect(FISH_H).toBeCloseTo((44 * 40) / 64)
+  it('draws a fish 56px wide, a third of the tube (spec M7 §8.2)', () => {
+    expect(FISH_W).toBe(56)
+    expect(FISH_H).toBeCloseTo(56 * 0.625)
   })
 
   it('sits on the bottom while the water is shallower than the fish', () => {
