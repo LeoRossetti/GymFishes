@@ -118,7 +118,7 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
             rows={2}
             onChange={(e) => dispatch({ type: 'setNote', note: e.target.value })}
             className="mt-2 w-full rounded-control border border-line bg-surface-2 p-3
-                       text-[15px] text-ink focus:border-water"
+                       text-[16px] text-ink focus:border-water"
           />
           <p className="mt-1 text-[11px] text-ink-2">{STRINGS.registrar.contador(draft.note.length, MAX_NOTE)}</p>
         </>
@@ -129,7 +129,7 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
           value={toDatetimeLocal(draft.drankAt)}
           onChange={(e) => e.target.value && dispatch({ type: 'setDrankAt', at: fromDatetimeLocal(e.target.value) })}
           className="mt-2 min-h-[44px] w-full rounded-control border border-line bg-surface-2 px-3
-                     text-[15px] text-ink focus:border-water"
+                     text-[16px] text-ink focus:border-water"
         />
       ) : null}
     </section>

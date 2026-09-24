@@ -56,4 +56,39 @@ describe('AppShell', () => {
     )
     expect(screen.getByRole('status')).toHaveTextContent('Nova versão disponível')
   })
+
+  it('scrolls the screen inside a scroll region and keeps the tab bar as a sibling below it', () => {
+    renderWithProviders(
+      <Routes>
+        <Route element={<AppShell />}>
+          <Route path="/hoje" element={<p>hoje ok</p>} />
+        </Route>
+      </Routes>,
+      { route: '/hoje' },
+    )
+    const main = screen.getByRole('main')
+    expect(main).toHaveClass('scroll-region')
+    expect(main).toContainElement(screen.getByText('hoje ok'))
+    const nav = screen.getByRole('navigation', { name: 'Abas' })
+    expect(nav).not.toHaveClass('fixed')
+    expect(main.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('the update bar is a row between the screen and the tab bar, not a floating box', () => {
+    update.ready = true
+    renderWithProviders(
+      <Routes>
+        <Route element={<AppShell />}>
+          <Route path="/hoje" element={<p>hoje ok</p>} />
+        </Route>
+      </Routes>,
+      { route: '/hoje' },
+    )
+    const bar = screen.getByRole('status')
+    expect(bar).not.toHaveClass('fixed')
+    const main = screen.getByRole('main')
+    const nav = screen.getByRole('navigation', { name: 'Abas' })
+    expect(main.compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(bar.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
 })

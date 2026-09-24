@@ -13,6 +13,7 @@ import './styles/tokens.css'
 import './styles/globals.css'
 import { AuthProvider } from '@/features/auth/AuthProvider'
 import { AppShell } from '@/app/AppShell'
+import { AuthFrame } from '@/app/AuthFrame'
 import { Guard } from '@/app/Guard'
 import { RedirectIfAuthed } from '@/app/RedirectIfAuthed'
 import { TAB_ROUTES } from '@/app/routes'
@@ -59,7 +60,9 @@ createRoot(document.getElementById('root')!).render(
               path="/entrar"
               element={
                 <RedirectIfAuthed>
-                  <Login />
+                  <AuthFrame>
+                    <Login />
+                  </AuthFrame>
                 </RedirectIfAuthed>
               }
             />
@@ -67,7 +70,9 @@ createRoot(document.getElementById('root')!).render(
               path="/criar-conta"
               element={
                 <RedirectIfAuthed>
-                  <SignUp />
+                  <AuthFrame>
+                    <SignUp />
+                  </AuthFrame>
                 </RedirectIfAuthed>
               }
             />
@@ -75,7 +80,9 @@ createRoot(document.getElementById('root')!).render(
               path="/inicio"
               element={
                 <Guard>
-                  <OnboardingRoute />
+                  <AuthFrame>
+                    <OnboardingRoute />
+                  </AuthFrame>
                 </Guard>
               }
             />
