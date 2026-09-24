@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useSession } from '@/features/auth/AuthProvider'
 import { useBootstrap } from '@/features/profile/useBootstrap'
 import { updateProfile } from '@/features/profile/mutations'
+import { ThemePicker } from '@/features/theme/ThemePicker'
 import { ACCENTS, ACCENT_BG, accentOf } from '@/lib/accents'
 import { formatBuildDate } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
@@ -105,6 +106,8 @@ export function Perfil() {
             />
           ))}
         </div>
+
+        <ThemePicker />
       </section>
 
       <BottleManager userId={userId} />

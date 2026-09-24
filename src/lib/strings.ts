@@ -115,6 +115,17 @@ export const STRINGS = {
     sairMesmo: 'Sair mesmo?',
     sobre: (versao: string, data: string) => `Versão ${versao} · ${data}`,
   },
+  tema: {
+    titulo: 'Tema',
+    nomes: {
+      'fundo-do-mar': 'Fundo do mar',
+      tinta: 'Tinta',
+      aquario: 'Aquário',
+      'meia-noite': 'Meia-noite',
+      areia: 'Areia',
+      breu: 'Breu',
+    },
+  },
   peixes: {
     seuPeixe: 'Seu peixe',
     trocarPeixe: 'Trocar peixe',

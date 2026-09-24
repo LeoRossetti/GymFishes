@@ -134,4 +134,10 @@ describe('Perfil', () => {
     renderWithProviders(<Perfil />)
     expect(screen.getByText(/^Versão \d+\.\d+\.\d+ · \d{2}\/\d{2}\/\d{4}$/)).toBeInTheDocument()
   })
+
+  it('offers the theme picker under the colours', () => {
+    renderWithProviders(<Perfil />)
+    expect(screen.getByRole('heading', { name: 'Tema' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Aquário' })).toBeInTheDocument()
+  })
 })
