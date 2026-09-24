@@ -5,6 +5,7 @@ import { compositionChips, describeComposition, parseComposition } from '@/lib/c
 import { formatTime, formatVolume } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
+import { Drop } from '@/ui/icons'
 
 type Props = {
   entry: Entry
@@ -45,8 +46,8 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
             className="h-[42px] w-[42px] shrink-0 rounded-control object-cover"
           />
         ) : (
-          <span className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-control bg-surface-2 text-[17px]">
-            💧
+          <span className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-control bg-surface-2 text-water">
+            <Drop size={18} filled />
           </span>
         )}
         <span className="min-w-0 flex-1">
