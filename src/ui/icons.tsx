@@ -58,13 +58,15 @@ export function Trophy({ filled = false, ...rest }: IconProps) {
 }
 
 export function Calendar({ filled = false, ...rest }: IconProps) {
+  // Filled (spec M7 §5): the whole card fills solid, same weight as Drop; the header line and
+  // posts switch to the page background so they read as cut-outs instead of vanishing into the fill.
+  const cutout = filled ? 'var(--color-bg)' : undefined
   return (
     <Svg name="calendar" {...rest}>
-      <rect x="3" y="5" width="18" height="16" rx="3" />
-      {filled ? <path d="M3 8a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v2H3z" fill="currentColor" stroke="none" /> : null}
-      <path d="M3 10h18" />
-      <path d="M8 3v4" />
-      <path d="M16 3v4" />
+      <rect x="3" y="5" width="18" height="16" rx="3" fill={fillOf(filled)} />
+      <path d="M3 10h18" stroke={cutout} />
+      <path d="M8 3v4" stroke={cutout} />
+      <path d="M16 3v4" stroke={cutout} />
     </Svg>
   )
 }

@@ -40,12 +40,14 @@ describe('icons', () => {
     expect(trophySolid.container.querySelector('path')).toHaveAttribute('fill', 'currentColor')
     trophySolid.unmount()
 
-    // Calendar: filled state adds a path with fill="currentColor"
+    // Calendar: the card rect fills solid like Drop; the header line reads as a cut-out
     const calendarHollow = render(<Calendar />)
-    expect(calendarHollow.container.querySelector('path[fill="currentColor"]')).toBeNull()
+    const calendarHollowFill = calendarHollow.container.querySelector('rect')?.getAttribute('fill')
+    expect(calendarHollowFill === null || calendarHollowFill === 'none').toBe(true)
     calendarHollow.unmount()
     const calendarSolid = render(<Calendar filled />)
-    expect(calendarSolid.container.querySelector('path[fill="currentColor"]')).toBeTruthy()
+    expect(calendarSolid.container.querySelector('rect')).toHaveAttribute('fill', 'currentColor')
+    expect(calendarSolid.container.querySelector('path')).toHaveAttribute('stroke', 'var(--color-bg)')
     calendarSolid.unmount()
 
     // FishIcon: first two paths and circle fill toggle
