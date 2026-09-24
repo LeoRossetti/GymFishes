@@ -72,6 +72,8 @@ against screenshots of the production build on a WebKit iPhone viewport (2026-09
 | Tambaqui | Replaces Peixe-anjo as the 100-day streak fish | Leo's request. `fish_variant` is free text and nobody can hold a 100-day streak yet, so no migration |
 | Rive | Leo's later project; `<Fish variant state size>` stays the swap point | Unchanged from the main spec §2 |
 | Type sizes | Screen titles 20→24px, section labels 9→10px, tab labels 11px | Legibility on the phone; 9px labels were the smallest text on screen |
+| Fish availability | All thirteen selectable from the start (`ALL_FISH_AVAILABLE`) | Leo's call after seeing the redrawn set (2026-09-24); the unlock conditions stay as the streak-milestone source and the re-gating switch |
+| Bubbles | Removed | Leo's call after seeing them (2026-09-24) |
 
 ## 4. App frame
 
@@ -270,7 +272,7 @@ Tap → Perfil, as today.
 │  │  ~~~~~~  │      │ ~~~~~~~~ │        │  tube: 158×220, --surface-2, 2px --line, 16px radius
 │  │ 🐟  ○    │      │  🐟   ○  │        │  water: --water, wave crest --water-hi
 │  │    ○     │      │ ○        │        │  fish: 56px, just under the surface
-│  └──────────┘      └──────────┘        │  bubbles: 3 per tube
+│  └──────────┘      └──────────┘        │
 │      1,8 L             2,3 L           │  24px / 800
 │      VOCÊ              ELA             │  10px / 800 / 1px tracking, member accent
 │        Ela está 500 ml na frente       │  15px / 700, --water
@@ -282,9 +284,8 @@ Tap → Perfil, as today.
 - Tube scale rule unchanged: `max(3000, highestTotalToday)` ml.
 - Fish width 56px (from 44). `fishBottomPx` keeps its contract with the new height.
 - Wave amplitudes 4px back / 3px front (from 3 / 2); drift speeds unchanged.
-- Bubbles: three `--water-hi` discs of 4, 5 and 6px per tube, rising from the tube floor to
-  the surface over 7 to 9 seconds on staggered CSS keyframes, clipped to the water. They pause
-  with `[data-waves='paused']` and do not render under `prefers-reduced-motion`.
+- No bubbles: three rising discs per tube shipped in M7 and were removed the same day at
+  Leo's request. The wave and the fish carry the motion.
 - The splash on a new register, the count-up and the gap line are unchanged.
 
 ### 8.3 Registers card

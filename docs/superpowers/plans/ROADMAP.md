@@ -192,8 +192,8 @@ screen; and all thirteen fish are flat, cel-shaded illustrations of the real spe
   `lib/contrast.ts` WCAG/L* audit gating every theme, and the type-size bump (screen titles
   24px, labels 10px, tab labels 11px)
 - Cluster 3 — Hoje hero: two tubes side by side (the scroll strip returns only with a third
-  member), 56px fish, three rising bubbles per tube, 4px/3px wave crests, the avatar ringed
-  in the member accent
+  member), 56px fish, 4px/3px wave crests, the avatar ringed in the member accent (three
+  rising bubbles per tube shipped and were removed the same day at Leo's request)
 - Cluster 4 — Fish: all 13 redrawn as flat cel-shaded illustrations in a 160×100 box behind
   the unchanged `<Fish>` interface, `tambaqui` replacing `angelfish` as the 100-day fish,
   `npm run fish:sheet` for a contact-sheet check, larger placements everywhere (two-column

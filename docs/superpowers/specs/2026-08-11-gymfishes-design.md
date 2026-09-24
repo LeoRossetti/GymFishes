@@ -104,6 +104,7 @@ Every decision below was explicitly settled during design. Recorded so we don't 
 | App frame (M7) | Fixed frame, inner scroll region; the document never scrolls | The only reliable way to stop iOS document rubber-band in standalone mode; also clips any horizontal overflow |
 | Zoom (M7) | `maximum-scale=1, user-scalable=no`; honoured by installed apps | Installed home-screen apps honour the meta; Safari in the browser ignores it, which is fine. Accepted WCAG 1.4.4 trade-off for a two-person app whose type sizes are fixed by the spec |
 | Themes (M7) | Six dark themes as token sets under `data-theme`, per device in `localStorage`, picked in Perfil | Leo asked for a theme option explicitly. This is the leanest form: no sync, no schema, no new screen; a section in Perfil |
+| Fish availability (M7) | All thirteen selectable from the start; `ALL_FISH_AVAILABLE` in `catalog.ts` | Leo's call on 2026-09-24 after seeing the redrawn set. The unlock conditions stay in the catalog: they still drive the streak milestones, and flipping the constant re-gates the gallery |
 
 ---
 
@@ -197,9 +198,9 @@ centred, 16px apart, with no scroll; a third member brings back the horizontally
 strip of member columns, left-aligned (M7). Each column is a tube: flat dark base, 2px
 border, and a flat blue fill whose height is that member's total for today. The top of the
 fill is a **live wave surface**, not a straight edge — see [Water surface](#water-surface).
-The member's fish (56px) swims just under that surface, with three small bubbles rising from
-the tube floor to the surface, and rests on the bottom while the water is still shallower
-than the fish. Below the tube: the total ("1,8 L") and the name ("VOCÊ", "ELA").
+The member's fish (56px) swims just under that surface, and rests on the bottom while the
+water is still shallower than the fish. Below the tube: the total ("1,8 L") and the name
+("VOCÊ", "ELA"). Rising bubbles were tried in M7 and removed the same day at Leo's request.
 
 The tube's full height is scaled to `max(3000, highestTotalToday)` ml, so the columns stay
 comparable and nobody's ever pinned at 100%. Since there are no goals, the scale is
@@ -375,6 +376,12 @@ personal record.
 
 ### How unlocks work
 
+**Since 2026-09-24 every fish is available from the start** (`ALL_FISH_AVAILABLE` in
+`catalog.ts`, read by `availableFish`, which the gallery and the celebrations use). The
+gallery shows all thirteen in colour and tappable, and no "Novo peixe!" celebration fires. The
+conditions below stay in the catalog because the streak milestones are read off them, and
+because flipping the constant back re-gates the gallery with no other change.
+
 Unlocked status is **derived**, never stored. A pure function takes your synced registers
 plus the group's monthly results and returns the set of unlocked ids:
 
@@ -434,7 +441,7 @@ celebrationsFor(before: DayState, after: DayState): Celebration[]
 
 | Trigger | Presentation | Text |
 |---|---|---|
-| New fish unlocked | Full screen | "Novo peixe!" + the fish + "Escolher agora" / "Depois" |
+| New fish unlocked (dormant while every fish is available, §6) | Full screen | "Novo peixe!" + the fish + "Escolher agora" / "Depois" |
 | New personal best day | Full screen | "Novo recorde! 4,2 L" |
 | Streak milestone (7/30/100) | Full screen | "🔥 30 dias seguidos!" |
 | Took the lead today | Toast | "Você assumiu a liderança 🏆" |
