@@ -67,15 +67,7 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
           >
             <WaveSurface />
           </span>
-          <div className="relative h-full w-full overflow-hidden bg-water">
-            {totalMl > 0 ? (
-              <>
-                <span aria-hidden className="bubble bubble-1" />
-                <span aria-hidden className="bubble bubble-2" />
-                <span aria-hidden className="bubble bubble-3" />
-              </>
-            ) : null}
-          </div>
+          <div className="h-full w-full bg-water" />
         </motion.div>
         {totalMl > 0 ? (
           <motion.span
