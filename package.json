@@ -11,7 +11,8 @@
     "test:run": "vitest run",
     "typecheck": "tsc -b --noEmit",
     "e2e": "npm run build && playwright test",
-    "fish:sheet": "node scripts/fish-sheet.mjs"
+    "fish:sheet": "node scripts/fish-sheet.mjs",
+    "celebration:shots": "node scripts/celebration-shots.mjs"
   },
   "dependencies": {
     "@fontsource/nunito": "^5.0.20",
