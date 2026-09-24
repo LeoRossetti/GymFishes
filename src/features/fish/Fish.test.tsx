@@ -14,6 +14,16 @@ describe('Fish', () => {
     }
   })
 
+  it('every fish is drawn inside the 160×100 box', () => {
+    for (const id of FISH_IDS) {
+      const all = [ART[id].body, ...ART[id].tail.map((l) => l.d), ...ART[id].layers.map((l) => l.d)].join(' ')
+      for (const m of all.matchAll(/-?\d+(\.\d+)?/g)) {
+        expect(Number(m[0]), `${id}: ${m[0]}`).toBeGreaterThanOrEqual(-8)
+        expect(Number(m[0]), `${id}: ${m[0]}`).toBeLessThanOrEqual(166)
+      }
+    }
+  })
+
   it('renders every variant as an svg sized from the width', () => {
     for (const id of FISH_IDS) {
       const { container, unmount } = render(<Fish variant={id} size={64} />)

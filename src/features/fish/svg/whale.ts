@@ -24,5 +24,5 @@ export const whale: FishArt = {
     stroke('M155.5 50 C146 51 134 52.5 122 54 C119 54.4 117 54 115.5 53', W.line, 1.2),
     dots([[136, 38.5, 1.3]], W.line),
   ],
-  eyes: [{ cx: 120, cy: 48.5, r: 3.4 }],
+  eyes: [{ cx: 120, cy: 48.5, r: 3.6 }],
 }

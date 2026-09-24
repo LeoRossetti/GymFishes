@@ -29,6 +29,4 @@ export type FishArt = {
   tail: readonly Layer[]
   layers: readonly Layer[]
   eyes: readonly Eye[]
-  /** Only for art still drawn in the old 64×40 box; drop it when the fish is redrawn. */
-  view?: readonly [number, number]
 }

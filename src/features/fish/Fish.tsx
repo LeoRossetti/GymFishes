@@ -29,14 +29,13 @@ function LayerPath({ layer, clipId }: { layer: Layer; clipId: string }) {
  */
 export function Fish({ variant, size = 24, state = 'still' }: Props) {
   const art = ART[variant]
-  const [vw, vh] = art.view ?? [VIEW_W, VIEW_H]
   const idle = state === 'idle'
   const clipId = `fish-${useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
   return (
     <svg
-      viewBox={`0 0 ${vw} ${vh}`}
+      viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
       width={size}
-      height={(size * vh) / vw}
+      height={(size * VIEW_H) / VIEW_W}
       aria-hidden
       data-fish={variant}
       data-state={state}

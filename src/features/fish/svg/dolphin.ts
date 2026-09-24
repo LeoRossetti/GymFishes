@@ -20,5 +20,5 @@ export const dolphin: FishArt = {
     stroke('M158 50.5 C153 51.4 147 52 141 50.5', D.line, 1.1),
     stroke('M116 33 C118 32.2 120 32.2 122 33', D.line, 1.2),
   ],
-  eyes: [{ cx: 134, cy: 45, r: 4.2 }],
+  eyes: [{ cx: 134, cy: 45, r: 4.5 }],
 }
