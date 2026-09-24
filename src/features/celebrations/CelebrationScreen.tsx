@@ -6,12 +6,10 @@ import { formatVolume } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
 import { useCountUp } from '@/ui/useCountUp'
+import { Bubbles } from './Bubbles'
 import { celebrationText, type FullScreenCelebration } from './engine'
 
 export const AUTO_DISMISS_MS = 4000
-
-/** Horizontal positions (%) of the six bubbles that rise behind the content. */
-const BUBBLES = [8, 24, 41, 58, 75, 90]
 
 type Props = {
   celebration: FullScreenCelebration
@@ -58,19 +56,7 @@ export function CelebrationScreen({ celebration, onClose, onChoose }: Props) {
       <p role="status" className="sr-only">
         {celebrationText(celebration)}
       </p>
-      {reduced
-        ? null
-        : BUBBLES.map((left, i) => (
-            <motion.span
-              key={left}
-              aria-hidden
-              className="absolute bottom-0 h-3 w-3 rounded-full border-2 border-water-hi"
-              style={{ left: `${left}%` }}
-              initial={{ y: 0, opacity: 0 }}
-              animate={{ y: -360, opacity: [0, 1, 0] }}
-              transition={{ duration: 1.4, delay: i * 0.12, ease: 'easeOut' }}
-            />
-          ))}
+      {reduced ? null : <Bubbles />}
       <motion.div initial={{ opacity: 0, y: reduced ? 0 : 60 }} animate={{ opacity: 1, y: 0 }} transition={spring}>
         <Body celebration={celebration} />
       </motion.div>
