@@ -9,6 +9,7 @@ import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persi
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import { idbStorage } from '@/lib/idb'
 import { APP_VERSION } from '@/lib/version'
+import { applyTheme, readStoredTheme } from '@/features/theme/theme'
 import './styles/tokens.css'
 import './styles/globals.css'
 import { AuthProvider } from '@/features/auth/AuthProvider'
@@ -45,6 +46,8 @@ function OnboardingRoute() {
     />
   )
 }
+
+applyTheme(readStoredTheme())
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
