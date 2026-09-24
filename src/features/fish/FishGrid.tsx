@@ -40,7 +40,7 @@ export function FishGrid({ variants, unlocked, selected, onSelect, disabled = fa
               <Fish variant={id} size={56} state={open ? 'still' : 'locked'} />
               <span className={`mt-1 text-[11px] font-bold ${open ? 'text-ink' : 'text-ink-2'}`}>{fishName(id)}</span>
               {open ? null : (
-                <span className="mt-0.5 text-center text-[9px] font-extrabold uppercase tracking-[1px] text-ink-2">
+                <span className="mt-0.5 text-center text-[10px] font-extrabold uppercase tracking-[1px] text-ink-2">
                   {unlockLabel(UNLOCKS[id])}
                 </span>
               )}

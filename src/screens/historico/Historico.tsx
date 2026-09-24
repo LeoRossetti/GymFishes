@@ -36,7 +36,7 @@ export function Historico() {
   return (
     <div className="px-3 pt-2">
       <header className="mb-4 px-1">
-        <h1 className="text-[20px] font-extrabold tracking-tight">{STRINGS.historico.titulo}</h1>
+        <h1 className="text-[24px] font-extrabold tracking-[-0.4px]">{STRINGS.historico.titulo}</h1>
         <SyncPill groupId={groupId} />
       </header>
       <section className="rounded-card border border-line bg-surface p-4">

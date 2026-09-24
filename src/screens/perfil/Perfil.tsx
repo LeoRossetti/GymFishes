@@ -56,7 +56,7 @@ export function Perfil() {
   return (
     <div className="px-3 pt-2">
       <header className="mb-4 px-1">
-        <h1 className="text-[20px] font-extrabold tracking-tight">{STRINGS.perfil.titulo}</h1>
+        <h1 className="text-[24px] font-extrabold tracking-[-0.4px]">{STRINGS.perfil.titulo}</h1>
         <SyncPill groupId={bootstrap.data?.groupId} />
       </header>
 
@@ -89,7 +89,7 @@ export function Perfil() {
           </Button>
         ) : null}
 
-        <h2 className="mt-4 mb-2 text-[9px] font-extrabold uppercase tracking-[1px] text-ink-3">
+        <h2 className="mt-4 mb-2 text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">
           {STRINGS.perfil.cor}
         </h2>
         <div className="flex gap-2">

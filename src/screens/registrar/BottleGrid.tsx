@@ -23,7 +23,7 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
 
   return (
     <section className="mt-4">
-      <h2 className="mb-2 text-[9px] font-extrabold uppercase tracking-[1px] text-ink-3">
+      <h2 className="mb-2 text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">
         {STRINGS.registrar.minhasGarrafas}
       </h2>
       <div className="grid grid-cols-2 gap-2">

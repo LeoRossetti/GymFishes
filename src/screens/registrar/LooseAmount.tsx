@@ -9,7 +9,7 @@ const KEYS: KeypadKey[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '00', '0
 export function LooseAmount({ draft, dispatch }: { draft: Draft; dispatch: (a: DraftAction) => void }) {
   return (
     <section className="mt-4">
-      <h2 className="mb-2 text-[9px] font-extrabold uppercase tracking-[1px] text-ink-3">
+      <h2 className="mb-2 text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">
         {STRINGS.registrar.valorAvulso}
       </h2>
       <div className="mb-2 flex gap-2">

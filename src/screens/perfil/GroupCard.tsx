@@ -28,7 +28,7 @@ export function GroupCard({ groupId }: { groupId: string | null | undefined }) {
 
   return (
     <section className="mb-3 rounded-card border border-line bg-surface p-4">
-      <h2 className="mb-2 text-[9px] font-extrabold uppercase tracking-[1px] text-ink-3">
+      <h2 className="mb-2 text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">
         {STRINGS.perfil.grupo}
       </h2>
       <p className="text-[17px] font-bold">{group.data.name}</p>

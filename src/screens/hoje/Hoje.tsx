@@ -19,7 +19,7 @@ export function Hoje() {
     <div className="px-3 pt-2">
       <header className="mb-4 flex items-start justify-between px-1">
         <div>
-          <h1 className="text-[20px] font-extrabold tracking-tight">{STRINGS.hoje.titulo}</h1>
+          <h1 className="text-[24px] font-extrabold tracking-[-0.4px]">{STRINGS.hoje.titulo}</h1>
           <p className="mt-1 text-[11px] text-ink-2">{formatDateLong(new Date())}</p>
           <SyncPill groupId={groupId} />
         </div>

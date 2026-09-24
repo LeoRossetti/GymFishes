@@ -20,7 +20,7 @@ export function FishGallery({ userId, current, busy, onSelect }: Props) {
 
   return (
     <section className="mb-3 rounded-card border border-line bg-surface p-4">
-      <h2 className="mb-2 text-[9px] font-extrabold uppercase tracking-[1px] text-ink-3">{STRINGS.peixes.seuPeixe}</h2>
+      <h2 className="mb-2 text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">{STRINGS.peixes.seuPeixe}</h2>
       <button
         type="button"
         aria-expanded={open}

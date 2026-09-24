@@ -84,7 +84,7 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
         {formatVolume(shownTotal)}
       </p>
       <p
-        className={`text-center text-[9px] font-extrabold uppercase tracking-[1px] ${ACCENT_TEXT[accentOf(accent)]}`}
+        className={`text-center text-[10px] font-extrabold uppercase tracking-[1px] ${ACCENT_TEXT[accentOf(accent)]}`}
       >
         {isSelf ? STRINGS.hoje.voce : name}
       </p>

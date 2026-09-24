@@ -21,7 +21,7 @@ export function RegistersCard({ userId, groupId, members, entries, openRegister 
   return (
     <section className="mt-3 rounded-card border border-line bg-surface p-4">
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-[9px] font-extrabold uppercase tracking-[1px] text-ink-3">
+        <h2 className="text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">
           {STRINGS.hoje.registrosDeHoje} · {todays.length}
         </h2>
         {streak.days > 0 ? (
