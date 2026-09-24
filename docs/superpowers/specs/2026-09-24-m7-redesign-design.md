@@ -138,7 +138,7 @@ Every icon takes `currentColor` so it follows the text colour of its parent.
 | Icon | Replaces | Where |
 |---|---|---|
 | `Drop` | 💧 | tab Hoje (filled when active), register row tile (filled, 18px, `--water`) |
-| `Trophy` | 🏆 | tab Ranking, month wrap-up card |
+| `Trophy` | 🏆 | tab Ranking |
 | `Calendar` | 📅 | tab Histórico |
 | `FishIcon` | 🐠 | tab Perfil |
 | `Plus` | text "+" | the register button |
@@ -330,7 +330,8 @@ push with membranes and forked rays.
 | `shark` | Tubarão | torpedo, tall dorsal, crescent tail, gill slits, white belly | `#7C8B99 / #55636F / #A7B4C0`, belly `#F0F3F5` |
 | `whale` | Baleia | blue whale, long flat body, tiny dorsal far back, throat grooves | `#4C7DA6 / #2F5A7E / #7EA8CC`, belly `#D6E3EE` |
 
-All thirteen face right in the shared 64×40 box; the seahorse stands upright inside it. The
+All thirteen face right in a shared 160×100 box, the same 1.6:1 as the old 64×40 so every
+size in §9.4 and the tube geometry hold; the seahorse stands upright inside it. The
 catalog order, unlock conditions and starter set are unchanged except `angelfish` → `tambaqui`
 in `FISH_IDS`, `UNLOCKS`, `STRINGS.peixes.nomes` and the art registry. `fishOf('angelfish')`
 falls back to guppy through the existing unknown-id rule.
@@ -340,19 +341,22 @@ falls back to guppy through the existing unknown-id rule.
 `FishArt` grows from five fixed layers to an ordered list:
 
 ```ts
-type Layer = { d: string; fill: string; stroke?: string; strokeWidth?: number; clipToBody?: boolean }
+type Layer = { d: string; fill: string; stroke?: string; strokeWidth?: number; clip?: boolean }
+type Eye = { cx: number; cy: number; r: number }
 type FishArt = {
-  body: string          // the silhouette path, also the clip path for shaded layers
+  body: string          // the silhouette path, also the clip path for `clip: true` layers
   tailPivot: readonly [number, number]
-  tail: Layer[]         // rotated by the idle wag
-  layers: Layer[]       // fins behind the body, the body, shading, scales, head, mouth
-  eyes: readonly { cx: number; cy: number; r: number }[]
+  tail: readonly Layer[]    // rotated by the idle wag
+  layers: readonly Layer[]  // fins behind the body, the body, shading, scales, head, mouth
+  eyes: readonly Eye[]
 }
 ```
 
-- `svg/helpers.ts` holds the pure builders shared by the art files: `scaleRows`, `rays`,
-  `tone` (a species palette object). Art files stay data plus a few helper calls, one file
-  per fish, each under 200 lines.
+- `svg/helpers.ts` holds the pure builders shared by the art files: `part` (a filled shape
+  with its outline), `shade` (a flat tone clipped to the body), `stroke` (a line), `rays`
+  (fin rays from an origin), `scaleRows` (rows of scale arcs), `dots` (spots and suckers) and
+  `tone` (a token as a CSS variable, for art that draws from tokens). Art files stay data
+  plus helper calls, one file per fish, each under 200 lines.
 - `Fish.tsx` renders `<defs><clipPath>` from `body`, then `tail` inside the wag group, then
   `layers`, then the eyes. `locked` renders every layer with `fill: var(--color-ink-3)` and no
   stroke, which keeps the one-colour silhouette.
@@ -418,16 +422,17 @@ Manual, on both installed iPhones after deploy:
 
 ## 12. Files
 
-New: `src/ui/icons.tsx`, `src/features/theme/theme.ts`, `src/features/theme/useTheme.ts`,
+New: `src/ui/icons.tsx`, `src/app/AuthFrame.tsx`, `src/features/theme/themes.ts`,
+`src/features/theme/theme.ts`, `src/features/theme/useTheme.ts`,
 `src/features/theme/ThemePicker.tsx`, `src/lib/contrast.ts`, `src/features/fish/svg/helpers.ts`,
-`src/features/fish/svg/tambaqui.ts`.
+`src/features/fish/svg/tambaqui.ts`, `scripts/fish-sheet.mjs`, `scripts/fish-sheet.entry.tsx`.
 
 Changed: `index.html`, `public/manifest.webmanifest`, `src/styles/tokens.css`,
 `src/styles/globals.css`, `src/app/AppShell.tsx`, `src/app/TabBar.tsx`, `src/app/routes.tsx`,
 `src/main.tsx` (auth layout scroll region), `src/features/pwa/UpdatePrompt.tsx`,
 `src/lib/strings.ts`, `src/ui/Field.tsx`, `src/screens/hoje/*` (Hoje, ProgressStrip,
 MemberTube, WaveSurface, EntryRow, RegistersCard), `src/screens/registrar/OptionalChips.tsx`,
-`src/screens/ranking/Standings.tsx`, `src/screens/ranking/MonthWrapUp.tsx`,
+`src/screens/ranking/Standings.tsx`,
 `src/screens/perfil/Perfil.tsx`, `src/screens/perfil/FishGallery.tsx`,
 `src/features/fish/{Fish,FishGrid}.tsx`, `src/features/fish/catalog.ts`,
 `src/features/fish/svg/*.ts` (12 redrawn, `angelfish.ts` deleted),
