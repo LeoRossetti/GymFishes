@@ -28,7 +28,10 @@ export function ProgressStrip({ userId, members, entries }: Props) {
       data-waves={paused ? 'paused' : undefined}
       className="rounded-card border border-line bg-surface p-4"
     >
-      <div className="flex justify-center gap-3 overflow-x-auto">
+      <div
+        data-layout={ordered.length <= 2 ? 'side-by-side' : 'strip'}
+        className={ordered.length <= 2 ? 'flex justify-center gap-4' : 'flex gap-4 overflow-x-auto'}
+      >
         {ordered.map((m) => (
           <MemberTube
             key={m.id}
@@ -41,7 +44,7 @@ export function ProgressStrip({ userId, members, entries }: Props) {
           />
         ))}
       </div>
-      {caption ? <p className="mt-3 text-center text-[13px] font-bold text-water">{caption}</p> : null}
+      {caption ? <p className="mt-3 text-center text-[15px] font-bold text-water">{caption}</p> : null}
     </div>
   )
 }

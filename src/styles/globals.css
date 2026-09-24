@@ -82,3 +82,24 @@ button {
 @media (prefers-reduced-motion: reduce) {
   .fish-tail, .fish-bob { animation: none; }
 }
+
+/* Bubbles (spec M7 §8.2): three solid discs rising through the water, clipped by their parent.
+   Paused with the waves; not rendered under reduced motion. */
+@keyframes bubble-rise {
+  from { transform: translateY(0); }
+  to { transform: translateY(-240px); }
+}
+.bubble {
+  position: absolute;
+  bottom: -8px;
+  border-radius: 99px;
+  background: var(--color-water-hi);
+  animation: bubble-rise linear infinite;
+}
+.bubble-1 { left: 28%; width: 6px; height: 6px; animation-duration: 8s; }
+.bubble-2 { left: 66%; width: 4px; height: 4px; animation-duration: 7s; animation-delay: -2.5s; }
+.bubble-3 { left: 50%; width: 5px; height: 5px; animation-duration: 9s; animation-delay: -5s; }
+[data-waves='paused'] .bubble { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .bubble { display: none; }
+}

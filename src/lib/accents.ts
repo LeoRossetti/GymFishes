@@ -23,3 +23,12 @@ export const ACCENT_TEXT: Record<Accent, string> = {
   purple: 'text-accent-purple',
   pink: 'text-accent-pink',
 }
+
+export const ACCENT_BORDER: Record<Accent, string> = {
+  blue: 'border-accent-blue',
+  green: 'border-accent-green',
+  yellow: 'border-accent-yellow',
+  orange: 'border-accent-orange',
+  purple: 'border-accent-purple',
+  pink: 'border-accent-pink',
+}
