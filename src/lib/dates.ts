@@ -74,6 +74,13 @@ export function fromDatetimeLocal(s: string): Date {
   return new Date(`${s}:00${SP_OFFSET}`)
 }
 
+const HOUR_PART = new Intl.DateTimeFormat('en-CA', { timeZone: APP_TZ, hour: '2-digit', hourCycle: 'h23' })
+
+/** Hour of the day, 0–23, in APP_TZ — what "before 9h" means for the morning achievement. */
+export function hourOf(d: Date): number {
+  return Number(HOUR_PART.formatToParts(d).find((p) => p.type === 'hour')?.value ?? 0)
+}
+
 /** Noon in APP_TZ on that day — a safe instant for formatting a DayKey with Intl. */
 export function dateAtNoon(k: DayKey): Date {
   return new Date(`${k}T12:00:00${SP_OFFSET}`)

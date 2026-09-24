@@ -1,17 +1,16 @@
 import { useEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { fishName, type FishId } from '@/features/fish/catalog'
+import { fishName, unlockLabel, UNLOCKS, type FishId } from '@/features/fish/catalog'
 import { Fish } from '@/features/fish/Fish'
 import { formatVolume } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
+import { Check } from '@/ui/icons'
 import { useCountUp } from '@/ui/useCountUp'
+import { Bubbles } from './Bubbles'
 import { celebrationText, type FullScreenCelebration } from './engine'
 
 export const AUTO_DISMISS_MS = 4000
-
-/** Horizontal positions (%) of the six bubbles that rise behind the content. */
-const BUBBLES = [8, 24, 41, 58, 75, 90]
 
 type Props = {
   celebration: FullScreenCelebration
@@ -26,7 +25,7 @@ type Props = {
  * collapses everything to a 120 ms crossfade.
  */
 export function CelebrationScreen({ celebration, onClose, onChoose }: Props) {
-  const reduced = useReducedMotion()
+  const reduced = useReducedMotion() ?? false
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -58,21 +57,9 @@ export function CelebrationScreen({ celebration, onClose, onChoose }: Props) {
       <p role="status" className="sr-only">
         {celebrationText(celebration)}
       </p>
-      {reduced
-        ? null
-        : BUBBLES.map((left, i) => (
-            <motion.span
-              key={left}
-              aria-hidden
-              className="absolute bottom-0 h-3 w-3 rounded-full border-2 border-water-hi"
-              style={{ left: `${left}%` }}
-              initial={{ y: 0, opacity: 0 }}
-              animate={{ y: -360, opacity: [0, 1, 0] }}
-              transition={{ duration: 1.4, delay: i * 0.12, ease: 'easeOut' }}
-            />
-          ))}
+      {reduced ? null : <Bubbles />}
       <motion.div initial={{ opacity: 0, y: reduced ? 0 : 60 }} animate={{ opacity: 1, y: 0 }} transition={spring}>
-        <Body celebration={celebration} />
+        <Body celebration={celebration} reduced={reduced} />
       </motion.div>
       {celebration.kind === 'unlock' ? (
         <div className="mt-8 w-full">
@@ -100,18 +87,10 @@ export function CelebrationScreen({ celebration, onClose, onChoose }: Props) {
   )
 }
 
-function Body({ celebration }: { celebration: FullScreenCelebration }) {
+function Body({ celebration, reduced }: { celebration: FullScreenCelebration; reduced: boolean }) {
   switch (celebration.kind) {
     case 'unlock':
-      return (
-        <>
-          <div className="flex justify-center">
-            <Fish variant={celebration.fish} size={200} state="idle" />
-          </div>
-          <p className="mt-6 text-[24px] font-extrabold tracking-tight">{STRINGS.celebracoes.novoPeixe}</p>
-          <p className="mt-1 text-[17px] font-bold text-ink-2">{fishName(celebration.fish)}</p>
-        </>
-      )
+      return <Unlock fish={celebration.fish} reduced={reduced} />
     case 'record':
       return <Record ml={celebration.ml} />
     case 'streak':
@@ -121,6 +100,39 @@ function Body({ celebration }: { celebration: FullScreenCelebration }) {
         </p>
       )
   }
+}
+
+/**
+ * The reward screen (spec §7): the achievement just completed as a checked chip, then the fish
+ * springs in behind one flat ring that expands and fades, then its name. One authored moment.
+ */
+function Unlock({ fish, reduced }: { fish: FishId; reduced: boolean }) {
+  const pop = reduced ? { duration: 0.12 } : ({ type: 'spring', duration: 0.8, bounce: 0.45, delay: 0.2 } as const)
+  return (
+    <>
+      <p className="mx-auto inline-flex min-h-[32px] items-center gap-1.5 rounded-[99px] border border-streak px-3 text-[13px] font-extrabold text-streak">
+        <Check size={16} />
+        <span className="sr-only">{STRINGS.celebracoes.conquista}: </span>
+        {unlockLabel(UNLOCKS[fish])}
+      </p>
+      <div className="relative mt-8 flex justify-center">
+        {reduced ? null : (
+          <motion.span
+            aria-hidden
+            className="absolute left-1/2 top-1/2 h-44 w-44 rounded-full border-2 border-streak"
+            initial={{ x: '-50%', y: '-50%', scale: 0.4, opacity: 1 }}
+            animate={{ x: '-50%', y: '-50%', scale: 1.5, opacity: 0 }}
+            transition={{ duration: 0.9, delay: 0.3, ease: 'easeOut' }}
+          />
+        )}
+        <motion.div initial={{ scale: reduced ? 1 : 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={pop}>
+          <Fish variant={fish} size={200} state="idle" />
+        </motion.div>
+      </div>
+      <p className="mt-6 text-[24px] font-extrabold tracking-tight">{STRINGS.celebracoes.novoPeixe}</p>
+      <p className="mt-1 text-[17px] font-bold text-ink-2">{fishName(fish)}</p>
+    </>
+  )
 }
 
 function Record({ ml }: { ml: number }) {

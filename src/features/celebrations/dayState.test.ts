@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { FISH_IDS } from '@/features/fish/catalog'
+import { STARTERS } from '@/features/fish/catalog'
 import { addDays } from '@/lib/dates'
 import { dayStateOf } from './dayState'
 
@@ -8,13 +8,13 @@ const ids = ['a', 'b']
 const e = (profile_id: string, total_ml: number, drank_on: string) => ({ profile_id, total_ml, drank_on, deleted_at: null })
 
 describe('dayStateOf', () => {
-  it('starts empty with every fish available', () => {
+  it('starts empty with only the starters', () => {
     expect(dayStateOf([], ids, 'a', today)).toEqual({
       todayMl: 0,
       bestOtherDayMl: 0,
       leading: false,
       streakDays: 0,
-      unlocked: new Set(FISH_IDS),
+      unlocked: new Set(STARTERS),
     })
   })
 
@@ -42,8 +42,11 @@ describe('dayStateOf', () => {
     expect(dayStateOf([...run, e('a', 500, today)], ids, 'a', today).streakDays).toBe(3)
   })
 
-  it('keeps every fish available whatever the registers say', () => {
+  it('derives the unlocked fish from the registers', () => {
     const week = Array.from({ length: 7 }, (_, i) => e('a', 500, addDays(today, -i)))
-    expect(dayStateOf(week, ids, 'a', today).unlocked.size).toBe(FISH_IDS.length)
+    const unlocked = dayStateOf(week, ids, 'a', today).unlocked
+    expect(unlocked.has('seahorse')).toBe(true)
+    expect(unlocked.has('tambaqui')).toBe(true)
+    expect(unlocked.has('dolphin')).toBe(false)
   })
 })

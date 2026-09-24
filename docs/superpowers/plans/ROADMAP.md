@@ -18,6 +18,7 @@ codebase rather than an imagined one.
 | M5.5 | Polimento de UX | [`2026-09-17-m5-polish.md`](2026-09-17-m5-polish.md) | **code-complete** — pending owner verification: swipe the sheet handle and scroll a tall sheet on a real phone; tap every control and feel the press state; VoiceOver on Histórico and on a celebration |
 | M6 | PWA e endurecimento | [`2026-09-22-m6-pwa-endurecimento.md`](2026-09-22-m6-pwa-endurecimento.md) | **code-complete** — pending owner verification: deploy, open the installed app on both phones and see the update bar appear after the next deploy; airplane mode → the app opens to yesterday's data; Perfil › Sobre shows the new version |
 | M7 | Redesign visual e casca do PWA | [`2026-09-24-m7-redesign.md`](2026-09-24-m7-redesign.md) | **code-complete** — pending owner verification: the §11 manual checklist of the M7 spec on both installed phones |
+| M8 | Conquistas | [`2026-09-24-m8-conquistas.md`](2026-09-24-m8-conquistas.md) | **code-complete** — pending owner verification: on a real phone, register with a bottle and see the Baiacu popup; open Perfil › Trocar peixe and read the nine conditions; watch the GIFs in `.tmp/celebracoes/` after `npm run celebration:shots` |
 
 ---
 
@@ -215,3 +216,32 @@ Measured (see [`../2026-09-22-m6-performance.md`](../2026-09-22-m6-performance.m
 addendum): precached cold start LCP and interactive both 1.1 s, essentially unchanged from
 M6 despite ~31 kB raw / ~12 kB gzip added by the fish, icons, theme tokens and the contrast
 audit — §1 criterion 4 stays met.
+
+## M8 — Conquistas
+
+**Done when:** the nine non-starter fish are earned through achievements a regular user completes
+in about a month, with the tambaqui in the middle of the ladder; earning one raises a game-style
+popup that names the achievement; and the three full-screen celebrations can be watched as GIFs
+without a phone.
+
+- Catalog: `Unlock` kinds `bottle`, `note`, `morning`, `streak`, `record`, `count`, `volume`;
+  the ladder of spec §6 in gallery order; `ALL_FISH_AVAILABLE` back to `false`; streak
+  milestones 3/7/14 read off the streak fish
+- `unlocks.ts`: facts from your own registers only (`UnlockEntry`); `monthsWon` deleted;
+  `hourOf` in `dates.ts` for "antes das 9h"
+- Celebrations: the unlock screen as a reward (checked achievement chip, the fish springing in
+  behind a flat ring pulse); `seen_unlocks` only counts fish unlocked before the register, so the
+  phones that stored all thirteen still celebrate
+- Gallery: locked fish show their achievement; the fish you wear stays yours
+- `npm run celebration:shots` — Playwright WebKit records unlock, record and streak into
+  `.tmp/celebracoes/` (frame strip, `.webm`, GIF through Playwright's ffmpeg plus Pillow)
+- Version 1.2.0
+
+Calls made here: every condition is derived from registers so a fish never re-locks and the
+popup fires from the one place celebrations already fire; "register with a bottle" stands in for
+Leo's "add a bottle" because adding one in the sheet taps it straight into the draft, and a
+photo is not a condition because its path only lands after the upload. Monthly wins were
+dropped: a month has to end first, which no "all in a month" ladder can wait for. Yellow, the
+streak and first-place colour, now also marks a completed achievement. Playwright's ffmpeg has
+no GIF muxer and no filters, so the GIF is frames at 12 fps through Pillow with one shared
+palette; without Pillow the strip and the video remain.
