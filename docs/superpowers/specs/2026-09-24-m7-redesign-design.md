@@ -32,7 +32,7 @@ against screenshots of the production build on a WebKit iPhone viewport (2026-09
 
 - The installed app feels native: nothing rubber-bands, nothing zooms, each page stays still,
   the tab bar sits on the home indicator.
-- Six dark themes, chosen per device from Perfil, with real separation between background,
+- Five dark themes, chosen per device from Perfil, with real separation between background,
   card and chip. Fundo do mar is the default and the closest to today.
 - One flat SVG icon set replaces every emoji that plays an icon role.
 - Hoje reads as the hero screen: two tubes side by side, fish under the surface, water with
@@ -61,10 +61,10 @@ against screenshots of the production build on a WebKit iPhone viewport (2026-09
 | Scroll model | A fixed frame the height of the screen; each screen scrolls inside it | The only reliable way to stop iOS document rubber-band in standalone mode; also clips any horizontal overflow |
 | Zoom | `maximum-scale=1, user-scalable=no` in the viewport meta, `touch-action: manipulation` on the page, inputs at 16px or larger | Installed home-screen apps honour the meta; Safari in the browser ignores it, which is fine. Accepted WCAG 1.4.4 trade-off for a two-person app whose type sizes are fixed by the spec |
 | Tab bar | SVG icons at 24px, 11px labels, the floating round plus kept | Chosen on the mockup canvas over an inline square plus |
-| Themes | Six, as token sets under `data-theme` on `<html>`, per device in `localStorage`, no database column | Leo asked for a theme option explicitly. This is the leanest form: no sync, no schema, no new screen; a section in Perfil |
+| Themes | Five, as token sets under `data-theme` on `<html>`, per device in `localStorage`, no database column | Leo asked for a theme option explicitly. This is the leanest form: no sync, no schema, no new screen; a section in Perfil |
 | Default theme | Fundo do mar | Continuity with today's look on first open after the update |
 | Breu | Soft black `#0D0F12`, not `#000000` | Pure black was judged too much on the canvas |
-| Theme picker | Six miniature tiles in a 3×2 grid under "Cor" in Perfil | A preview is what a theme is; a colour swatch would not show the card contrast |
+| Theme picker | Five miniature tiles in a 3-column grid under "Cor" in Perfil | A preview is what a theme is; a colour swatch would not show the card contrast |
 | Emoji | Replaced wherever they play an icon role; kept inside celebratory copy | Icons must take the active colour and render the same on every OS; copy emoji are text |
 | Hoje hero | Two tubes side by side inside the card; scroll strip returns only with a third member | Two people is the product; the strip was solving a problem the group does not have |
 | Fish style | Flat cel-shaded illustrations of the real species: real silhouette, 3 tones per colour, scale rows, fin rays, eye and mouth. The level of the first realistic betta sample, not the naturalist push | Leo: "keep that, later I draw them and make them with Rive" |
@@ -394,7 +394,7 @@ files above are deleted, not kept as a fallback.
 Added or changed in `src/lib/strings.ts`:
 
 - `perfil.tema`: "Tema"
-- `tema.nomes`: "Fundo do mar", "Tinta", "Aquário", "Meia-noite", "Areia", "Breu"
+- `tema.nomes`: "Fundo do mar", "Aquário", "Meia-noite", "Areia", "Breu"
 - `hoje.streak`: `(dias) => "${dias} dia" | "${dias} dias"` (emoji removed; the flame is an icon)
 - `registrar.foto` / `nota` / `agora`: "foto", "nota", "agora" (emoji removed; icons render beside)
 - `peixes.nomes.tambaqui`: "Tambaqui" (replaces `angelfish`: "Peixe-anjo")
@@ -413,7 +413,7 @@ Unit and component (Vitest + RTL, behaviour through roles and pt-BR text):
 - `Fish.test.tsx`: all 13 ids render in `idle`, `still` and `locked`; `locked` has no stroke.
 - `ProgressStrip.test.tsx`: two members render side by side with no scroll container; three
   render the strip.
-- `Perfil` theme section: six pressable tiles, tapping one flips `aria-pressed`.
+- `Perfil` theme section: five pressable tiles, tapping one flips `aria-pressed`.
 - `FishGallery`: "Tambaqui" appears with "Sequência de 100 dias"; "Peixe-anjo" does not.
 
 End to end: the existing smoke against the production build, unchanged.
@@ -427,7 +427,7 @@ Manual, on both installed iPhones after deploy:
    keyboard: the tab bar returns flush to the home indicator and the page is not left shifted.
 5. Try to pan sideways on every tab: nothing moves.
 6. Tab bar flush with the home indicator; the plus centred on the border.
-7. Switch through all six themes in Perfil; force-quit and reopen: the choice survives and
+7. Switch through all five themes in Perfil; force-quit and reopen: the choice survives and
    the status bar colour matches.
 8. Both fish visible in the tubes; the gallery shows 13 with Tambaqui at 7 dias (M8 moved it).
 

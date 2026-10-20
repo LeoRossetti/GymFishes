@@ -348,7 +348,7 @@ Settings and identity. Nothing competitive lives here.
 - **Nome** — inline editable.
 - **Cor** — a row of six flat accent swatches used for your name label under the tube
   and your avatar ring. The water itself is always `--water` blue — it's water.
-- **Tema** (M7) — five previewing tiles in a 3×2 grid, each painted in that theme's own
+- **Tema** (M7) — five previewing tiles in a 3-column grid, each painted in that theme's own
   background, card and water colour, not the current theme's. Tapping applies it
   immediately, no save button. Lives per device in `localStorage`, not synced. Default
   "Fundo do mar". See the M7 spec §7 for the five token sets and the picker layout (M9: Tinta removed; a stored `tinta` falls back to
@@ -686,7 +686,7 @@ value tables and the picker. (M9) Breu's `--surface` is `#1B1E24` so cards clear
 ### PWA specifics
 
 - `display: standalone`, `orientation: portrait`, `theme_color: #0A1421`,
-  `background_color: #0A1421`, maskable icons at 192/512. The `<meta name="theme-color">`
+  `background_color: #0A1421`, icons as listed below. The `<meta name="theme-color">`
   follows the picked theme at runtime via `applyTheme` (M7).
 - (M9) The manifest also carries `description`, `lang` and `id`. The icon is the owner's illustration of a fish
   in bed dreaming of a glass of water (`docs/img/icone-origem.jpg`): 512 and 192 `any`, a 180 Apple touch icon, and

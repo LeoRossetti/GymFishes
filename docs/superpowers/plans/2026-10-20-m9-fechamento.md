@@ -619,7 +619,7 @@ git commit -m "feat(pwa): app icon and favicon from the owner's dreaming-fish il
 - [ ] **Step 5: Verify**
 
 Run: `npm run typecheck && npm run test:run && npm run build`
-Expected: typecheck silent; all tests pass (count ≥ 474 + the new ones); build OK; `dist/sw.js` precache lists the four icon PNGs and no `icon.svg`.
+Expected: typecheck silent; all tests pass (count ≥ 474 + the new ones); build OK; `dist/sw.js` precache lists `icon-192.png` and none of the other three icons, and no `icon.svg`.
 
 - [ ] **Step 6: Screenshot check** (no cloud): start `npx vite --port 4175`, run `node .tmp/review-final/pairs/capture.mjs P03 P04 P07 P10 P11 P14` after pointing its "after" server at 4175 as well (or just read the "antes" side it produces against the new code), and look at the PNGs: the sheet's confirm pinned with the safe-area padding below it, no fish at 250 ml, no stats card on Hoje, the install row absent in a non-installing browser (the hook offers nothing in Chromium headless), five theme tiles, the trophy on the unlock screen. Stop the server.
 

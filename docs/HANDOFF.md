@@ -28,7 +28,7 @@ theme only, installed to iPhone home screens. Simplicity is a stated product fea
    (AuthProvider, auth-form details, tab strings) — reviews changed the code after
    the plan was written. The repo is the truth for code.
 
-## Current state (verified at the 2026-10-19 refresh)
+## Current state (verified at the 2026-10-20 refresh)
 
 - **All nine milestones (M1–M9) are code-complete**, version 1.3.0. 492 tests, typecheck
   and build clean.
