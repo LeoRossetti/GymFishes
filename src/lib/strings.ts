@@ -101,6 +101,8 @@ export const STRINGS = {
     nome: 'Nome',
     salvar: 'Salvar',
     salvando: 'Salvando…',
+    instalar: 'Instalar o app',
+    instalarDica: 'No iPhone: Compartilhar → Adicionar à Tela de Início',
     cor: 'Cor',
     cores: {
       blue: 'Azul',

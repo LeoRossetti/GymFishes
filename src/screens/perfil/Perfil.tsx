@@ -4,6 +4,7 @@ import { signOut } from '@/features/auth/api'
 import { useSession } from '@/features/auth/AuthProvider'
 import { useBootstrap } from '@/features/profile/useBootstrap'
 import { updateProfile } from '@/features/profile/mutations'
+import { useInstallPrompt } from '@/features/pwa/useInstallPrompt'
 import { ThemePicker } from '@/features/theme/ThemePicker'
 import { ACCENTS, ACCENT_BG, accentOf } from '@/lib/accents'
 import { formatBuildDate } from '@/lib/format'
@@ -21,6 +22,7 @@ export function Perfil() {
   const userId = session?.user.id
   const bootstrap = useBootstrap(userId)
   const client = useQueryClient()
+  const { install, iphone } = useInstallPrompt()
   const profile = bootstrap.data?.profile
   const [nome, setNome] = useState<string | null>(null)
   const [confirmandoSaida, setConfirmandoSaida] = useState(false)
@@ -113,6 +115,13 @@ export function Perfil() {
       <BottleManager userId={userId} />
 
       <GroupCard groupId={bootstrap.data?.groupId} />
+
+      {install ? (
+        <Button variant="ghost" className="mt-4" onClick={() => void install()}>
+          {STRINGS.perfil.instalar}
+        </Button>
+      ) : null}
+      {iphone ? <p className="mt-4 text-center text-[11px] text-ink-2">{STRINGS.perfil.instalarDica}</p> : null}
 
       <Button
         variant={confirmandoSaida ? 'armed' : 'danger'}

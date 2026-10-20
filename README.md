@@ -25,6 +25,12 @@ e desde o início — com peixinhos que sobem conforme a água enche. 🐠
 - 🎨 Seis temas escuros para escolher no Perfil
 - ✈️ Funciona até sem internet — sincroniza quando a conexão voltar
 
+## 📲 Como instalar no celular
+
+- 🍎 iPhone (Safari): toque em Compartilhar e depois em Adicionar à Tela de Início
+- 🤖 Android (Chrome): menu ⋮ e depois Instalar app — ou o botão "Instalar o app" no Perfil
+- 💻 Computador: clique no ícone de instalar na barra de endereço do Chrome ou do Edge
+
 ## 🚀 Como rodar no computador
 
 Você só precisa do [Node.js](https://nodejs.org) (versão 22 ou mais nova).

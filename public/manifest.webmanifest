@@ -1,4 +1,7 @@
 {
+  "id": "/",
+  "lang": "pt-BR",
+  "description": "Competição de beber água entre duas pessoas.",
   "name": "GymFishes",
   "short_name": "GymFishes",
   "start_url": "/hoje",

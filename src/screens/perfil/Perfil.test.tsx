@@ -39,6 +39,8 @@ vi.mock('@/features/bottles/mutations', () => ({
   updateBottle: vi.fn(),
   archiveBottle: vi.fn(),
 }))
+const installMock = vi.hoisted(() => vi.fn())
+vi.mock('@/features/pwa/useInstallPrompt', () => ({ useInstallPrompt: () => installMock() }))
 const syncStatus = vi.hoisted(() => ({ offline: false, stale: false }))
 vi.mock('@/features/entries/queries', () => ({
   useEntries: () => ({ data: [] }),
@@ -51,6 +53,7 @@ describe('Perfil', () => {
     signOut.mockReset().mockResolvedValue({ error: null })
     syncStatus.offline = false
     syncStatus.stale = false
+    installMock.mockReset().mockReturnValue({ install: null, iphone: false })
   })
 
   it('shows group name, invite code and members', () => {
@@ -141,5 +144,22 @@ describe('Perfil', () => {
     renderWithProviders(<Perfil />)
     expect(screen.getByRole('heading', { name: 'Tema' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Aquário' })).toBeInTheDocument()
+  })
+
+  it('offers Instalar o app only when the browser can install', async () => {
+    const { unmount } = renderWithProviders(<Perfil />)
+    expect(screen.queryByRole('button', { name: 'Instalar o app' })).toBeNull()
+    unmount()
+    const install = vi.fn().mockResolvedValue(undefined)
+    installMock.mockReturnValue({ install, iphone: false })
+    renderWithProviders(<Perfil />)
+    await userEvent.click(screen.getByRole('button', { name: 'Instalar o app' }))
+    expect(install).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows the iPhone hint instead on an iPhone browser', () => {
+    installMock.mockReturnValue({ install: null, iphone: true })
+    renderWithProviders(<Perfil />)
+    expect(screen.getByText(/Adicionar à Tela de Início/)).toBeInTheDocument()
   })
 })
