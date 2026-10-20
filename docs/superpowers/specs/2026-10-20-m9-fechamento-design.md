@@ -67,9 +67,10 @@ behaviour fix, except the install row in Perfil, which is one hook and one butto
 
 - Perfil gets an **"Instalar o app"** ghost button between the group card and Sair, rendered only
   while the browser has offered `beforeinstallprompt` and the app is not running standalone; tapping
-  it calls the browser's prompt. On an iPhone browser, not standalone, one line replaces it: "No
+  it calls the browser's prompt. The event is captured at app start (module scope), since Chrome fires it
+  before Perfil opens. On an iPhone browser, not standalone, one line replaces it: "No
   iPhone: Compartilhar → Adicionar à Tela de Início". iOS has no install API; this is the ceiling.
-- The manifest gains `description`, `lang` and `id`; the README a "Como instalar" section.
+- The manifest gains `description`, `lang` and `id` (`/hoje`, the start_url); the README a "Como instalar" section.
 - **App icon and favicon** are the owner's illustration of a fish in bed dreaming of a glass of
   water (`docs/img/icone-origem.jpg`), at 512 and 192 (`any`), 180 for the Apple touch icon, and a
   maskable 512 with the scene at 80% on the illustration's own slate background `#2B3D4B`. The

@@ -22,7 +22,7 @@ e desde o início — com peixinhos que sobem conforme a água enche. 🐠
 - 🇧🇷 Todo em português
 - 🏆 Ranking diário, semanal, mensal e total
 - 🐡 Treze peixes desenhados: quatro para começar e nove que você ganha com conquistas simples
-- 🎨 Seis temas escuros para escolher no Perfil
+- 🎨 Cinco temas escuros para escolher no Perfil
 - ✈️ Funciona até sem internet — sincroniza quando a conexão voltar
 
 ## 📲 Como instalar no celular
@@ -56,7 +56,7 @@ src/
   features/   cada funcionalidade (registros, garrafas, grupo, peixes…)
   lib/        lógica pura: datas, períodos, formatação
   ui/         botões e componentes visuais básicos
-  styles/     cores dos seis temas e estilos globais
+  styles/     cores dos cinco temas e estilos globais
 e2e/          teste ponta a ponta
 scripts/      ferramentas de desenvolvimento: folha de peixes, GIFs das celebrações
 public/       ícones e manifesto do PWA

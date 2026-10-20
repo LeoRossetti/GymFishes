@@ -1,6 +1,6 @@
 # GymFishes — Agent Handoff
 
-**Written:** 2026-09-01, at the end of the M1 build session. **Refreshed:** 2026-10-19.
+**Written:** 2026-09-01, at the end of the M1 build session. **Refreshed:** 2026-10-20.
 **Audience:** the next AI agent (or human) continuing this project.
 
 ## What this project is

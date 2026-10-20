@@ -489,7 +489,8 @@ celebrationsFor(before: DayState, after: DayState): Celebration[]
 - Only your own *new* registers from the sheet are evaluated — edits and deletes never fire;
   anything they unlock is celebrated at your next register (`seen_unlocks`).
 - "Took the lead" means overtaking a partner who has registered today.
-- Several toasts join into one line with " · ". The round-litre caption replaces the Hoje gap
+- Only the lead celebration toasts, and only when no full screen is up; outranked unlocks are
+  celebrated at the next register (M9). The round-litre caption replaces the Hoje gap
   line for 2,5 s.
 - The personal-best celebration requires a previous best to beat, so day one is not a
   record.
