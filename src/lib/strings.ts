@@ -119,7 +119,6 @@ export const STRINGS = {
     titulo: 'Tema',
     nomes: {
       'fundo-do-mar': 'Fundo do mar',
-      tinta: 'Tinta',
       aquario: 'Aquário',
       'meia-noite': 'Meia-noite',
       areia: 'Areia',
