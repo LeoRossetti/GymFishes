@@ -199,8 +199,9 @@ centred, 16px apart, with no scroll; a third member brings back the horizontally
 strip of member columns, left-aligned (M7). Each column is a tube: flat dark base, 2px
 border, and a flat blue fill whose height is that member's total for today. The top of the
 fill is a **live wave surface**, not a straight edge — see [Water surface](#water-surface).
-The member's fish (56px) swims just under that surface, and rests on the bottom while the
-water is still shallower than the fish. Below the tube: the total ("1,8 L") and the name
+The member's fish (56px) swims just under that surface, and, once the water covers it, stays 6px
+under the crest (the fish is not drawn before; between 480 and 560 ml its belly is clipped by the
+floor by a few pixels, M9b). Below the tube: the total ("1,8 L") and the name
 ("VOCÊ", "ELA"). Rising bubbles were tried in M7 and removed the same day at Leo's request. (M9) The fish is drawn only
 once the water covers it (35px of the 220px tube, 480 ml at 3 L); below that the tube shows water alone. (M9b) The fish lives inside the water block, 6px under the crest, so it follows the level's own spring; an empty tube shows no crest, and the first drink still rises.
 
@@ -239,8 +240,8 @@ steps, no wizard.
 fold when the note is open; Escape closes the sheet and opening it focuses the handle. (M9b) A flick down closes the sheet too (it need not travel the full distance).
 
 **Running total** — large, centered ("1,8 L"), with the composition beneath it in small
-muted text ("1 × Garrafa azul + 300 ml"). Counts up when it changes. (M9) The blue loose-amount line
-under the pills is gone; the total and this line already show it. (M9b) The total echoes typed digits instantly; the count-up applies only to pills and bottles.
+muted text ("1 × Garrafa azul + 300 ml"). (M9) The blue loose-amount line
+under the pills is gone; the total and this line already show it. (M9b) The total changes instantly, with no count-up in the sheet; the tubes and the record screen still count.
 
 **"Minhas garrafas"** — a 2-column grid of your bottles, each showing emoji, name and
 volume. Tapping adds one; tapping again increments to `×2`, `×3`. A badge shows the

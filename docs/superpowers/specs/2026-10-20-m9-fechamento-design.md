@@ -33,7 +33,7 @@ behaviour fix, except the install row in Perfil, which is one hook and one butto
 
 - The fish is drawn **only when the water is at least as deep as the fish** (35px of the 220px
   tube; 480 ml on the 3 L scale). Below that the tube shows water only. Between 480 and 560 ml the
-  fish rests on the floor with the crest at its back, then rises as before.
+  fish stays 6px under the crest and its belly is clipped by the floor by a few pixels (M9b).
 - Loose-only register rows have **no subtitle** (it repeated the amount) and, expanded, **no
   composition chips**.
 - The totals and the gap line keep their sizes: the owner reads the water levels first.
