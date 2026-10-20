@@ -36,7 +36,7 @@ export function CalendarGrid({ period, totals, today, firstDay, selected, onSele
         const total = totals.get(day) ?? 0
         const step = fillStep(total)
         const border =
-          day === selected ? 'border-2 border-ink' : day === today ? 'border border-water' : 'border border-transparent'
+          day === selected ? 'border-2 border-ink' : day === today ? 'border border-ink' : 'border border-transparent'
         // press feedback never inverts a filled surface: only steps 0–2 get it (spec §8).
         const feedback = step <= 2 ? 'active:bg-line transition-colors duration-100' : ''
         return (

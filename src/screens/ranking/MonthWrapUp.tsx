@@ -6,6 +6,7 @@ import type { DayKey } from '@/lib/dates'
 import { formatMonthTitle, formatVolume } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
 import { monthWrapUp, wrapUpStorageKey } from '@/lib/wrapup'
+import { Close } from '@/ui/icons'
 
 type Props = { entries: Entry[]; members: Member[]; userId: string; today: DayKey }
 
@@ -55,9 +56,9 @@ export function MonthWrapUp({ entries, members, userId, today }: Props) {
           remember(key)
           setDismissedKey(key)
         }}
-        className="-mr-2 -mt-2 min-h-[44px] min-w-[44px] text-[20px] text-ink-2"
+        className="-mr-2 -mt-2 flex min-h-[44px] min-w-[44px] items-center justify-center text-ink-2"
       >
-        ×
+        <Close size={20} />
       </button>
     </section>
   )

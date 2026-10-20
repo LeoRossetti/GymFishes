@@ -100,10 +100,26 @@ describe('Ranking', () => {
     expect(screen.getByText('Desde 15 de julho')).toBeInTheDocument()
   })
 
-  it('shows the July wrap-up and the comparison card', () => {
+  it('shows the July wrap-up, and the comparison card on the month period', async () => {
     renderRanking()
     expect(screen.getByText('Julho encerrado — Ana venceu 🏆')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Mês' }))
     expect(screen.getByText('Médias e recordes')).toBeInTheDocument()
+  })
+
+  it('hides the comparison card on the day period', () => {
+    renderRanking()
+    expect(screen.queryByText('Médias e recordes')).toBeNull()
+  })
+
+  it('hides the comparison card on an empty period', async () => {
+    renderRanking()
+    await userEvent.click(screen.getByRole('button', { name: 'Semana' }))
+    expect(screen.getByText('Médias e recordes')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Período anterior' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Período anterior' }))
+    expect(screen.getByText('Nada registrado neste período')).toBeInTheDocument()
+    expect(screen.queryByText('Médias e recordes')).toBeNull()
   })
 
   it('recomputes Total when the mirror hydrates after the tap', async () => {

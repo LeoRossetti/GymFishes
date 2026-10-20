@@ -47,7 +47,7 @@ export function TabBar({ onRegister }: { onRegister: () => void }) {
           aria-label={STRINGS.nav.registrarAgua}
           onClick={onRegister}
           className="-mt-3.5 flex h-[52px] w-[52px] items-center justify-center rounded-full border-b-[3px]
-                     border-water-edge bg-water text-ink-on-water active:bg-water-edge transition-colors duration-100"
+                     border-water-edge bg-water text-ink-on-water transition-transform active:translate-y-[2px] active:border-b-0"
         >
           <Plus size={26} strokeWidth={2.6} />
         </button>
