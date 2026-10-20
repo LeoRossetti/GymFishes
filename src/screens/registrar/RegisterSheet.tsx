@@ -85,7 +85,7 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
         onKeyDown={(e) => {
           if (e.key === 'Escape') onClose()
         }}
-        className="absolute inset-x-0 bottom-0 max-h-[88dvh] scroll-pb-[120px] overflow-y-auto rounded-t-card
+        className="absolute inset-x-0 bottom-0 max-h-[88dvh] scroll-pb-[120px] overflow-y-auto overscroll-contain rounded-t-card
                    border-t border-line bg-surface px-3 pt-4"
       >
         <button

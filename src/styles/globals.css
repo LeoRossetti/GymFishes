@@ -42,6 +42,19 @@ button {
   touch-action: manipulation;
 }
 
+/* A press lands on the first frame; release keeps each control's own fade. */
+:is(button, a):active {
+  transition-duration: 0ms;
+}
+
+/* No text selection on keys, no iOS link callout on the tabs. */
+button,
+nav a {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-water);
   outline-offset: 2px;

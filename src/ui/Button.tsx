@@ -10,9 +10,9 @@ const BASE =
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    'bg-water text-ink-on-water border-b-4 border-water-edge transition-transform ' +
-    'active:translate-y-[3px] active:border-b-0 ' +
-    'disabled:bg-surface-2 disabled:text-ink-2 disabled:border-line disabled:border-b disabled:translate-y-0',
+    'bg-water text-ink-on-water border-b-4 border-water-edge ' +
+    'active:translate-y-[3px] active:border-b-0 active:mb-1 ' +
+    'disabled:bg-surface-2 disabled:text-ink-2 disabled:border-surface-2 disabled:translate-y-0',
   ghost:
     'bg-surface-2 text-ink-2 border border-line transition-colors duration-100 ' +
     'active:bg-line disabled:text-ink-3',

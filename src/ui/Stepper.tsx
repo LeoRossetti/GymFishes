@@ -8,7 +8,7 @@ type Props = {
 }
 
 const ARROW =
-  'min-h-[44px] min-w-[44px] text-[24px] font-extrabold text-ink-2 ' +
+  'min-h-[44px] min-w-[44px] rounded-control text-[24px] font-extrabold text-ink-2 ' +
   'active:bg-line transition-colors duration-100 disabled:text-ink-3'
 
 /** `‹ label ›` — the period and month steppers (spec §5.3, §5.4). */
