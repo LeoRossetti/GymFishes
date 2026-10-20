@@ -252,4 +252,10 @@ describe('RegisterSheet', () => {
     // total + confirm label span; the old blue line under the pills would make it 3
     expect(await screen.findAllByText('250 ml')).toHaveLength(2)
   })
+
+  it('the running total echoes the typed digits immediately', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: '+250' }))
+    expect(screen.getAllByText('250 ml')).toHaveLength(2)
+  })
 })

@@ -81,7 +81,7 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
           </motion.span>
         ) : null}
       </div>
-      <p className="mt-2 text-center text-[24px] font-extrabold tracking-[-0.4px]">
+      <p className="mt-2 text-center text-[24px] font-extrabold tabular-nums tracking-[-0.4px]">
         {formatVolume(shownTotal)}
       </p>
       <p

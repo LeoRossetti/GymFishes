@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { AnimatePresence } from 'motion/react'
 import { useSession } from '@/features/auth/AuthProvider'
@@ -23,7 +23,8 @@ export type ShellContext = { openRegister: (entry?: Entry) => void }
  * fixed overlays on top.
  */
 export function AppShell() {
-  const [sheet, setSheet] = useState<{ entry?: Entry } | null>(null)
+  const [sheet, setSheet] = useState<{ entry?: Entry; id: number } | null>(null)
+  const counter = useRef(0)
   const location = useLocation()
   const { session } = useSession()
   const bootstrap = useBootstrap(session?.user.id)
@@ -38,16 +39,16 @@ export function AppShell() {
           <main key={location.pathname} className="scroll-region pb-6">
             <ErrorBoundary>
               <Outlet
-                context={{ openRegister: (entry?: Entry) => setSheet({ entry }) } satisfies ShellContext}
+                context={{ openRegister: (entry?: Entry) => setSheet({ entry, id: ++counter.current }) } satisfies ShellContext}
               />
             </ErrorBoundary>
           </main>
           {/* A waiting build applies itself on the next cold open anyway, so the login screen needs no bar. */}
           <UpdatePrompt {...update} />
           <AnimatePresence>
-            {sheet ? <RegisterSheet entry={sheet.entry} onClose={() => setSheet(null)} /> : null}
+            {sheet ? <RegisterSheet key={sheet.id} entry={sheet.entry} onClose={() => setSheet(null)} /> : null}
           </AnimatePresence>
-          <TabBar onRegister={() => setSheet({})} />
+          <TabBar onRegister={() => setSheet({ id: ++counter.current })} />
         </div>
       </CelebrationProvider>
     </ToastProvider>

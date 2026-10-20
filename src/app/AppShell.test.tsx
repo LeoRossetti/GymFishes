@@ -109,4 +109,21 @@ describe('AppShell', () => {
     expect(main.compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(bar.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
+
+  it('reopening the sheet gives a fresh dialog instance', async () => {
+    renderWithProviders(
+      <Routes>
+        <Route element={<AppShell />}>
+          <Route path="/hoje" element={<p>hoje ok</p>} />
+        </Route>
+      </Routes>,
+      { route: '/hoje' },
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Registrar água' }))
+    const first = await screen.findByRole('dialog', { name: 'Registrar água' })
+    await userEvent.click(screen.getByRole('button', { name: 'Fechar' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Registrar água' }))
+    const dialogs = await screen.findAllByRole('dialog', { name: 'Registrar água' })
+    expect(dialogs[dialogs.length - 1]).not.toBe(first)
+  })
 })

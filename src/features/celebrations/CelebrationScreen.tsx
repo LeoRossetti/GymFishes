@@ -144,7 +144,7 @@ function Unlock({ fish, reduced }: { fish: FishId; reduced: boolean }) {
 function Record({ ml }: { ml: number }) {
   const shown = useCountUp(ml, 0)
   return (
-    <p className="text-[38px] font-extrabold tracking-[-0.4px] text-water">
+    <p className="text-[38px] font-extrabold tabular-nums tracking-[-0.4px] text-water">
       {STRINGS.celebracoes.novoRecorde(formatVolume(shown))}
     </p>
   )
