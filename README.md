@@ -21,7 +21,7 @@ e desde o início — com peixinhos que sobem conforme a água enche. 🐠
 - 📱 Feito para celular — instala direto na tela de início do iPhone
 - 🇧🇷 Todo em português
 - 🏆 Ranking diário, semanal, mensal e total
-- 🐡 Treze peixes desenhados para escolher o seu
+- 🐡 Treze peixes desenhados: quatro para começar e nove que você ganha com conquistas simples
 - 🎨 Seis temas escuros para escolher no Perfil
 - ✈️ Funciona até sem internet — sincroniza quando a conexão voltar
 
@@ -62,6 +62,7 @@ docs/         especificação e planos do projeto
 | `npm run test:run` | roda os testes |
 | `npm run build` | gera a versão final |
 | `npm run fish:sheet` | desenha os 13 peixes numa imagem para conferir |
+| `npm run celebration:shots` | grava as celebrações em GIF para conferir |
 
 Detalhes técnicos (banco de dados, decisões de design) estão na
 [especificação](docs/superpowers/specs/2026-08-11-gymfishes-design.md).

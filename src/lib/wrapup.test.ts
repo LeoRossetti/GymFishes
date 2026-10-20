@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { monthPeriod } from './periods'
-import { monthVerdict, monthWrapUp, monthsWon, wrapUpStorageKey } from './wrapup'
+import { monthVerdict, monthWrapUp, wrapUpStorageKey } from './wrapup'
 
 const e = (profile_id: string, total_ml: number, drank_on: string) => ({
   profile_id,
@@ -57,25 +57,3 @@ describe('monthVerdict', () => {
   })
 })
 
-describe('monthsWon', () => {
-  const entries = [
-    e('a', 5000, '2026-06-10'), e('b', 4000, '2026-06-11'), // June: a
-    e('a', 1000, '2026-07-10'), e('b', 4000, '2026-07-11'), // July: b
-    e('a', 3000, '2026-08-10'), e('b', 3000, '2026-08-11'), // August: tie
-    e('a', 9000, '2026-09-01'), // September, still running: a leads but it does not count yet
-  ]
-
-  it('counts only completed months won outright', () => {
-    expect(monthsWon(entries, ['a', 'b'], 'a', '2026-09-08')).toBe(1)
-    expect(monthsWon(entries, ['a', 'b'], 'b', '2026-09-08')).toBe(1)
-  })
-
-  it('counts the running month once it has ended', () => {
-    expect(monthsWon(entries, ['a', 'b'], 'a', '2026-10-01')).toBe(2)
-  })
-
-  it('skips silent months and is 0 with no registers', () => {
-    expect(monthsWon([e('a', 500, '2026-05-01')], ['a', 'b'], 'a', '2026-09-08')).toBe(1)
-    expect(monthsWon([], ['a', 'b'], 'a', '2026-09-08')).toBe(0)
-  })
-})

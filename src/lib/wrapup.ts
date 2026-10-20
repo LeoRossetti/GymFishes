@@ -1,6 +1,6 @@
 import type { DayKey } from './dates'
 import { monthPeriod, stepPeriod, type Period } from './periods'
-import { firstRegisterDay, standings, totalsForPeriod, type RankableEntry, type Standing } from './rankings'
+import { standings, totalsForPeriod, type RankableEntry, type Standing } from './rankings'
 
 export type Verdict = { rows: Standing[]; winnerId: string | null }
 
@@ -27,23 +27,6 @@ export function monthWrapUp(
   const period = stepPeriod(monthPeriod(today), -1)
   const verdict = monthVerdict(entries, memberIds, period)
   return verdict ? { period, ...verdict } : null
-}
-
-/** Completed months (before today's) that `profileId` won outright — the Tubarão/Baleia counter (spec §6). */
-export function monthsWon(
-  entries: readonly RankableEntry[],
-  memberIds: readonly string[],
-  profileId: string,
-  today: DayKey,
-): number {
-  const first = firstRegisterDay(entries)
-  if (!first) return 0
-  const current = monthPeriod(today)
-  let n = 0
-  for (let p = monthPeriod(first); p.start < current.start; p = stepPeriod(p, 1)) {
-    if (monthVerdict(entries, memberIds, p)?.winnerId === profileId) n++
-  }
-  return n
 }
 
 /** One key per month, per device — deliberately unsynced (spec §5.3). */

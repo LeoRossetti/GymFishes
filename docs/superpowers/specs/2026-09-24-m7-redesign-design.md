@@ -323,7 +323,7 @@ push with membranes and forked rays.
 | `neon` | Neon | tiny torpedo, silver, electric blue stripe, red lower rear half | body `#C9D6E2 / #8FA5B8`, stripe `#38C8FF`, red `#E5323F` |
 | `pufferfish` | Baiacu | round, tiny fins, big eyes, dark spots, pale belly | `#C9D45A / #8E9A2E / #E9F08E`, spots `#3B4322`, belly `#F2F0D8` |
 | `clownfish` | Peixe-palhaço | orange, three white bands edged black, rounded fins | `#FF7A1A / #D95A00 / #FFA25C`, bands `#F7F7F2`, edges `#1C1C1C` |
-| `tambaqui` | Tambaqui | deep body, small head, dark lower half, olive-silver back, forked tail | back `#8DA6B3 / #5F7683`, lower `#34474F / #1F2C33`, fins `#3E5663` |
+| `tambaqui` | Tambaqui | 1.8 long to deep, hump ahead of a swept-back dorsal, adipose fin, forked tail, olive back over a black lower half with a blotchy edge; the one fish with a real head instead of the shared cartoon face: big rounded gill cover, pale cheek and throat, small golden-ringed eye by the snout, nostril, thick lips cut into the outline | back `#7E8C42 / #566229 / #AEB868`, lower `#2A2F2A / #171B18`, cheek `#CFBE94`, iris `#D6A83C`, fins `#3B4335` |
 | `octopus` | Polvo | bulbous mantle, eight curling arms with suckers, big eye | `#B04A6A / #7E2F4A / #D97A96`, suckers `#F0C9D6` |
 | `seahorse` | Cavalo-marinho | upright S body, coronet, snout, curled tail, ridged segments | `#F2B134 / #C4861B / #FFD97A` |
 | `turtle` | Tartaruga | oval shell with plates, flippers, beaked head | shell `#4E8F3A / #2F6423 / #8AC46F`, skin `#8FA066 / #5F6E42` |
@@ -331,10 +331,10 @@ push with membranes and forked rays.
 | `shark` | Tubarão | torpedo, tall dorsal, crescent tail, gill slits, white belly | `#7C8B99 / #55636F / #A7B4C0`, belly `#F0F3F5` |
 | `whale` | Baleia | blue whale, long flat body, tiny dorsal far back, throat grooves | `#4C7DA6 / #2F5A7E / #7EA8CC`, belly `#D6E3EE` |
 
-This is the starting palette, not a snapshot of what shipped: tambaqui's tones were widened
-during implementation (a lighter back tone, plus separate low-body, deep-belly, fin and
-pectoral tones) so it reads against the tube background, and every fish's outline uses its
-own darkest tone rather than a shared black. The values as drawn live in each
+This is the starting palette, not a snapshot of what shipped: the tambaqui was redrawn from
+photo references on 2026-09-24 (olive and black instead of the first silver-blue pass, with
+proportions traced from the side view), and every fish's outline uses its own darkest tone rather than a
+shared black. The values as drawn live in each
 `svg/<id>.ts` file; the contrast/lightness audit (§7.6) only governs theme tokens, not fish
 palettes, so nothing here is machine-checked — a look at the contact sheet (§9.2 helper
 `npm run fish:sheet`) is the verification.
@@ -429,7 +429,7 @@ Manual, on both installed iPhones after deploy:
 6. Tab bar flush with the home indicator; the plus centred on the border.
 7. Switch through all six themes in Perfil; force-quit and reopen: the choice survives and
    the status bar colour matches.
-8. Both fish visible in the tubes; the gallery shows 13 with Tambaqui at 100 dias.
+8. Both fish visible in the tubes; the gallery shows 13 with Tambaqui at 7 dias (M8 moved it).
 
 ## 12. Files
 

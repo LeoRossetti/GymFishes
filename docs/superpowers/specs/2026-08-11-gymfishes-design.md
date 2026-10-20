@@ -105,6 +105,7 @@ Every decision below was explicitly settled during design. Recorded so we don't 
 | Zoom (M7) | `maximum-scale=1, user-scalable=no`; honoured by installed apps | Installed home-screen apps honour the meta; Safari in the browser ignores it, which is fine. Accepted WCAG 1.4.4 trade-off for a two-person app whose type sizes are fixed by the spec |
 | Themes (M7) | Six dark themes as token sets under `data-theme`, per device in `localStorage`, picked in Perfil | Leo asked for a theme option explicitly. This is the leanest form: no sync, no schema, no new screen; a section in Perfil |
 | Fish availability (M7) | All thirteen selectable from the start; `ALL_FISH_AVAILABLE` in `catalog.ts` | Leo's call on 2026-09-24 after seeing the redrawn set. The unlock conditions stay in the catalog: they still drive the streak milestones, and flipping the constant re-gates the gallery |
+| Conquistas (M8) | The gate is back on, behind nine achievements derived from your own registers and all reachable in about a month; the tambaqui is the 7-day fish, in the middle of the ladder; the unlock screen names the achievement like a game reward | Leo's call later on 2026-09-24: the fish should be rewards again, but easier, not only about streaks, and announced with a popup. Monthly wins were dropped because a month has to end first |
 
 ---
 
@@ -354,54 +355,67 @@ Settings and identity. Nothing competitive lives here.
 
 ## 6. Fish catalog and unlocks
 
-Thirteen fish: four starters plus nine unlockable. Unlock conditions cover exactly the
-four triggers approved during design — streak, accumulated volume, monthly wins, and
-personal record.
+Thirteen fish: four starters plus nine earned through achievements ("conquistas", M8,
+2026-09-24). Every achievement is an all-time fact of your own registers, so nothing waits for
+a month to end, nothing re-locks, and a regular user completes the ladder in about a month.
+The order below is the order of the ladder and of the gallery, quickest first; the tambaqui
+sits in the middle.
 
-| Fish | pt-BR | Unlock |
+| Fish | pt-BR | Achievement, as shown |
 |---|---|---|
-| Guppy | Guppy | inicial |
-| Betta | Betta | inicial |
-| Goldfish | Peixe-dourado | inicial |
-| Neon tetra | Neon | inicial |
-| Pufferfish | Baiacu | sequência de 7 dias |
-| Clownfish | Peixe-palhaço | sequência de 30 dias |
-| Tambaqui | Tambaqui | sequência de 100 dias |
-| Octopus | Polvo | um dia acima de 5 L |
-| Seahorse | Cavalo-marinho | 100 L acumulados |
-| Turtle | Tartaruga | 500 L acumulados |
-| Dolphin | Golfinho | 1000 L acumulados |
-| Shark | Tubarão | ganhar 1 mês |
-| Whale | Baleia | ganhar 3 meses |
+| Guppy | Guppy | Inicial |
+| Betta | Betta | Inicial |
+| Goldfish | Peixe-dourado | Inicial |
+| Neon tetra | Neon | Inicial |
+| Pufferfish | Baiacu | Registre com uma garrafa |
+| Clownfish | Peixe-palhaço | Registre com uma nota |
+| Octopus | Polvo | Registre antes das 9h |
+| Seahorse | Cavalo-marinho | Sequência de 3 dias |
+| Tambaqui | Tambaqui | Sequência de 7 dias |
+| Turtle | Tartaruga | Um dia acima de 3 L |
+| Dolphin | Golfinho | Sequência de 14 dias |
+| Shark | Tubarão | 50 registros |
+| Whale | Baleia | 60 L acumulados |
+
+"Registre com uma garrafa" is a register whose composition used one of your bottles; adding a
+bottle in the register sheet taps it into the draft, so the achievement lands with the register
+that follows. This keeps every condition derived from registers and evaluated in one place.
+"Antes das 9h" is the São Paulo wall clock (`hourOf` in `dates.ts`). Photos are not a condition
+because the photo path only lands after the upload, which would delay the popup to the next
+register. Monthly wins, the old Tubarão and Baleia conditions, are gone: they cannot be earned
+inside a month, and `monthsWon` went with them.
 
 ### How unlocks work
 
-**Since 2026-09-24 every fish is available from the start** (`ALL_FISH_AVAILABLE` in
-`catalog.ts`, read by `availableFish`, which the gallery and the celebrations use). The
-gallery shows all thirteen in colour and tappable, and no "Novo peixe!" celebration fires. The
-conditions below stay in the catalog because the streak milestones are read off them, and
-because flipping the constant back re-gates the gallery with no other change.
+The gate is `ALL_FISH_AVAILABLE` in `catalog.ts`, read by `availableFish`, which the gallery
+and the celebrations use. It was `true` for a few hours on 2026-09-24 and is `false` since the
+achievements arrived; it stays as the one-line switch to open every fish again. The fish you
+already wear is always yours in the gallery, so a choice made while every fish was open never
+shows as locked.
 
-Unlocked status is **derived**, never stored. A pure function takes your synced registers
-plus the group's monthly results and returns the set of unlocked ids:
+Unlocked status is **derived**, never stored. A pure function takes your synced registers and
+returns the set of unlocked ids:
 
 ```ts
-unlockedFish(entries: Entry[], profileId: string, monthsWon: number): Set<FishId>
+unlockedFish(entries: Entry[], profileId: string): Set<FishId>
 ```
 
 This means no extra table, no writes, no drift, and it self-heals if data changes.
 
 Every condition is an all-time fact — longest streak ever, best day ever, accumulated volume,
-completed months won — so a fish never re-locks when a streak breaks. A month counts only once
-it has ended, and a tie counts for nobody (the same rule as the wrap-up card).
+number of registers, whether a bottle, a note or a morning register ever happened — so a fish
+never re-locks when a streak breaks. The streak milestones the celebrations use (3, 7, 14) are
+read off the streak fish, so the two can never disagree.
 
 The only stored value is `profiles.fish_variant` — your current choice — because the
 other person has to see it.
 
 "Newly unlocked, not yet celebrated" is tracked per device in `localStorage`
-(`seen_unlocks`). The set seeds itself with whatever is already unlocked the first time it is
-needed, so a fresh device may miss a past celebration but never repeats one. The fish is
-unlocked either way. Acceptable.
+(`seen_unlocks`). A fish counts as seen only if it was already unlocked before the register
+being evaluated: the phones stored all thirteen while every fish was open, and that must not
+silence the achievements. The set seeds itself with whatever is already unlocked the first
+time it is needed, so a fresh device may miss a past celebration but never repeats one. The
+fish is unlocked either way. Acceptable.
 
 ### Art
 
@@ -441,9 +455,9 @@ celebrationsFor(before: DayState, after: DayState): Celebration[]
 
 | Trigger | Presentation | Text |
 |---|---|---|
-| New fish unlocked (dormant while every fish is available, §6) | Full screen | "Novo peixe!" + the fish + "Escolher agora" / "Depois" |
+| New fish unlocked (§6) | Full screen | the achievement as a checked chip ("Sequência de 7 dias"), the fish springing in behind one flat ring pulse, "Novo peixe!" + the name, "Escolher agora" / "Depois" |
 | New personal best day | Full screen | "Novo recorde! 4,2 L" |
-| Streak milestone (7/30/100) | Full screen | "🔥 30 dias seguidos!" |
+| Streak milestone (3/7/14, read off the streak fish) | Full screen | "🔥 7 dias seguidos!" |
 | Took the lead today | Toast | "Você assumiu a liderança 🏆" |
 | Round litre crossed (1L, 2L, 3L…) | Inline | water surge + count-up + "2 L hoje" |
 
@@ -466,7 +480,14 @@ celebrationsFor(before: DayState, after: DayState): Celebration[]
 - `prefers-reduced-motion` replaces every animation with a crossfade.
 
 Implementation is a `motion` sequence per celebration type, over flat shapes — bubbles rising,
-the fish leaping, the number counting. No particles, no bloom.
+the fish leaping, the number counting. No particles, no bloom. The bubbles (`Bubbles.tsx`) are a
+seeded, irregular field of fourteen: sizes 6–28 px skewed small, each with its own delay, speed,
+rise and sideways sway, drawn as a thin ring with a translucent fill and a highlight dot, fading
+in at the bottom and swelling as they fade at the top. Seeded so every recording is comparable. The unlock screen is the reward
+screen (M8): yellow, until then the streak and first-place colour, also marks the achievement
+just completed. `npm run celebration:shots` records the three full screens with Playwright
+WebKit into `.tmp/celebracoes/` (a frame strip, the video and a GIF each), which is how they
+are reviewed without a phone.
 
 ---
 
@@ -985,6 +1006,12 @@ cloud project with a throwaway account alone in its own group: login → registe
 appears in Hoje → appears in Ranking → survives reload → the register is deleted so the
 run is idempotent. `npm run e2e`; credentials in `.env.local` without the `VITE_` prefix.
 
+**Playwright — the celebration shots** (`npm run celebration:shots`, M8): not a pass/fail test
+but the visual check for celebration work. It mounts each full-screen celebration on an iPhone
+14 viewport in WebKit and writes a strip of frames at fixed moments, the video, and a GIF (via
+Playwright's own ffmpeg plus Pillow) to `.tmp/celebracoes/`. `npm run fish:sheet` is the same
+idea for the fish.
+
 **Manual:** the RLS checklist in §11, plus installing to a real iPhone home screen and
 verifying standalone display, safe areas, and an offline register surviving a force-quit.
 
@@ -1078,6 +1105,11 @@ Each is a self-contained addition, deliberately deferred:
   where scale makes the quality visible. Requires ~$9/mo for `.riv` export. The
   `<Fish variant level state size />` boundary already permits a per-fish swap with no
   caller changes.
+- **Duolingo-style reward animations** (Leo, 2026-09-24) — a flame that lights and burns on the
+  streak screen (and something for 30 and 100 days, which no longer have a fish behind them),
+  the fish leaping out of the tube on a record, a flat burst behind a new fish. Still flat, still
+  no particles; the point is that every reward moves. `npm run celebration:shots` is the review
+  loop for them, so each idea can be watched as a GIF before it ships.
 - **Charts in Histórico** — a 14-day bar chart and a monthly trend line.
 - **Incremental photo cleanup** — a scheduled job removing objects orphaned by failed
   deletes.

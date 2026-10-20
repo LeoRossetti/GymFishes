@@ -1,11 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { addDays, dateAtNoon, dayKey, daysBetween, fromDatetimeLocal, pad2, parseDayKey, toDatetimeLocal, weekdayMon0 } from './dates'
+import { addDays, dateAtNoon, dayKey, daysBetween, fromDatetimeLocal, hourOf, pad2, parseDayKey, toDatetimeLocal, weekdayMon0 } from './dates'
 
 describe('dayKey', () => {
   it('uses the Sao Paulo calendar day, not UTC', () => {
     // 02:00 UTC on the 11th is still 23:00 on the 10th in Sao Paulo
     expect(dayKey(new Date('2026-08-11T02:00:00Z'))).toBe('2026-08-10')
     expect(dayKey(new Date('2026-08-11T04:00:00Z'))).toBe('2026-08-11')
+  })
+})
+
+describe('hourOf', () => {
+  it('reads the Sao Paulo wall-clock hour, not UTC', () => {
+    expect(hourOf(new Date('2026-08-11T11:59:00Z'))).toBe(8)
+    expect(hourOf(new Date('2026-08-11T12:00:00Z'))).toBe(9)
+    expect(hourOf(new Date('2026-08-11T02:30:00Z'))).toBe(23)
   })
 })
 

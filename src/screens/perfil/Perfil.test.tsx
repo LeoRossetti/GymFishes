@@ -113,14 +113,15 @@ describe('Perfil', () => {
     expect(signOut).toHaveBeenCalled()
   })
 
-  it('shows your fish and opens the gallery in place with every fish available', async () => {
+  it('shows your fish and opens the gallery in place: starters open, the rest locked with their achievement', async () => {
     renderWithProviders(<Perfil />)
     expect(screen.getByText('Guppy')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Baiacu' })).toBeNull()
     await userEvent.click(screen.getByRole('button', { name: /Trocar peixe/ }))
-    expect(screen.getByRole('button', { name: 'Baiacu' })).not.toHaveAttribute('aria-disabled')
-    expect(screen.getByRole('button', { name: 'Baleia' })).not.toHaveAttribute('aria-disabled')
-    expect(screen.queryByText('Sequência de 7 dias')).toBeNull()
+    expect(screen.getByRole('button', { name: 'Betta' })).not.toHaveAttribute('aria-disabled')
+    expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveAttribute('aria-disabled', 'true')
+    expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveTextContent('Registre com uma garrafa')
+    expect(screen.getByRole('button', { name: 'Tambaqui' })).toHaveTextContent('Sequência de 7 dias')
     expect(screen.getByRole('button', { name: 'Guppy' })).toHaveAttribute('aria-pressed', 'true')
   })
 

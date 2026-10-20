@@ -51,10 +51,11 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
       const ids = members.map((m) => m.id)
       const b = dayStateOf(before, ids, userId, today)
       const a = dayStateOf(after, ids, userId, today)
-      // While every fish is available there is nothing new to celebrate, whatever this device
-      // stored before the change — otherwise a phone holding a partial `seen_unlocks` would
-      // announce the remaining fish as new on its first register.
-      const seen = ALL_FISH_AVAILABLE ? a.unlocked : (loadSeenUnlocks() ?? b.unlocked)
+      // A fish counts as seen only if it was unlocked before this register: the phones stored all
+      // thirteen while every fish was open (2026-09-24), and that must not silence the achievements.
+      // While every fish is available there is nothing new to celebrate at all.
+      const stored = loadSeenUnlocks() ?? b.unlocked
+      const seen = ALL_FISH_AVAILABLE ? a.unlocked : new Set([...stored].filter((f) => b.unlocked.has(f)))
       const shown = present(celebrationsFor({ ...b, unlocked: seen }, a))
       saveSeenUnlocks(new Set([...seen, ...a.unlocked]))
       if (shown.fullScreen) setFull(shown.fullScreen)
