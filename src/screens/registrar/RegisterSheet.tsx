@@ -82,13 +82,16 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
         onDragEnd={(_e, info) => {
           if (info.offset.y > 80) onClose()
         }}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') onClose()
+        }}
         className="absolute inset-x-0 bottom-0 max-h-[88dvh] overflow-y-auto rounded-t-card
                    border-t border-line bg-surface px-3 pt-4"
-        style={{ paddingBottom: 'calc(16px + env(safe-area-inset-bottom))' }}
       >
         <button
           type="button"
           aria-label={STRINGS.registrar.fechar}
+          autoFocus
           onClick={onClose}
           onPointerDown={(e) => dragControls.start(e)}
           style={{ touchAction: 'none' }}
@@ -111,16 +114,25 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
           setOpen={setOpenChip}
           entryHasPhoto={Boolean(entry?.photo_path)}
         />
-        <Button className="mt-5" disabled={!canSave} onClick={submit}>
-          {entry
-            ? STRINGS.registrar.salvarAlteracoes
-            : total > 0
-              ? STRINGS.registrar.registrar(formatVolume(total))
-              : STRINGS.registrar.registrarVazio}
-        </Button>
-        {total > MAX_ML ? (
-          <p className="mt-2 text-[13px] text-ink-2">{STRINGS.registrar.maximo(formatVolume(MAX_ML))}</p>
-        ) : null}
+        <div
+          className="sticky bottom-0 -mx-3 mt-5 bg-surface px-3 pt-2"
+          style={{ paddingBottom: 'calc(16px + env(safe-area-inset-bottom))' }}
+        >
+          <Button disabled={!canSave} onClick={submit}>
+            {entry ? (
+              STRINGS.registrar.salvarAlteracoes
+            ) : total > 0 ? (
+              <>
+                {STRINGS.registrar.registrarVazio} <span className="normal-case">{formatVolume(total)}</span>
+              </>
+            ) : (
+              STRINGS.registrar.registrarVazio
+            )}
+          </Button>
+          {total > MAX_ML ? (
+            <p className="mt-2 text-[13px] text-ink-2">{STRINGS.registrar.maximo(formatVolume(MAX_ML))}</p>
+          ) : null}
+        </div>
       </motion.div>
     </div>
   )

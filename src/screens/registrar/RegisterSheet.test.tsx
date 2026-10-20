@@ -72,10 +72,10 @@ describe('RegisterSheet', () => {
     renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
     const chip = screen.getByRole('button', { name: /Garrafa azul/ })
     await userEvent.click(chip)
-    // '1,5 L' appears on the chip AND in the running total — assert on count, not uniqueness
-    expect(await screen.findAllByText('1,5 L')).toHaveLength(2)
+    // '1,5 L' appears on the chip, in the running total and in the confirm label's unit span
+    expect(await screen.findAllByText('1,5 L')).toHaveLength(3)
     await userEvent.click(chip)
-    expect(await screen.findByText('3 L')).toBeInTheDocument()
+    expect(await screen.findAllByText('3 L')).toHaveLength(2)
     expect(screen.getByText('×2')).toBeInTheDocument()
   })
 
@@ -228,5 +228,19 @@ describe('RegisterSheet', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Salvar' }))
     expect(await screen.findByRole('status')).toHaveTextContent('Algo deu errado. Tente de novo.')
     expect(screen.getByLabelText('Nome da garrafa')).toBeInTheDocument()
+  })
+
+  it('moves focus to the handle on open and closes on Escape', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    expect(screen.getByRole('button', { name: 'Fechar' })).toHaveFocus()
+    await userEvent.keyboard('{Escape}')
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows the loose amount only in the running total and the confirm label', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: '+250' }))
+    // total + confirm label span; the old blue line under the pills would make it 3
+    expect(await screen.findAllByText('250 ml')).toHaveLength(2)
   })
 })

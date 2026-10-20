@@ -197,7 +197,6 @@ export const STRINGS = {
     minhasGarrafas: 'Minhas garrafas',
     menosUm: (nome: string) => `${nome} menos um`,
     valorAvulso: 'Valor avulso',
-    registrar: (volume: string) => `Registrar ${volume}`,
     registrarVazio: 'Registrar',
     salvarAlteracoes: 'Salvar alterações',
     foto: 'foto',
