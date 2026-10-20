@@ -58,12 +58,16 @@ export function RegisterSheet({ entry, onClose }: { entry: Entry | undefined; on
 
   return (
     <div className="fixed inset-0 z-40 mx-auto max-w-[430px]">
-      <button
+      <motion.button
         type="button"
         aria-hidden="true"
         tabIndex={-1}
         aria-label={STRINGS.registrar.fechar}
         onClick={onClose}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: reduced ? 0.12 : 0.2, ease: 'easeOut' }}
         className="absolute inset-0 bg-bg/70"
       />
       <motion.div
