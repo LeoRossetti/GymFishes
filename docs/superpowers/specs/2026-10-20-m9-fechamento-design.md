@@ -96,3 +96,42 @@ behaviour fix, except the install row in Perfil, which is one hook and one butto
 ## 4. Out of scope
 
 The e2e smoke and every cloud-dependent check wait for the owner's Supabase reset.
+
+## 5. Polimento pós-auditoria (2026-10-20)
+
+After M9 shipped on the branch, four read-only audits (mobile-native, Emil Kowalski's design
+engineering review, a worst-case-data stress test, and the motion standards) proposed small,
+user-felt fixes. The owner approved these ten; none adds a mechanism, option or screen.
+
+1. **Press feedback lands instantly.** One global rule, `:is(button, a):active { transition-duration: 0ms }`,
+   so a tap shows on the first frame; release keeps each control's 100 ms fade.
+2. **The primary button never shifts layout.** Pressing keeps the resting box (`active:mb-1` replaces the
+   removed 4px edge); disabled keeps a 4px edge in the surface colour instead of a 1px line; the drop
+   is instant (no `transition-transform`) on the primary button and on the floating plus.
+3. **Counting numbers.** `useCountUp` starts from the number on screen, never from the previous target;
+   easing `[0.23, 1, 0.32, 1]` over the same 500 ms; the register sheet's total echoes typed digits
+   instantly (no count-up there); counted numbers use tabular digits.
+4. **Register sheet.** A flick closes it (`velocity.y > 500` or the existing 80px); reduced motion is a
+   120 ms crossfade like every other surface; the sheet scroller contains overscroll; reopening the sheet
+   while it is leaving gets a fresh instance (keyed by a counter in the shell).
+5. **Long-press and press states.** `button, nav a` are not selectable and show no iOS callout; the
+   foto/nota/agora chips and the ×qty badges show their press on the visible element.
+6. **Ranking with long names.** The standings name wraps inside the 44px row instead of truncating; the
+   stats headers are spaced; stats cells never wrap; totals have a minimum width so the share bars share
+   one track length.
+7. **An empty tube draws no crest.** The water block renders only when the total is above zero.
+8. **Two bugs.** The splash resets when a register is deleted within 450 ms; see 4 for the sheet instance.
+9. **The fish rides the water.** The fish lives inside the water block, 6px under the crest, so it follows
+   the level's own spring; `fishBottomPx` is deleted. The 480 ml threshold stays; between 480 and
+   560 ml the fish's belly may be clipped by a few pixels at the floor, which is accepted.
+10. **Small polish.** Rounded press highlights on the stepper arrows and the entry rows; a fixed emoji slot
+    aligns the bottle rows in Perfil; entering fades use ease-out; the day detail's smooth scroll is
+    instant under reduced motion.
+
+## 6. Candidates to be shown, not yet decided
+
+The audits also proposed mechanisms the owner wants to see built before deciding: a backdrop fade for
+the sheet, toast enter/exit motion, an animated row expand, a sliding segmented indicator, a fade-out
+when a celebration ends, auto-disarming "Excluir mesmo?", shorter tube and celebration springs, names
+on the wrap-up totals, a lower bound on Histórico month navigation, and narrower tubes for 320px
+screens. They are rendered on the M7 canvas from a throwaway copy; whatever he keeps is recorded here.
