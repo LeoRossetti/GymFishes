@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { cleanup, screen, within } from '@testing-library/react'
+import { cleanup, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { Entry } from '@/features/entries/cache'
 import { FISH_IDS } from '@/features/fish/catalog'
@@ -111,7 +111,8 @@ describe('CelebrationProvider', () => {
     expect(stored()).toEqual(['guppy', 'betta', 'goldfish', 'neon', 'pufferfish'])
     await userEvent.click(screen.getByRole('button', { name: 'Escolher agora' }))
     expect(updateProfile).toHaveBeenCalledWith('u1', { fish_variant: 'pufferfish' })
-    expect(screen.queryByRole('dialog')).toBeNull()
+    // the screen fades out (C5), so it leaves the tree a moment later
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
   it('the 7-day streak earns the tambaqui: the fish takes the full screen and the streak is dropped', async () => {

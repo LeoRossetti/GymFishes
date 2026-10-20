@@ -36,7 +36,7 @@ describe('MonthWrapUp', () => {
   it('announces last month winner and both totals', () => {
     render(<MonthWrapUp entries={july} members={members} userId="u2" today={today} />)
     expect(screen.getByText('Julho encerrado — Leo venceu 🏆')).toBeInTheDocument()
-    expect(screen.getByText('68,4 L × 61,2 L')).toBeInTheDocument()
+    expect(screen.getByText('Leo 68,4 L × Você 61,2 L')).toBeInTheDocument()
   })
 
   it('says Você when you won', () => {
