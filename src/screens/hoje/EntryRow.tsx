@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import type { Entry } from '@/features/entries/cache'
 import { useSignedUrl } from '@/features/entries/photos'
 import { compositionChips, describeComposition, parseComposition } from '@/lib/composition'
@@ -19,6 +20,7 @@ type Props = {
 }
 
 export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, onDelete, onRetry }: Props) {
+  const reduced = useReducedMotion() ?? false
   const [expanded, setExpanded] = useState(false)
   const [confirmando, setConfirmando] = useState(false)
   const items = parseComposition(entry.composition)
@@ -86,44 +88,55 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
           {STRINGS.sync.falhaTentarNovamente}
         </button>
       ) : null}
-      {expanded ? (
-        <div className="mt-2 pl-[54px]">
-          {photoUrl.data ? (
-            <img
-              src={photoUrl.data}
-              alt={STRINGS.registros.fotoDoRegistro}
-              className="mb-2 w-full rounded-control"
-            />
-          ) : null}
-          {entry.note ? <p className="mb-2 text-[13px] text-ink-2">{entry.note}</p> : null}
-          {singleLoose ? null : (
-            <div className="mb-2 flex flex-wrap gap-2">
-              {compositionChips(items).map((chip) => (
-                <span
-                  key={chip}
-                  className="rounded-[99px] border border-line bg-surface-2 px-3 py-1 text-[11px] font-bold text-ink-2"
-                >
-                  {chip}
-                </span>
-              ))}
+      <AnimatePresence initial={false}>
+        {expanded ? (
+          <motion.div
+            key="details"
+            initial={reduced ? { opacity: 0 } : { height: 0, opacity: 0 }}
+            animate={reduced ? { opacity: 1 } : { height: 'auto', opacity: 1 }}
+            exit={reduced ? { opacity: 0 } : { height: 0, opacity: 0 }}
+            transition={{ duration: reduced ? 0.12 : 0.18, ease: 'easeOut' }}
+            className="overflow-hidden"
+          >
+            <div className="mt-2 pl-[54px]">
+              {photoUrl.data ? (
+                <img
+                  src={photoUrl.data}
+                  alt={STRINGS.registros.fotoDoRegistro}
+                  className="mb-2 w-full rounded-control"
+                />
+              ) : null}
+              {entry.note ? <p className="mb-2 text-[13px] text-ink-2">{entry.note}</p> : null}
+              {singleLoose ? null : (
+                <div className="mb-2 flex flex-wrap gap-2">
+                  {compositionChips(items).map((chip) => (
+                    <span
+                      key={chip}
+                      className="rounded-[99px] border border-line bg-surface-2 px-3 py-1 text-[11px] font-bold text-ink-2"
+                    >
+                      {chip}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {isOwn ? (
+                <div className="flex gap-2">
+                  <Button variant="ghost" className="flex-1" onClick={onEdit}>
+                    {STRINGS.registros.editar}
+                  </Button>
+                  <Button
+                    variant={confirmando ? 'armed' : 'danger'}
+                    className="flex-1"
+                    onClick={() => (confirmando ? onDelete() : setConfirmando(true))}
+                  >
+                    {confirmando ? STRINGS.registros.excluirMesmo : STRINGS.registros.excluir}
+                  </Button>
+                </div>
+              ) : null}
             </div>
-          )}
-          {isOwn ? (
-            <div className="flex gap-2">
-              <Button variant="ghost" className="flex-1" onClick={onEdit}>
-                {STRINGS.registros.editar}
-              </Button>
-              <Button
-                variant={confirmando ? 'armed' : 'danger'}
-                className="flex-1"
-                onClick={() => (confirmando ? onDelete() : setConfirmando(true))}
-              >
-                {confirmando ? STRINGS.registros.excluirMesmo : STRINGS.registros.excluir}
-              </Button>
-            </div>
-          ) : null}
-        </div>
-      ) : null}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </li>
   )
 }
