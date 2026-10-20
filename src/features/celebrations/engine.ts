@@ -45,18 +45,22 @@ export function celebrationsFor(before: DayState, after: DayState): Celebration[
 export type Presentation = {
   fullScreen: FullScreenCelebration | null
   toasts: Celebration[]
+  /** The register took the lead, whether or not a toast shows it — the unlock screen marks it. */
+  lead: boolean
   inline: Celebration | null
 }
 
 /**
- * Spec §7 rules: one full screen at most; outranked full-screen kinds degrade to toasts; the
- * lead is a toast by nature; the round litre is inline and is dropped when anything outranks it.
+ * Spec §7 rules: one full screen at most; nothing is drawn under a full screen (M9) — outranked
+ * kinds are dropped; the lead is a toast by nature; the round litre is inline and is dropped when
+ * anything outranks it.
  */
 export function present(cels: readonly Celebration[]): Presentation {
-  const [fullScreen = null, ...demoted] = cels.filter(isFullScreen)
-  const toasts: Celebration[] = [...demoted, ...cels.filter((c) => c.kind === 'lead')]
+  const fullScreen = cels.find(isFullScreen) ?? null
+  const lead = cels.some((c) => c.kind === 'lead')
+  const toasts = fullScreen ? [] : cels.filter((c) => c.kind === 'lead')
   const only = cels.length === 1 ? cels[0] : undefined
-  return { fullScreen, toasts, inline: only?.kind === 'litre' ? only : null }
+  return { fullScreen, toasts, lead, inline: only?.kind === 'litre' ? only : null }
 }
 
 export function celebrationText(c: Celebration): string {

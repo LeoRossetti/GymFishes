@@ -55,4 +55,16 @@ describe('CelebrationScreen', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Depois' }))
     expect(onClose).toHaveBeenCalledTimes(1)
   })
+
+  it('the unlock screen shows the lead trophy when the register also took the lead', () => {
+    render(<CelebrationScreen celebration={{ kind: 'unlock', fish: 'pufferfish' }} lead onClose={vi.fn()} onChoose={vi.fn()} />)
+    expect(screen.getByRole('img', { name: 'Você está na frente' })).toBeInTheDocument()
+  })
+
+  it('record and streak screens never show the trophy, and unlock without lead has none', () => {
+    const { rerender } = render(<CelebrationScreen celebration={{ kind: 'record', ml: 4200 }} lead onClose={vi.fn()} onChoose={vi.fn()} />)
+    expect(screen.queryByRole('img', { name: 'Você está na frente' })).toBeNull()
+    rerender(<CelebrationScreen celebration={{ kind: 'unlock', fish: 'pufferfish' }} onClose={vi.fn()} onChoose={vi.fn()} />)
+    expect(screen.queryByRole('img', { name: 'Você está na frente' })).toBeNull()
+  })
 })

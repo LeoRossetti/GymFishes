@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { Entry } from '@/features/entries/cache'
 import { FISH_IDS } from '@/features/fish/catalog'
@@ -114,17 +114,29 @@ describe('CelebrationProvider', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
-  it('the 7-day streak earns the tambaqui: the fish takes the full screen and the streak becomes a toast', async () => {
+  it('the 7-day streak earns the tambaqui: the fish takes the full screen and the streak is dropped', async () => {
     const six = sixDays()
     renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
     expect(screen.getByRole('dialog', { name: 'Novo peixe! Tambaqui' })).toBeInTheDocument()
     const toast = screen.getAllByRole('status').find((s) => s.textContent?.includes('🔥 7 dias seguidos!'))
-    expect(toast).toBeDefined()
+    expect(toast).toBeUndefined()
     // the seahorse was earned on day 3 and is not new; the device now remembers both
     expect(screen.queryByText('Cavalo-marinho')).toBeNull()
     expect(stored()).toEqual(['guppy', 'betta', 'goldfish', 'neon', 'seahorse', 'tambaqui'])
     expect(updateProfile).not.toHaveBeenCalled()
+  })
+
+  it('a register that unlocks a fish and takes the lead shows the trophy on the unlock screen, with no toast', async () => {
+    const partner = row('e0', 'u2', 1000, today)
+    const bottle = row('e1', 'u1', 1200, today, {
+      composition: [{ kind: 'bottle', name: 'Azul', volume_ml: 1200, qty: 1 }],
+    })
+    renderTrigger([partner], [partner, bottle])
+    await userEvent.click(screen.getByRole('button', { name: 'go' }))
+    const dialog = screen.getByRole('dialog', { name: 'Novo peixe! Baiacu' })
+    expect(within(dialog).getByRole('img', { name: 'Você está na frente' })).toBeInTheDocument()
+    expect(screen.queryByText('Você assumiu a liderança 🏆')).toBeNull()
   })
 
   it('a device that stored all thirteen while every fish was open still celebrates the fish earned now', async () => {
@@ -136,7 +148,7 @@ describe('CelebrationProvider', () => {
     expect(stored()).toEqual(['guppy', 'betta', 'goldfish', 'neon', 'seahorse', 'tambaqui'])
   })
 
-  it('a fish earned on another device is announced at the next register, in catalog order', async () => {
+  it('a fish earned on another device is announced at the next register, in catalog order, and the outranked fish is dropped', async () => {
     // the seahorse was earned on day 3 but this device never celebrated it
     localStorage.setItem(SEEN_UNLOCKS_KEY, JSON.stringify(['guppy', 'betta', 'goldfish', 'neon']))
     const six = sixDays()
@@ -144,6 +156,6 @@ describe('CelebrationProvider', () => {
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
     expect(screen.getByRole('dialog', { name: 'Novo peixe! Cavalo-marinho' })).toBeInTheDocument()
     const toast = screen.getAllByRole('status').find((s) => s.textContent?.includes('Novo peixe! Tambaqui'))
-    expect(toast).toBeDefined()
+    expect(toast).toBeUndefined()
   })
 })

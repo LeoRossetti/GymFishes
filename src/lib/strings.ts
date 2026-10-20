@@ -163,6 +163,7 @@ export const STRINGS = {
     novoRecorde: (volume: string) => `Novo recorde! ${volume}`,
     diasSeguidos: (dias: number) => `🔥 ${dias} dias seguidos!`,
     lideranca: 'Você assumiu a liderança 🏆',
+    naFrente: 'Você está na frente',
     litrosHoje: (litros: number) => `${litros} L hoje`,
     separador: ' · ',
   },

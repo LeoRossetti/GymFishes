@@ -38,7 +38,7 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   const { userId, members } = useGroupData()
   const client = useQueryClient()
   const toast = useToast()
-  const [full, setFull] = useState<FullScreenCelebration | null>(null)
+  const [full, setFull] = useState<{ celebration: FullScreenCelebration; lead: boolean } | null>(null)
   const [inline, setInline] = useState<string | null>(null)
   const inlineTimer = useRef<number | undefined>(undefined)
 
@@ -58,7 +58,7 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
       const seen = ALL_FISH_AVAILABLE ? a.unlocked : new Set([...stored].filter((f) => b.unlocked.has(f)))
       const shown = present(celebrationsFor({ ...b, unlocked: seen }, a))
       saveSeenUnlocks(new Set([...seen, ...a.unlocked]))
-      if (shown.fullScreen) setFull(shown.fullScreen)
+      if (shown.fullScreen) setFull({ celebration: shown.fullScreen, lead: shown.lead })
       if (shown.toasts.length > 0) toast(shown.toasts.map(celebrationText).join(STRINGS.celebracoes.separador))
       if (shown.inline) {
         setInline(celebrationText(shown.inline))
@@ -87,7 +87,7 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   return (
     <CelebrationContext.Provider value={value}>
       {children}
-      {full ? <CelebrationScreen celebration={full} onClose={close} onChoose={choose} /> : null}
+      {full ? <CelebrationScreen celebration={full.celebration} lead={full.lead} onClose={close} onChoose={choose} /> : null}
     </CelebrationContext.Provider>
   )
 }
