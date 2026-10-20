@@ -150,7 +150,7 @@ export const STRINGS = {
     registreComGarrafa: 'Registre com uma garrafa',
     registreComNota: 'Registre com uma nota',
     registreAntesDas: (hora: number) => `Registre antes das ${hora}h`,
-    sequenciaDias: (dias: number) => `Sequência de ${dias} dias`,
+    sequenciaDias: (dias: number) => `Sequência de ${dias} ${dias === 1 ? 'dia' : 'dias'}`,
     umDiaAcimaDe: (volume: string) => `Um dia acima de ${volume}`,
     registros: (n: number) => `${n} registros`,
     acumulados: (volume: string) => `${volume} acumulados`,
