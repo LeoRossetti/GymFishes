@@ -2,6 +2,7 @@ type Props = {
   label: string
   prevLabel: string
   nextLabel: string
+  prevDisabled?: boolean
   nextDisabled: boolean
   onPrev: () => void
   onNext: () => void
@@ -12,10 +13,10 @@ const ARROW =
   'active:bg-line transition-colors duration-100 disabled:text-ink-3'
 
 /** `‹ label ›` — the period and month steppers (spec §5.3, §5.4). */
-export function Stepper({ label, prevLabel, nextLabel, nextDisabled, onPrev, onNext }: Props) {
+export function Stepper({ label, prevLabel, nextLabel, prevDisabled = false, nextDisabled, onPrev, onNext }: Props) {
   return (
     <div className="flex items-center justify-between">
-      <button type="button" aria-label={prevLabel} onClick={onPrev} className={ARROW}>
+      <button type="button" aria-label={prevLabel} onClick={onPrev} disabled={prevDisabled} className={ARROW}>
         ‹
       </button>
       <p className="text-[15px] font-bold">{label}</p>
