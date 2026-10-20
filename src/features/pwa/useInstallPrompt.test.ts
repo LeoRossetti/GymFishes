@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { act, renderHook } from '@testing-library/react'
-import { useInstallPrompt } from './useInstallPrompt'
+import { __resetInstallStore, useInstallPrompt } from './useInstallPrompt'
 
 const IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)'
 const DESKTOP = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
@@ -20,6 +20,7 @@ function offer() {
 
 describe('useInstallPrompt', () => {
   afterEach(() => {
+    __resetInstallStore()
     vi.restoreAllMocks()
     vi.unstubAllGlobals()
   })
@@ -33,6 +34,22 @@ describe('useInstallPrompt', () => {
     await act(() => result.current.install!())
     expect(prompt).toHaveBeenCalledTimes(1)
     expect(result.current.install).toBeNull()
+  })
+
+  it('keeps an event that fired before the hook mounted', () => {
+    stubEnv(DESKTOP, false)
+    offer()
+    const { result } = renderHook(() => useInstallPrompt())
+    expect(result.current.install).not.toBeNull()
+  })
+
+  it('still offers install after the screen unmounts and mounts again', () => {
+    stubEnv(DESKTOP, false)
+    const first = renderHook(() => useInstallPrompt())
+    offer()
+    first.unmount()
+    const { result } = renderHook(() => useInstallPrompt())
+    expect(result.current.install).not.toBeNull()
   })
 
   it('appinstalled withdraws the offer', () => {

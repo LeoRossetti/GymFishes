@@ -83,7 +83,7 @@ describe('RegisterSheet', () => {
     renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
     await userEvent.click(screen.getByRole('button', { name: '+250' }))
     await userEvent.click(screen.getByRole('button', { name: '+250' }))
-    // '500 ml' shows both as the running total and as the loose-amount readout
+    // '500 ml' shows as the running total and in the confirm label's unit span
     expect(await screen.findAllByText('500 ml')).toHaveLength(2)
   })
 
@@ -107,6 +107,15 @@ describe('RegisterSheet', () => {
     fireEvent.click(cta)
     fireEvent.click(cta)
     expect(insertMutate).toHaveBeenCalledTimes(1)
+  })
+
+  it('opening the nota focuses the field and scrolls it above the confirm bar', async () => {
+    const scroll = vi.spyOn(HTMLElement.prototype, 'scrollIntoView')
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: /nota/ }))
+    expect(screen.getByRole('textbox')).toHaveFocus()
+    expect(scroll).toHaveBeenCalledTimes(1)
+    scroll.mockRestore()
   })
 
   it('includes a typed nota on submit', async () => {

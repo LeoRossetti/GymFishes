@@ -66,8 +66,8 @@ export function CelebrationScreen({ celebration, lead = false, onClose, onChoose
           role="img"
           aria-label={STRINGS.celebracoes.naFrente}
           className="mb-4 text-streak"
-          initial={{ scale: 0.4, opacity: 0, rotate: -12 }}
-          animate={{ scale: 1, opacity: 1, rotate: 0 }}
+          initial={reduced ? { opacity: 0 } : { scale: 0.4, opacity: 0, rotate: -12 }}
+          animate={reduced ? { opacity: 1 } : { scale: 1, opacity: 1, rotate: 0 }}
           transition={reduced ? { duration: 0.12 } : { type: 'spring', duration: 0.7, bounce: 0.4, delay: 0.45 }}
         >
           <Trophy size={44} filled strokeWidth={2.2} />

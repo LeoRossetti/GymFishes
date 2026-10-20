@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, within } from '@testing-library/react'
+import { cleanup, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { Entry } from '@/features/entries/cache'
 import { FISH_IDS } from '@/features/fish/catalog'
@@ -157,5 +157,13 @@ describe('CelebrationProvider', () => {
     expect(screen.getByRole('dialog', { name: 'Novo peixe! Cavalo-marinho' })).toBeInTheDocument()
     const toast = screen.getAllByRole('status').find((s) => s.textContent?.includes('Novo peixe! Tambaqui'))
     expect(toast).toBeUndefined()
+    // the outranked fish is not spent: it is celebrated at the next register
+    expect(stored()).not.toContain('tambaqui')
+    cleanup()
+    const seven = [...six, row('e7', 'u1', 500, today)]
+    renderTrigger(seven, [...seven, row('e8', 'u1', 100, today)])
+    await userEvent.click(screen.getByRole('button', { name: 'go' }))
+    expect(screen.getByRole('dialog', { name: 'Novo peixe! Tambaqui' })).toBeInTheDocument()
+    expect(stored()).toContain('tambaqui')
   })
 })

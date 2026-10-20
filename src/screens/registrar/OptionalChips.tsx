@@ -39,6 +39,11 @@ function RemoveBadge({ onClick }: { onClick: () => void }) {
   )
 }
 
+/** Keep a field that just opened above the sticky confirm bar (the sheet has scroll-padding for it). */
+function reveal(el: HTMLElement | null) {
+  el?.scrollIntoView?.({ block: 'nearest' })
+}
+
 export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }: Props) {
   const fileRef = useRef<HTMLInputElement>(null)
   const toast = useToast()
@@ -118,6 +123,8 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
       {open === 'nota' ? (
         <>
           <textarea
+            ref={reveal}
+            autoFocus
             value={draft.note}
             maxLength={MAX_NOTE}
             rows={2}
@@ -130,6 +137,7 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
       ) : null}
       {open === 'hora' ? (
         <input
+          ref={reveal}
           type="datetime-local"
           value={toDatetimeLocal(draft.drankAt)}
           onChange={(e) => e.target.value && dispatch({ type: 'setDrankAt', at: fromDatetimeLocal(e.target.value) })}
