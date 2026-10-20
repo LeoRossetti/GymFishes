@@ -47,8 +47,8 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
   return (
     <div className="min-w-[140px] max-w-[160px] flex-1 shrink-0">
       <div className="relative h-[220px] overflow-hidden rounded-card border-2 border-line bg-surface-2">
-        {totalMl > 0 ? (
-          <motion.div className="absolute inset-x-0 bottom-0" animate={{ height: `${pct}%` }} transition={spring}>
+        <motion.div className="absolute inset-x-0 bottom-0" animate={{ height: `${pct}%` }} transition={spring}>
+          {totalMl > 0 ? (
             <span
               className="absolute inset-x-0 top-0 block"
               style={{
@@ -59,14 +59,14 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
             >
               <WaveSurface />
             </span>
-            {(pct / 100) * TUBE_H >= FISH_H ? (
-              <span aria-hidden className="absolute left-1/2 top-[6px] -translate-x-1/2">
-                <Fish variant={fishOf(fishVariant)} size={FISH_W} state="idle" />
-              </span>
-            ) : null}
-            <div className="h-full w-full bg-water" />
-          </motion.div>
-        ) : null}
+          ) : null}
+          {(pct / 100) * TUBE_H >= FISH_H ? (
+            <span aria-hidden className="absolute left-1/2 top-[6px] -translate-x-1/2">
+              <Fish variant={fishOf(fishVariant)} size={FISH_W} state="idle" />
+            </span>
+          ) : null}
+          <div className="h-full w-full bg-water" />
+        </motion.div>
       </div>
       <p className="mt-2 text-center text-[24px] font-extrabold tabular-nums tracking-[-0.4px]">
         {formatVolume(shownTotal)}
