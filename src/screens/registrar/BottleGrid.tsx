@@ -52,7 +52,7 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
                 >
                   <span
                     className="rounded-[99px] border border-water bg-water px-2 text-[11px]
-                               font-extrabold text-ink-on-water group-active:bg-water-edge transition-colors duration-100"
+                               font-extrabold text-ink-on-water group-active:bg-water-edge group-active:duration-0 transition-colors duration-100"
                   >
                     ×{qty}
                   </span>

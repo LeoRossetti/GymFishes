@@ -142,10 +142,10 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           <h1 className="mb-8 text-[24px] font-extrabold tracking-tight">
             {STRINGS.onboarding.tituloGrupo}
           </h1>
-          <Button className="mb-3" onClick={() => setStage('criar')}>
+          <Button onClick={() => setStage('criar')}>
             {STRINGS.onboarding.criarGrupo}
           </Button>
-          <Button variant="ghost" onClick={() => setStage('entrar')}>
+          <Button variant="ghost" className="mt-3" onClick={() => setStage('entrar')}>
             {STRINGS.onboarding.entrarComCodigo}
           </Button>
         </>

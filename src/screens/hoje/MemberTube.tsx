@@ -20,8 +20,9 @@ type Props = {
 /** Tube height in px (matches `h-[220px]` below). */
 export const TUBE_H = 220
 /** Fish width in px — about a third of the tube (spec M7 §8.2). Height follows the 1.6:1 art box. */
-export const FISH_W = 56
+const FISH_W = 56
 export const FISH_H = FISH_W * 0.625
+
 export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl }: Props) {
   const pct = Math.min(100, (totalMl / scaleMl) * 100)
   const reduced = useReducedMotion()

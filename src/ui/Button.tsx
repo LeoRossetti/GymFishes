@@ -8,6 +8,7 @@ const BASE =
   'w-full min-h-[44px] rounded-control px-4 py-3 text-[15px] font-extrabold ' +
   'uppercase tracking-wide'
 
+// Callers must not give a primary a margin-bottom: the press swaps the 4px edge for `mb-1`.
 const VARIANTS: Record<Variant, string> = {
   primary:
     'bg-water text-ink-on-water border-b-4 border-water-edge ' +

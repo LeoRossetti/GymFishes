@@ -254,8 +254,21 @@ describe('RegisterSheet', () => {
   })
 
   it('the running total echoes the typed digits immediately', async () => {
-    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
-    await userEvent.click(screen.getByRole('button', { name: '+250' }))
-    expect(screen.getAllByText('250 ml')).toHaveLength(2)
+    // matchMedia present and not reduced: the old count-up hook would have animated here
+    vi.stubGlobal('matchMedia', () => ({
+      matches: false,
+      addEventListener() {},
+      removeEventListener() {},
+    }))
+    try {
+      renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+      for (const key of ['2', '5', '0']) {
+        await userEvent.click(screen.getByRole('button', { name: key }))
+      }
+      // total + confirm span, asserted synchronously (no findBy / waitFor)
+      expect(screen.getAllByText('250 ml')).toHaveLength(2)
+    } finally {
+      vi.unstubAllGlobals()
+    }
   })
 })

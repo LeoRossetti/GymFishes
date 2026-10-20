@@ -31,7 +31,7 @@ function RemoveBadge({ onClick }: { onClick: () => void }) {
     >
       <span
         className="flex h-6 w-6 items-center justify-center rounded-[99px] border
-                   border-water bg-water text-ink-on-water group-active:bg-water-edge transition-colors duration-100"
+                   border-water bg-water text-ink-on-water group-active:bg-water-edge group-active:duration-0 transition-colors duration-100"
       >
         <Close size={12} strokeWidth={3} />
       </span>

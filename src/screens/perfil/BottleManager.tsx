@@ -57,7 +57,7 @@ export function BottleManager({ userId }: { userId: string | undefined }) {
                 className="flex min-h-[44px] w-full items-center gap-2 py-2 text-left text-[15px] text-ink"
                 onClick={() => selectEditing(editing === bottle.id ? null : bottle.id)}
               >
-                <span className="w-6 shrink-0 text-center">{bottle.emoji ?? ''}</span>
+                <span className="min-w-6 shrink-0 text-center">{bottle.emoji ?? ''}</span>
                 <span className="min-w-0 flex-1">{bottle.name}</span>
                 <span className="text-ink-2">{formatVolume(bottle.volume_ml)}</span>
               </button>
