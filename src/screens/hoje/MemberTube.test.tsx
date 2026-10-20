@@ -24,4 +24,10 @@ describe('MemberTube', () => {
     const { container } = render(<MemberTube {...base} totalMl={0} />)
     expect(container.querySelector('svg[data-fish]')).toBeNull()
   })
+
+  it('an empty tube draws no water and no crest', () => {
+    const { container } = render(<MemberTube {...base} totalMl={0} />)
+    expect(container.querySelector('svg[data-fish]')).toBeNull()
+    expect(container.querySelector('.wave-front, .wave-back')).toBeNull()
+  })
 })

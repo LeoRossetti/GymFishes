@@ -22,19 +22,6 @@ export const TUBE_H = 220
 /** Fish width in px — about a third of the tube (spec M7 §8.2). Height follows the 1.6:1 art box. */
 export const FISH_W = 56
 export const FISH_H = FISH_W * 0.625
-/** Air between the fish's back and the surface, so the wave crest never cuts the fish. */
-const GAP = 6
-
-/**
- * The fish's `bottom`, in px, for a given fill %: it swims just under the surface, and rests on
- * the tube floor while the water is still shallower than the fish (the fish itself is drawn only
- * once the water covers it, M9). Because it sits inside the
- * water, a full tube never clips it — no special case is needed at 100%.
- */
-export function fishBottomPx(pct: number): number {
-  return Math.max(0, (pct / 100) * TUBE_H - FISH_H - GAP)
-}
-
 export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl }: Props) {
   const pct = Math.min(100, (totalMl / scaleMl) * 100)
   const reduced = useReducedMotion()
@@ -48,7 +35,10 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
   useEffect(() => {
     const grew = totalMl > prev.current
     prev.current = totalMl
-    if (!grew || reduced) return
+    if (!grew || reduced) {
+      setSplash(false)
+      return
+    }
     setSplash(true)
     const t = window.setTimeout(() => setSplash(false), 450)
     return () => window.clearTimeout(t)
@@ -57,28 +47,25 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
   return (
     <div className="min-w-[140px] max-w-[160px] flex-1 shrink-0">
       <div className="relative h-[220px] overflow-hidden rounded-card border-2 border-line bg-surface-2">
-        <motion.div className="absolute inset-x-0 bottom-0" animate={{ height: `${pct}%` }} transition={spring}>
-          <span
-            className="absolute inset-x-0 top-0 block"
-            style={{
-              transform: splash ? 'scaleY(2)' : 'scaleY(1)',
-              transformOrigin: 'bottom',
-              transition: 'transform 450ms ease-out',
-            }}
-          >
-            <WaveSurface />
-          </span>
-          <div className="h-full w-full bg-water" />
-        </motion.div>
-        {(pct / 100) * TUBE_H >= FISH_H ? (
-          <motion.span
-            aria-hidden
-            className="absolute left-1/2 -translate-x-1/2"
-            animate={{ bottom: `${fishBottomPx(pct)}px` }}
-            transition={spring}
-          >
-            <Fish variant={fishOf(fishVariant)} size={FISH_W} state="idle" />
-          </motion.span>
+        {totalMl > 0 ? (
+          <motion.div className="absolute inset-x-0 bottom-0" animate={{ height: `${pct}%` }} transition={spring}>
+            <span
+              className="absolute inset-x-0 top-0 block"
+              style={{
+                transform: splash ? 'scaleY(2)' : 'scaleY(1)',
+                transformOrigin: 'bottom',
+                transition: 'transform 450ms ease-out',
+              }}
+            >
+              <WaveSurface />
+            </span>
+            {(pct / 100) * TUBE_H >= FISH_H ? (
+              <span aria-hidden className="absolute left-1/2 top-[6px] -translate-x-1/2">
+                <Fish variant={fishOf(fishVariant)} size={FISH_W} state="idle" />
+              </span>
+            ) : null}
+            <div className="h-full w-full bg-water" />
+          </motion.div>
         ) : null}
       </div>
       <p className="mt-2 text-center text-[24px] font-extrabold tabular-nums tracking-[-0.4px]">

@@ -14,7 +14,7 @@ export function UpdatePrompt({ ready, apply }: AppUpdate) {
       role="status"
       initial={{ opacity: 0, y: reduced ? 0 : 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: reduced ? 0.12 : 0.2 }}
+      transition={{ duration: reduced ? 0.12 : 0.2, ease: 'easeOut' }}
       className="flex shrink-0 items-center gap-3 border-t border-line bg-surface-2 px-4 py-2"
     >
       <p className="min-w-0 flex-1 text-[13px] font-bold text-ink">{STRINGS.atualizacao.disponivel}</p>

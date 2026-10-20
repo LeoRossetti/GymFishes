@@ -42,7 +42,7 @@ export function StatsCompare({ members, userId, stats }: Props) {
               <th
                 key={m.id}
                 scope="col"
-                className={`pb-2 text-right text-[10px] font-extrabold uppercase tracking-[1px] ${ACCENT_TEXT[accentOf(m.accent)]}`}
+                className={`pb-2 pl-3 text-right text-[10px] font-extrabold uppercase tracking-[1px] ${ACCENT_TEXT[accentOf(m.accent)]}`}
               >
                 {memberName(members, userId, m.id)}
               </th>
@@ -56,7 +56,7 @@ export function StatsCompare({ members, userId, stats }: Props) {
                 {label}
               </th>
               {ordered.map((m) => (
-                <td key={m.id} className="py-2 text-right font-extrabold">
+                <td key={m.id} className="whitespace-nowrap py-2 text-right font-extrabold">
                   {render(stats.get(m.id) ?? EMPTY)}
                 </td>
               ))}

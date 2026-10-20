@@ -41,7 +41,7 @@ export function CelebrationScreen({ celebration, lead = false, onClose, onChoose
     ref.current?.focus()
   }, [])
 
-  const fade = { duration: reduced ? 0.12 : 0.25 }
+  const fade = { duration: reduced ? 0.12 : 0.25, ease: 'easeOut' } as const
   const spring = reduced ? { duration: 0.12 } : ({ type: 'spring', duration: 0.9, bounce: 0.35 } as const)
 
   return (

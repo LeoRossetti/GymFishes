@@ -58,4 +58,16 @@ describe('Standings', () => {
     )
     expect(screen.getAllByText('1')).toHaveLength(2)
   })
+
+  it('renders a long name in full', () => {
+    // Guard: the name is only wrapped by CSS, never shortened in the DOM.
+    render(
+      <Standings
+        userId="u1"
+        members={[...members, { id: 'u3', display_name: 'Maria Clara Figueira', fish_variant: 'guppy', accent: 'pink', joined_at: '3' }]}
+        rows={[{ profileId: 'u3', ml: 500, position: 1, share: 1 }]}
+      />,
+    )
+    expect(screen.getByText('Maria Clara Figueira')).toBeInTheDocument()
+  })
 })
