@@ -54,6 +54,7 @@ export function CelebrationScreen({ celebration, lead = false, onClose, onChoose
       onClick={onClose}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: reduced ? 0.12 : 0.2, ease: 'easeOut' } }}
       transition={fade}
       className="fixed inset-0 z-50 mx-auto flex max-w-[430px] flex-col items-center justify-center overflow-hidden bg-bg/95 px-6 text-center"
     >

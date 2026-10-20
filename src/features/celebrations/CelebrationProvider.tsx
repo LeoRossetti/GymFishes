@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { AnimatePresence } from 'motion/react'
 import { useQueryClient } from '@tanstack/react-query'
 import type { Entry } from '@/features/entries/cache'
 import { ALL_FISH_AVAILABLE, type FishId } from '@/features/fish/catalog'
@@ -88,7 +89,11 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   return (
     <CelebrationContext.Provider value={value}>
       {children}
-      {full ? <CelebrationScreen celebration={full.celebration} lead={full.lead} onClose={close} onChoose={choose} /> : null}
+      <AnimatePresence>
+        {full ? (
+          <CelebrationScreen key="celebration" celebration={full.celebration} lead={full.lead} onClose={close} onChoose={choose} />
+        ) : null}
+      </AnimatePresence>
     </CelebrationContext.Provider>
   )
 }
