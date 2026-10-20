@@ -110,4 +110,12 @@ describe('Historico', () => {
     expect(screen.queryByText('Você 3 L · Ana 0 ml')).toBeNull()
     expect(screen.getByRole('button', { name: 'Próximo mês' })).toBeEnabled()
   })
+
+  it('stops at the month of the first register', async () => {
+    renderHistorico()
+    expect(screen.getByRole('button', { name: 'Mês anterior' })).toBeEnabled()
+    await userEvent.click(screen.getByRole('button', { name: 'Mês anterior' }))
+    expect(screen.getByText('Julho', { selector: 'p' })).toBeInTheDocument() // the first register is 15 July
+    expect(screen.getByRole('button', { name: 'Mês anterior' })).toBeDisabled()
+  })
 })

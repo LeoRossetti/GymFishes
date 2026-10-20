@@ -34,4 +34,20 @@ describe('Stepper', () => {
     expect(screen.getByRole('button', { name: 'Próximo' })).toBeDisabled()
     expect(screen.getByRole('button', { name: 'Anterior' })).toBeEnabled()
   })
+
+  it('disables the back arrow on demand', () => {
+    render(
+      <Stepper
+        label="Julho"
+        prevLabel="Anterior"
+        nextLabel="Próximo"
+        prevDisabled
+        nextDisabled={false}
+        onPrev={vi.fn()}
+        onNext={vi.fn()}
+      />,
+    )
+    expect(screen.getByRole('button', { name: 'Anterior' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Próximo' })).toBeEnabled()
+  })
 })

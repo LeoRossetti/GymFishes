@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { act, fireEvent, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '@/test/utils'
 import { EntryRow } from './EntryRow'
@@ -15,6 +15,12 @@ vi.mock('@/lib/supabase', () => ({
       }),
     },
   },
+}))
+
+const motionPrefs = vi.hoisted(() => ({ reduced: false }))
+vi.mock('motion/react', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('motion/react')>()),
+  useReducedMotion: () => motionPrefs.reduced,
 }))
 
 const entry = {
@@ -53,6 +59,11 @@ function renderRow(overrides: Partial<Parameters<typeof EntryRow>[0]> = {}) {
 }
 
 describe('EntryRow', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+    motionPrefs.reduced = false
+  })
+
   it('shows author, time, note and total', () => {
     renderRow()
     expect(screen.getByText(/Leo · 11:00/)).toBeInTheDocument() // 14:00Z = 11:00 São Paulo
@@ -159,5 +170,50 @@ describe('EntryRow', () => {
     const row = screen.getByRole('button', { expanded: false })
     expect(row.querySelector('svg[data-icon="drop"]')).not.toBeNull()
     expect(row.textContent).not.toMatch(/\p{Extended_Pictographic}/u)
+  })
+
+  it('"Excluir mesmo?" lapses back to "Excluir" after 3 s', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    const onDelete = vi.fn()
+    renderRow({ onDelete })
+    fireEvent.click(screen.getByText(/Leo · 11:00/))
+    fireEvent.click(screen.getByRole('button', { name: 'Excluir' }))
+    act(() => vi.advanceTimersByTime(2999))
+    expect(screen.getByRole('button', { name: 'Excluir mesmo?' })).toBeInTheDocument()
+    act(() => vi.advanceTimersByTime(1))
+    expect(screen.getByRole('button', { name: 'Excluir' })).toBeInTheDocument()
+    expect(onDelete).not.toHaveBeenCalled()
+  })
+
+  it('collapsing drops the lapse timer, so a new question gets its full 3 s', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    renderRow()
+    const row = screen.getByText(/Leo · 11:00/)
+    fireEvent.click(row)
+    fireEvent.click(screen.getByRole('button', { name: 'Excluir' }))
+    act(() => vi.advanceTimersByTime(2000))
+    fireEvent.click(row) // collapse
+    fireEvent.click(row) // re-expand
+    fireEvent.click(screen.getByRole('button', { name: 'Excluir' }))
+    act(() => vi.advanceTimersByTime(1500)) // the first timer would have fired by now
+    expect(screen.getByRole('button', { name: 'Excluir mesmo?' })).toBeInTheDocument()
+    act(() => vi.advanceTimersByTime(1500))
+    expect(screen.getByRole('button', { name: 'Excluir' })).toBeInTheDocument()
+  })
+
+  it('the details open from zero height', () => {
+    renderRow()
+    fireEvent.click(screen.getByText(/Leo · 11:00/))
+    const panel = screen.getByRole('button', { name: 'Editar' }).closest('li > *') as HTMLElement
+    expect(panel.style.height).toMatch(/^0(px)?$/)
+  })
+
+  it('under reduced motion the details only fade in, never grow', () => {
+    motionPrefs.reduced = true
+    renderRow()
+    fireEvent.click(screen.getByText(/Leo · 11:00/))
+    const panel = screen.getByRole('button', { name: 'Editar' }).closest('li > *') as HTMLElement
+    expect(panel.style.opacity).toBe('0')
+    expect(panel.style.height).toBe('')
   })
 })

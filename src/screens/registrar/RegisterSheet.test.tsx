@@ -68,6 +68,16 @@ describe('RegisterSheet', () => {
     expect(onClose).toHaveBeenCalled()
   })
 
+  it('tapping the backdrop closes the sheet', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    const dialog = screen.getByRole('dialog')
+    // aria-hidden strips the backdrop's accessible name, so it is simply the one button outside the dialog
+    const backdrop = screen.getAllByRole('button', { hidden: true }).find((b) => !dialog.contains(b))
+    expect(backdrop).toBeDefined()
+    await userEvent.click(backdrop!)
+    expect(onClose).toHaveBeenCalled()
+  })
+
   it('tapping a bottle raises the running total; tapping again increments', async () => {
     renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
     const chip = screen.getByRole('button', { name: /Garrafa azul/ })
