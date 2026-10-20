@@ -85,10 +85,8 @@ record: no member eviction, permanent invite codes (spec §3).
 
 ## Next work
 
-None planned. The one open item is rerunning `npm run e2e` after the Supabase reset; the
-owner's pending verifications are in the status column of ROADMAP.md.
-
-Process used so far (owner is happy with it): brainstorm → write the detailed
-per-milestone plan immediately before executing it (against the real codebase) →
-execute task-by-task with fresh implementer subagents and a reviewer per task →
-final whole-branch review. TDD for pure logic; never commit with a failing test.
+M10 — the living aquarium (staged tube decoration by fish habitat, sparse random bubbles), a fish-set
+review (habitat balance, redraws) and harder achievements. The full brief, the chores that come first
+(tests for the cherry-picked candidates, the slower water rise, the branch integration decision, the e2e
+rerun after the Supabase reset) and the tooling notes are in
+`docs/superpowers/plans/2026-10-21-m10-handoff.md`.

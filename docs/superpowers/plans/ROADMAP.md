@@ -283,3 +283,10 @@ tap, so it is never missed; the lead still shows on Hoje's gap line. The icon so
 illustration, so the three install-only PNGs stay out of the precache and the shell does not grow.
 The comparison card is also hidden on empty periods, where it printed zeros. Pending owner
 verifications are in the table row; every cloud-dependent check waits for the Supabase reset.
+
+**Candidatos (2026-10-21):** eight mechanisms proposed by the audits were built in a throwaway copy,
+shown before/after on the canvas and kept by the owner (sheet backdrop fade, toast motion, row expand,
+sliding segmented pill, celebration fade-out, delete auto-disarm, names on the wrap-up totals, Histórico
+lower bound); faster springs and narrower tubes were rejected. Pending owner verification: the candidate
+motions on a real phone, and the slower water rise once rendered. Next milestone brief:
+[`2026-10-21-m10-handoff.md`](2026-10-21-m10-handoff.md).

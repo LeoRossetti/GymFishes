@@ -128,10 +128,14 @@ user-felt fixes. The owner approved these ten; none adds a mechanism, option or 
     aligns the bottle rows in Perfil; entering fades use ease-out; the day detail's smooth scroll is
     instant under reduced motion.
 
-## 6. Candidates to be shown, not yet decided
+## 6. Candidates shown and decided (2026-10-21)
 
-The audits also proposed mechanisms the owner wants to see built before deciding: a backdrop fade for
-the sheet, toast enter/exit motion, an animated row expand, a sliding segmented indicator, a fade-out
-when a celebration ends, auto-disarming "Excluir mesmo?", shorter tube and celebration springs, names
-on the wrap-up totals, a lower bound on Histórico month navigation, and narrower tubes for 320px
-screens. They are rendered on the M7 canvas from a throwaway copy; whatever he keeps is recorded here.
+The audits also proposed mechanisms; each was built in a throwaway copy, rendered before/after on the
+M7 canvas, and decided by the owner. **Kept** (cherry-picked onto the branch): the sheet backdrop fades
+with the sheet; the toast enters and leaves (150 ms, 8px); the register row's details expand and collapse
+(180 ms); the segmented control's selected pill slides between options; the celebration screen fades out
+on dismiss (200 ms); "Excluir mesmo?" lapses back to "Excluir" after 3 s; the month wrap-up names both
+totals ("Você 9,7 L × Ana 9,3 L"); Histórico's back arrow stops at the first register's month. Every
+motion has a reduced-motion branch. **Rejected:** shorter springs (he wants the water to rise a bit
+*slower*, pending a render) and narrower tubes for 320px screens. What comes next is in
+`../plans/2026-10-21-m10-handoff.md`.
