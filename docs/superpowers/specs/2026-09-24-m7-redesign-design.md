@@ -173,24 +173,24 @@ The streak chip string drops its emoji: "12 dias" next to the flame icon.
 
 ### 7.2 Token sets
 
-| Token | 1 Fundo do mar `fundo-do-mar` | 2 Tinta `tinta` | 3 Aquário `aquario` |
-|---|---|---|---|
-| `--bg` | `#0A1421` | `#0B0E12` | `#04171D` |
-| `--surface` | `#162638` | `#1A2028` | `#0F2C36` |
-| `--surface-2` | `#213850` | `#262E38` | `#17404D` |
-| `--line` | `#32496A` | `#3B4552` | `#255A6B` |
-| `--ink` | `#F2F7FB` | `#F4F6F8` | `#EEF8FA` |
-| `--ink-2` | `#A3B9CB` | `#A0ADBA` | `#94BAC4` |
-| `--ink-3` | `#6F879B` | `#6F7D8A` | `#628B96` |
-| `--water` | `#1CB0F6` | `#22C4F5` | `#14B5EC` |
-| `--water-edge` | `#1791CC` | `#1A9CC6` | `#0F91BE` |
-| `--water-hi` | `#62CDFF` | `#7ADDFF` | `#66DBFF` |
-| `--ink-on-water` | `#072536` | `#06232E` | `#052330` |
+| Token | 1 Fundo do mar `fundo-do-mar` | 2 Aquário `aquario` |
+|---|---|---|
+| `--bg` | `#0A1421` | `#04171D` |
+| `--surface` | `#162638` | `#0F2C36` |
+| `--surface-2` | `#213850` | `#17404D` |
+| `--line` | `#32496A` | `#255A6B` |
+| `--ink` | `#F2F7FB` | `#EEF8FA` |
+| `--ink-2` | `#A3B9CB` | `#94BAC4` |
+| `--ink-3` | `#6F879B` | `#628B96` |
+| `--water` | `#1CB0F6` | `#14B5EC` |
+| `--water-edge` | `#1791CC` | `#0F91BE` |
+| `--water-hi` | `#62CDFF` | `#66DBFF` |
+| `--ink-on-water` | `#072536` | `#052330` |
 
-| Token | 4 Meia-noite `meia-noite` | 5 Areia `areia` | 6 Breu `breu` |
+| Token | 3 Meia-noite `meia-noite` | 4 Areia `areia` | 5 Breu `breu` |
 |---|---|---|---|
 | `--bg` | `#0C0E1C` | `#141210` | `#0D0F12` |
-| `--surface` | `#1A1D36` | `#23201C` | `#181B20` |
+| `--surface` | `#1A1D36` | `#23201C` | `#1B1E24` |
 | `--surface-2` | `#262A4C` | `#302B26` | `#23272D` |
 | `--line` | `#3B4070` | `#48413A` | `#373C44` |
 | `--ink` | `#F3F3FB` | `#F6F1EA` | `#F3F5F7` |
@@ -206,11 +206,11 @@ accent swatches of the main spec §8.
 
 ### 7.3 Display names
 
-"Fundo do mar", "Tinta", "Aquário", "Meia-noite", "Areia", "Breu".
+"Fundo do mar", "Aquário", "Meia-noite", "Areia", "Breu". (M9: Tinta removed.)
 
 ### 7.4 The picker in Perfil
 
-A section "Tema" between "Cor" and "Minhas garrafas":
+A section "Tema" between "Cor" and "Minhas garrafas", five tiles since M9:
 
 ```
 TEMA
@@ -218,11 +218,11 @@ TEMA
 │ ▢ card ✓ │ │ ▢ card   │ │ ▢ card   │    tile 104×64, 12px radius, 2px border
 │  ▬ water │ │  ▬ water │ │  ▬ water │    (--water when selected, --line otherwise)
 └──────────┘ └──────────┘ └──────────┘
-Fundo do mar    Tinta       Aquário        12px / 700, --ink when selected, --ink-2 otherwise
+Fundo do mar    Aquário     Meia-noite     12px / 700, --ink when selected, --ink-2 otherwise
 ┌──────────┐ ┌──────────┐ ┌──────────┐
-│          │ │          │ │          │
-└──────────┘ └──────────┘ └──────────┘
-Meia-noite      Areia        Breu
+│          │ │          │
+└──────────┘ └──────────┘
+Areia           Breu
 ```
 
 Each tile is a `<button aria-pressed>` painting that theme's `--bg`, a rounded `--surface`

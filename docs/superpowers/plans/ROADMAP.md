@@ -19,6 +19,7 @@ codebase rather than an imagined one.
 | M6 | PWA e endurecimento | [`2026-09-22-m6-pwa-endurecimento.md`](2026-09-22-m6-pwa-endurecimento.md) | **code-complete** — pending owner verification: deploy, open the installed app on both phones and see the update bar appear after the next deploy; airplane mode → the app opens to yesterday's data; Perfil › Sobre shows the new version |
 | M7 | Redesign visual e casca do PWA | [`2026-09-24-m7-redesign.md`](2026-09-24-m7-redesign.md) | **code-complete** — pending owner verification: the §11 manual checklist of the M7 spec on both installed phones |
 | M8 | Conquistas | [`2026-09-24-m8-conquistas.md`](2026-09-24-m8-conquistas.md) | **code-complete** — pending owner verification: on a real phone, register with a bottle and see the Baiacu popup; open Perfil › Trocar peixe and read the nine conditions; watch the GIFs in `.tmp/celebracoes/` after `npm run celebration:shots` |
+| M9 | Fechamento | [`2026-10-20-m9-fechamento.md`](2026-10-20-m9-fechamento.md) | **code-complete** — pending owner verification: rerun `npm run e2e` after the Supabase reset; on both phones open the sheet with the note open and see the confirm button stay; register the first 250 ml of a day and see the tube without a fish, then 500 ml with it |
 
 ---
 
@@ -245,3 +246,38 @@ dropped: a month has to end first, which no "all in a month" ladder can wait for
 streak and first-place colour, now also marks a completed achievement. Playwright's ffmpeg has
 no GIF muxer and no filters, so the GIF is frames at 12 fps through Pillow with one shared
 palette; without Pillow the strip and the video remain.
+
+## M9 — Fechamento
+
+**Done when:** the final review's soft joints are closed without adding a screen or an option: the
+register sheet keeps its confirm button in reach, Hoje stops drawing a fish the water does not cover,
+and the app installs with its own icon.
+
+- Register sheet: confirm sticky at the bottom of the scroll area, unit case kept ("REGISTRAR 250 ml"),
+  focus on the handle and Escape closes, loose-amount line removed, keys 48px with 20px / 800 digits,
+  15px segmented labels, 2px selected bottle tile
+- Hoje: the fish only once the water covers it (35px, 480 ml at 3 L); loose-only rows without subtitle
+  or chips; streak chip and sync pill with accessible names
+- Ranking and Histórico: "Médias e recordes" only for week, month and all with data; the shared `Close`
+  icon on the month wrap-up; today's ring in `--ink`
+- Celebrations: no toast under a full screen; a yellow trophy on the unlock screen when the register also
+  took the lead; the ring behind the fish removed
+- Themes: Tinta removed (five left, a stored `tinta` falls back to Fundo do mar); Breu `--surface` `#1B1E24`
+- Install: "Instalar o app" in Perfil through `beforeinstallprompt`, an iPhone hint otherwise; manifest
+  `description`, `lang`, `id`; README "Como instalar"
+- Icon: the owner's dreaming-fish illustration (`docs/img/icone-origem.jpg`) as 512, 192, 180 and a
+  maskable 512; `icon.svg` deleted; only `icon-192.png` is precached (`globIgnores` keeps the other
+  three out)
+- Small fixes: tabs open at the top, one focus ring on inputs, swatches expose `aria-pressed`, the toast
+  on one line, "Salvar garrafa", `Sequência de 1 dia` in the singular
+- Version 1.3.0
+
+Calls made here: rejected after the owner saw before/after renders on the canvas: larger totals on Hoje,
+a lead marker on the record and streak screens, a pulse of any kind, a streak animation on the chip or a
+Duolingo-style streak screen, a red border on destructive buttons (the red text stays), and an
+"e-mail not confirmed" branch at login (confirmations are off in the cloud project). The version bump
+doubles as the persister buster. The trophy lives only on the unlock screen, which waits for the owner's
+tap, so it is never missed; the lead still shows on Hoje's gap line. The icon source is the owner's
+illustration, so the three install-only PNGs stay out of the precache and the shell does not grow.
+The comparison card is also hidden on empty periods, where it printed zeros. Pending owner
+verifications are in the table row; every cloud-dependent check waits for the Supabase reset.

@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-20-m9-fechamento-design.md` (decisions) and the parent spec `docs/superpowers/specs/2026-08-11-gymfishes-design.md` (updated in Task 8).
 
-A throwaway worktree at `.tmp/wt-design` (detached, uncommitted) holds a spike of most of these edits; `git -C .tmp/wt-design diff` is a reference for the exact classes, never something to copy blindly. It is removed in Task 8.
+A throwaway spike of most of these edits was rendered for the owner's approval; its diff is kept at `.superpowers/sdd/2026-10-20-m9-fechamento/spike.diff` (git-ignored) as a reference for the exact classes, never something to copy blindly.
 
 ## Global Constraints
 
@@ -623,16 +623,11 @@ Expected: typecheck silent; all tests pass (count ≥ 474 + the new ones); build
 
 - [ ] **Step 6: Screenshot check** (no cloud): start `npx vite --port 4175`, run `node .tmp/review-final/pairs/capture.mjs P03 P04 P07 P10 P11 P14` after pointing its "after" server at 4175 as well (or just read the "antes" side it produces against the new code), and look at the PNGs: the sheet's confirm pinned with the safe-area padding below it, no fish at 250 ml, no stats card on Hoje, the install row absent in a non-installing browser (the hook offers nothing in Chromium headless), five theme tiles, the trophy on the unlock screen. Stop the server.
 
-- [ ] **Step 7: Remove the spike worktree**
-
-Run: `git worktree remove --force .tmp/wt-design && git worktree prune`
-Expected: `git worktree list` shows only the main tree.
-
-- [ ] **Step 8: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add docs package.json package-lock.json
 git commit -m "docs: M9 — spec, roadmap, handoff; version 1.3.0"
 ```
 
-- [ ] **Step 9: Finish the branch** with superpowers:finishing-a-development-branch (merge `m9-fechamento` into `development` or open the PR, as the owner prefers; do not push without asking).
+- [ ] **Step 8: Finish the branch** with superpowers:finishing-a-development-branch (merge `m9-fechamento` into `development` or open the PR, as the owner prefers; do not push without asking).

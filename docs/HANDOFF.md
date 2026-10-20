@@ -16,7 +16,7 @@ theme only, installed to iPhone home screens. Simplicity is a stated product fea
    Every product and architecture decision, including security decisions recorded
    mid-build (§3 accepted-risk note, §11 RLS matrix). If code and spec disagree, the
    spec wins; if you must deviate, update the spec in the same change.
-2. `docs/superpowers/plans/ROADMAP.md` — milestone backlog (M1–M8) with each milestone's
+2. `docs/superpowers/plans/ROADMAP.md` — milestone backlog (M1–M9) with each milestone's
    status and its pending owner verifications.
 3. `CLAUDE.md` at the repo root — **on disk but git-ignored** (owner wants Claude
    tooling out of the repo). It holds the working conventions: pt-BR strings only via
@@ -30,7 +30,7 @@ theme only, installed to iPhone home screens. Simplicity is a stated product fea
 
 ## Current state (verified at the 2026-10-19 refresh)
 
-- **All eight milestones (M1–M8) are code-complete**, version 1.2.0. 474 tests, typecheck
+- **All nine milestones (M1–M9) are code-complete**, version 1.3.0. 492 tests, typecheck
   and build clean.
 - `development` is merged to `main` through PR #8
   (https://github.com/LeoRossetti/GymFishes/pull/8).
@@ -85,7 +85,8 @@ record: no member eviction, permanent invite codes (spec §3).
 
 ## Next work
 
-The wrap-up fixes agreed with the owner after the 2026-10-19 review — see ROADMAP.md.
+None planned. The one open item is rerunning `npm run e2e` after the Supabase reset; the
+owner's pending verifications are in the status column of ROADMAP.md.
 
 Process used so far (owner is happy with it): brainstorm → write the detailed
 per-milestone plan immediately before executing it (against the real codebase) →

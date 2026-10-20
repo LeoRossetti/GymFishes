@@ -103,7 +103,7 @@ Every decision below was explicitly settled during design. Recorded so we don't 
 | App version | `package.json` version, injected at build, shown in Perfil › Sobre with the build date, and used as the persister `buster` | One number answers "which build is this phone on?" and a bump is what discards an old-shaped mirror |
 | App frame (M7) | Fixed frame, inner scroll region; the document never scrolls | The only reliable way to stop iOS document rubber-band in standalone mode; also clips any horizontal overflow |
 | Zoom (M7) | `maximum-scale=1, user-scalable=no`; honoured by installed apps | Installed home-screen apps honour the meta; Safari in the browser ignores it, which is fine. Accepted WCAG 1.4.4 trade-off for a two-person app whose type sizes are fixed by the spec |
-| Themes (M7) | Six dark themes as token sets under `data-theme`, per device in `localStorage`, picked in Perfil | Leo asked for a theme option explicitly. This is the leanest form: no sync, no schema, no new screen; a section in Perfil |
+| Themes (M7) | Five dark themes (six until M9) as token sets under `data-theme`, per device in `localStorage`, picked in Perfil | Leo asked for a theme option explicitly. This is the leanest form: no sync, no schema, no new screen; a section in Perfil |
 | Fish availability (M7) | All thirteen selectable from the start; `ALL_FISH_AVAILABLE` in `catalog.ts` | Leo's call on 2026-09-24 after seeing the redrawn set. The unlock conditions stay in the catalog: they still drive the streak milestones, and flipping the constant re-gates the gallery |
 | Conquistas (M8) | The gate is back on, behind nine achievements derived from your own registers and all reachable in about a month; the tambaqui is the 7-day fish, in the middle of the ladder; the unlock screen names the achievement like a game reward | Leo's call later on 2026-09-24: the fish should be rewards again, but easier, not only about streaks, and announced with a popup. Monthly wins were dropped because a month has to end first |
 
@@ -201,7 +201,8 @@ border, and a flat blue fill whose height is that member's total for today. The 
 fill is a **live wave surface**, not a straight edge — see [Water surface](#water-surface).
 The member's fish (56px) swims just under that surface, and rests on the bottom while the
 water is still shallower than the fish. Below the tube: the total ("1,8 L") and the name
-("VOCÊ", "ELA"). Rising bubbles were tried in M7 and removed the same day at Leo's request.
+("VOCÊ", "ELA"). Rising bubbles were tried in M7 and removed the same day at Leo's request. (M9) The fish is drawn only
+once the water covers it (35px of the 220px tube, 480 ml at 3 L); below that the tube shows water alone.
 
 The tube's full height is scaled to `max(3000, highestTotalToday)` ml, so the columns stay
 comparable and nobody's ever pinned at 100%. Since there are no goals, the scale is
@@ -216,6 +217,7 @@ as compact rows:
 
 `[thumb 42px] [name · time / note or composition] [total, right-aligned, blue]`
 
+- (M9) A loose-only register has no subtitle (it repeated the amount) and, expanded, no composition chips.
 - Registers with a photo show the 96px thumbnail; those without show a 💧 tile, so the
   rhythm never breaks.
 - Tapping a row expands it in place: full photo, full note, composition chips
@@ -233,8 +235,12 @@ Opened by the center "+". A bottom sheet, dismissible by tapping or swiping the 
 down, or tapping the backdrop; the content scrolls freely. Everything on one screen — no
 steps, no wizard.
 
+(M9) The confirm button is sticky at the bottom of the sheet's scroll area, so it never falls below the
+fold when the note is open; Escape closes the sheet and opening it focuses the handle.
+
 **Running total** — large, centered ("1,8 L"), with the composition beneath it in small
-muted text ("1 × Garrafa azul + 300 ml"). Counts up when it changes.
+muted text ("1 × Garrafa azul + 300 ml"). Counts up when it changes. (M9) The blue loose-amount line
+under the pills is gone; the total and this line already show it.
 
 **"Minhas garrafas"** — a 2-column grid of your bottles, each showing emoji, name and
 volume. Tapping adds one; tapping again increments to `×2`, `×3`. A badge shows the
@@ -243,7 +249,8 @@ which opens an inline mini-form (name, volume, optional emoji).
 
 **"Valor avulso"** — four quick pills (`+100`, `+200`, `+250`, `+500`) and a numeric
 keypad (digits, `00`, `⌫`). There is exactly one loose amount per register, added to
-whatever the bottles contribute. The pills **add** to it; the keypad **replaces** it.
+whatever the bottles contribute. The pills **add** to it; the keypad **replaces** it. (M9) Keys are 48px
+with 20px / 800 digits, and a selected bottle tile has a 2px border.
 
 **Optional chips** — three dashed chips that turn solid green once set:
 - "📷 foto" → opens `<input type="file" accept="image/*">`, which on iOS offers camera or
@@ -252,7 +259,8 @@ whatever the bottles contribute. The pills **add** to it; the keypad **replaces*
 - "🕐 agora" → expands a date + time picker, defaulting to now. Label becomes the chosen
   moment once changed.
 
-**CTA** — a full-width button, "REGISTRAR 1,8 L", disabled while the total is zero.
+**CTA** — a full-width button, "REGISTRAR 1,8 L", disabled while the total is zero. (M9) The unit keeps
+its case: "REGISTRAR 250 ml".
 
 Saving is **optimistic**: the sheet closes immediately, the register appears in Hoje, the
 water rises, and the outbox handles delivery. The user never waits on the network.
@@ -296,7 +304,9 @@ registers shows "Nada registrado neste período".
 a day genuinely costs you. For `Total`, days elapsed counts from the group's first
 register. This is the figure that answers *"quem tem a maior média?"*.
 
-The card is shown for every period, Hoje included; a single day simply reads "1 de 1".
+The card is shown for every period, Hoje included; a single day simply reads "1 de 1". (M9) It now shows
+only for week, month and all-time, and only when someone has water in the period; on a day it repeated the
+standings, on an empty period it printed zeros.
 
 **Month wrap-up** — during a month, if the previous month has registers, a dismissible card
 sits at the top of Ranking until it is dismissed (a tie reads "Empate"):
@@ -316,7 +326,7 @@ Answers *what happened before*.
 
 **Calendar** — a month grid with `‹ ›` month arrows. Each day cell is filled with one of
 five discrete flat blue steps based on that day's total (0, <1L, 1–2L, 2–3L, >3L). Flat
-steps, not a continuous gradient. Today gets a border. Days before the group's first
+steps, not a continuous gradient. Today gets a border (M9: `--ink`, so it stays visible on a filled day). Days before the group's first
 register, and days after today, are blank. The toggle opens on "Você". Day numbers sit on
 the fills at the best available contrast; the 2–3 L step is a known 4.1:1 against AA's
 4.5:1 and is accepted.
@@ -338,10 +348,14 @@ Settings and identity. Nothing competitive lives here.
 - **Nome** — inline editable.
 - **Cor** — a row of six flat accent swatches used for your name label under the tube
   and your avatar ring. The water itself is always `--water` blue — it's water.
-- **Tema** (M7) — six previewing tiles in a 3×2 grid, each painted in that theme's own
+- **Tema** (M7) — five previewing tiles in a 3×2 grid, each painted in that theme's own
   background, card and water colour, not the current theme's. Tapping applies it
   immediately, no save button. Lives per device in `localStorage`, not synced. Default
-  "Fundo do mar". See the M7 spec §7 for the six token sets and the picker layout.
+  "Fundo do mar". See the M7 spec §7 for the five token sets and the picker layout (M9: Tinta removed; a stored `tinta` falls back to
+  Fundo do mar).
+- **Instalar o app** (M9) — a ghost button between the group card and Sair, shown only while the browser has
+  offered `beforeinstallprompt` and the app is not standalone; tapping it opens the browser's prompt. On an iPhone
+  browser, not standalone, one line replaces it: "No iPhone: Compartilhar → Adicionar à Tela de Início".
 - **Minhas garrafas** — list with volume; add, rename, change volume, or archive.
   Archiving hides a bottle from the register sheet but never rewrites history, because
   every register stores a snapshot of the bottle's name and volume at the time. The button
@@ -455,7 +469,7 @@ celebrationsFor(before: DayState, after: DayState): Celebration[]
 
 | Trigger | Presentation | Text |
 |---|---|---|
-| New fish unlocked (§6) | Full screen | the achievement as a checked chip ("Sequência de 7 dias"), the fish springing in behind one flat ring pulse, "Novo peixe!" + the name, "Escolher agora" / "Depois" |
+| New fish unlocked (§6) | Full screen | the achievement as a checked chip ("Sequência de 7 dias"), the fish springing in (M9: no ring), "Novo peixe!" + the name, "Escolher agora" / "Depois" |
 | New personal best day | Full screen | "Novo recorde! 4,2 L" |
 | Streak milestone (3/7/14, read off the streak fish) | Full screen | "🔥 7 dias seguidos!" |
 | Took the lead today | Toast | "Você assumiu a liderança 🏆" |
@@ -465,9 +479,13 @@ celebrationsFor(before: DayState, after: DayState): Celebration[]
 
 - At most **one** full-screen celebration per register. Priority is the table order:
   unlock > record > streak > lead > round litre.
-- Anything outranked degrades to a toast, or is dropped if it was already inline.
+- Anything outranked degrades to a toast, or is dropped if it was already inline. (M9) No toast is drawn while a
+  full screen is up; outranked kinds are dropped, since the lead shows on Hoje's gap line and the streak on its chip.
 - Record and streak screens dismiss on tap and auto-dismiss after 4 seconds; the unlock screen
   waits for "Escolher agora" or "Depois" (a tap outside counts as Depois).
+- (M9) When the register that earned the unlock screen also put you in the lead, a flat yellow trophy (44px, the
+  shared icon, named "Você está na frente") springs in above the achievement chip. Record and streak screens carry
+  no marker, and the ring behind the fish is gone: the app has no pulse.
 - Only your own *new* registers from the sheet are evaluated — edits and deletes never fire;
   anything they unlock is celebrated at your next register (`seen_unlocks`).
 - "Took the lead" means overtaking a partner who has registered today.
@@ -496,11 +514,11 @@ are reviewed without a phone.
 ### Tokens
 
 Defined once as CSS custom properties, consumed through Tailwind v4's `@theme`. Dark only —
-there is no light palette to maintain. Since M7, six dark theme token sets exist instead of
+there is no light palette to maintain. Since M7, dark theme token sets exist (five since M9, when Tinta was removed) instead of
 one fixed palette — `--bg`, `--surface`, `--surface-2`, `--line`, `--ink`, `--ink-2`,
 `--ink-3`, `--water`, `--water-edge`, `--water-hi` and `--ink-on-water` each vary by theme,
 switched by `data-theme` on `<html>` and picked per device from Perfil. See the M7 spec §7.1
-for the mechanism and §7.2 for the six value tables; default theme is Fundo do mar.
+for the mechanism and §7.2 for the five value tables; default theme is Fundo do mar.
 
 The rest hold the same value in every theme: `--ok` `#58CC02` (confirmation, set-state
 chips), `--streak` `#FFC800` (streak chip, first place), `--danger` `#FF4B4B` (delete).
@@ -511,12 +529,14 @@ remain distinguishable from each other in the tubes; unaffected by the theme.
 
 ### Rules
 
-- **Flat only.** No gradients, no glow, no drop shadows on surfaces. Depth comes from a
+- **Flat only.** No gradients, no glow, no drop shadows on surfaces, and (M9) no pulse of any kind. Depth comes from a
   1px `--line` border and, on primary buttons, a 3–4px solid `--water-edge` bottom edge.
 - **One accent at a time.** Beyond blue, only green (confirm), yellow (streak/first) and
   red (delete) exist. If a screen needs a fourth, the screen is wrong.
 - **Numbers carry the emphasis.** Totals are the largest, heaviest text on any screen.
 - **Radius:** 16px cards and sheets, 12px controls, 10px keypad keys, 99px pills.
+- (M9) Segmented controls use 15px labels; keypad keys are 48px tall with 20px / 800 digits; the toast keeps its
+  text on one line up to the screen width.
 - **Spacing:** 4px scale; 13px screen gutter; 11px between cards.
 - **Type:** Nunito, self-hosted (Fontsource), weights 500 / 700 / 800, falling back to
   the system stack. Rounded and friendly — the Duolingo feel. Scale: 38 / 24 / 20 / 17 /
@@ -637,13 +657,13 @@ rules and the safe-area handling.
 
 ### Theming (M7)
 
-Six dark themes are token sets: each is an `html[data-theme="<id>"] { --color-bg: …; }`
+Five dark themes are token sets: each is an `html[data-theme="<id>"] { --color-bg: …; }`
 block in `styles/tokens.css` overriding the same custom properties Tailwind's utilities
 already read, so theming needed no component changes. The choice lives in `localStorage`,
 applied by a two-line boot script in `index.html` before first paint and by `useTheme()` at
 runtime, which also updates `<meta name="theme-color">`. A WCAG/L* contrast audit in
-`lib/contrast.ts` gates every theme's text and surface pairs. See the M7 spec §7 for the six
-value tables and the picker.
+`lib/contrast.ts` gates every theme's text and surface pairs. See the M7 spec §7 for the five
+value tables and the picker. (M9) Breu's `--surface` is `#1B1E24` so cards clear the L* 5 floor.
 
 ### Stack
 
@@ -668,6 +688,12 @@ value tables and the picker.
 - `display: standalone`, `orientation: portrait`, `theme_color: #0A1421`,
   `background_color: #0A1421`, maskable icons at 192/512. The `<meta name="theme-color">`
   follows the picked theme at runtime via `applyTheme` (M7).
+- (M9) The manifest also carries `description`, `lang` and `id`. The icon is the owner's illustration of a fish
+  in bed dreaming of a glass of water (`docs/img/icone-origem.jpg`): 512 and 192 `any`, a 180 Apple touch icon, and
+  a maskable 512 with the scene at 80% on `#2B3D4B`. Only `icon-192.png` is precached; the other three are
+  install-only and kept out by `globIgnores`.
+- (M9) Perfil offers "Instalar o app" when the browser fires `beforeinstallprompt`; iOS has no install API, so an
+  iPhone browser gets a one-line hint instead.
 - Service worker precaches the app shell. Supabase requests are **never** cached by the
   service worker — TanStack Query's persisted cache is the only read cache, so there is
   one source of staleness instead of two.
@@ -1060,7 +1086,7 @@ src/
                            types.ts + one file per fish)
     celebrations/         engine.ts dayState.ts seenUnlocks.ts bubbleField.ts Bubbles.tsx
                            CelebrationProvider.tsx CelebrationScreen.tsx
-    pwa/                  registerSW.ts UpdatePrompt.tsx
+    pwa/                  registerSW.ts UpdatePrompt.tsx useInstallPrompt.ts  (M9)
     theme/                themes.ts theme.ts useTheme.ts ThemePicker.tsx  (M7)
   lib/
     supabase.ts  env.ts  idb.ts  dates.ts  periods.ts  rankings.ts  averages.ts  calendar.ts
@@ -1077,7 +1103,8 @@ scripts/                fish-sheet.mjs + fish-sheet.entry.tsx (M7 — `npm run f
                         all 13 fish to a contact sheet)
                         celebration-shots.mjs + .entry.tsx + .html (M8 — `npm run
                         celebration:shots` records the three full-screen celebrations)
-public/                 icon.svg icon-192.png icon-512.png manifest.webmanifest
+public/                 apple-touch-icon.png icon-192.png icon-512.png icon-maskable-512.png
+                        manifest.webmanifest  (M9: the dreaming-fish icon set; no icon.svg, no favicon.svg)
 docs/
   superpowers/specs/      this document
 ```
