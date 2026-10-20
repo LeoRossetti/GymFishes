@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import type { Entry } from '@/features/entries/cache'
 import { useSignedUrl } from '@/features/entries/photos'
@@ -29,6 +29,13 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
   const singleLoose = items.length === 1 && items[0]?.kind === 'loose'
   const thumbUrl = useSignedUrl(entry.thumb_path)
   const photoUrl = useSignedUrl(expanded ? entry.photo_path : null)
+
+  /** "Excluir mesmo?" is a question, not a state: it lapses after 3 s. Collapse and unmount clear it. */
+  useEffect(() => {
+    if (!confirmando) return
+    const t = window.setTimeout(() => setConfirmando(false), 3000)
+    return () => window.clearTimeout(t)
+  }, [confirmando])
 
   function toggle() {
     setExpanded((v) => !v)
