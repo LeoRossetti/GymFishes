@@ -27,7 +27,7 @@ e desde o início — com peixinhos que sobem conforme a água enche. 🐠
 
 ## 🚀 Como rodar no computador
 
-Você só precisa do [Node.js](https://nodejs.org) (versão 20 ou mais nova).
+Você só precisa do [Node.js](https://nodejs.org) (versão 22 ou mais nova).
 
 ```bash
 npm install                 # baixa as dependências
@@ -45,11 +45,15 @@ Para rodar o teste ponta a ponta (abre o app num iPhone simulado e registra 500 
 
 ```
 src/
+  app/        casca do app: rotas, barra de abas, guarda de login
   screens/    as telas do app (Hoje, Ranking, Histórico, Perfil…)
   features/   cada funcionalidade (registros, garrafas, grupo, peixes…)
   lib/        lógica pura: datas, períodos, formatação
   ui/         botões e componentes visuais básicos
   styles/     cores dos seis temas e estilos globais
+e2e/          teste ponta a ponta
+scripts/      ferramentas de desenvolvimento: folha de peixes, GIFs das celebrações
+public/       ícones e manifesto do PWA
 supabase/     banco de dados (mudanças no banco)
 docs/         especificação e planos do projeto
 ```
@@ -60,7 +64,11 @@ docs/         especificação e planos do projeto
 |---|---|
 | `npm run dev` | abre o app para desenvolver |
 | `npm run test:run` | roda os testes |
+| `npm run test` | roda os testes e fica de olho nas mudanças (modo watch) |
+| `npm run typecheck` | confere se os tipos do código estão certos |
 | `npm run build` | gera a versão final |
+| `npm run preview` | abre a versão final gerada pelo build |
+| `npm run e2e` | roda o teste ponta a ponta num iPhone simulado |
 | `npm run fish:sheet` | desenha os 13 peixes numa imagem para conferir |
 | `npm run celebration:shots` | grava as celebrações em GIF para conferir |
 

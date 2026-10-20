@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { signOut } from '@/features/auth/api'
 import { useSession } from '@/features/auth/AuthProvider'
 import { useBootstrap } from '@/features/profile/useBootstrap'
 import { updateProfile } from '@/features/profile/mutations'
@@ -7,7 +8,6 @@ import { ThemePicker } from '@/features/theme/ThemePicker'
 import { ACCENTS, ACCENT_BG, accentOf } from '@/lib/accents'
 import { formatBuildDate } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
-import { supabase } from '@/lib/supabase'
 import { APP_VERSION, BUILD_DATE } from '@/lib/version'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
@@ -119,7 +119,7 @@ export function Perfil() {
         className="mt-4"
         onClick={() => {
           if (!confirmandoSaida) return setConfirmandoSaida(true)
-          void supabase.auth.signOut()
+          void signOut()
         }}
       >
         {confirmandoSaida ? STRINGS.perfil.sairMesmo : STRINGS.auth.sair}

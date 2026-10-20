@@ -3,6 +3,10 @@ import type { Layer } from './types'
 /** Outline width in art units — about 1px at the 100px celebration size. */
 export const OUTLINE = 1.6
 
+/** Eyes are fixed hex like the species palettes: fish do not follow the theme (spec M7 §7.5). */
+export const EYE_WHITE = '#F2F7FB'
+export const EYE_PUPIL = '#072536'
+
 const n = (v: number) => (Number.isInteger(v) ? String(v) : String(Math.round(v * 100) / 100))
 
 /** The six member accents and the ink scale, as CSS variables — for art that draws from tokens. */

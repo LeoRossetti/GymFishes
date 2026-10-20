@@ -96,7 +96,7 @@ Every decision below was explicitly settled during design. Recorded so we don't 
 | Water surface | Continuously drifting sine waves, paused when hidden | The signature of a water app; it's shape rather than light, so it stays inside the no-glow rule |
 | Fish art | Flat cel-shaded illustrations of the real species, layered SVG in a 160×100 box, species palettes; Rive stays the later swap | Real silhouettes at the "first realistic betta" level, drawn in code as a stopgap (M7); a second animation library (GSAP) buys nothing `motion` and CSS don't already do; per-species palette is the one documented exception to the tokens-only rule |
 | Rive | Optional future upgrade for **one** large moment | ~$9/mo for `.riv` export, plus a learning and illustration project |
-| Component base | shadcn/ui | React Bits Pro ships via the shadcn registry protocol |
+| Component base | A few hand-written primitives in `src/ui/` (Button, Field, Segmented, Stepper, Toast, icons) | No component library: the flat style is a handful of classes, and a library would bring more than it saves |
 | i18n | None — pt-BR strings in one module | Single locale forever |
 | Overriding constraint | **Never overcomplicate anything** | Simplicity is a product feature, not a tradeoff |
 | Display font | Nunito, self-hosted | System stack read generic on first real use (2026-09-01); ~30 KB buys the rounded Duolingo feel |
@@ -583,7 +583,7 @@ the level change becomes a 120 ms crossfade.
   iPhone — PWA installed to home screen
   ┌───────────────────────────────────────────────┐
   │  React 19 + TypeScript + Tailwind v4          │
-  │  shadcn/ui  ·  motion                         │
+  │  hand-written ui/ primitives  ·  motion       │
   │                                               │
   │  TanStack Query ── persisted ──┐              │
   │      │                          ▼             │
@@ -653,8 +653,8 @@ value tables and the picker.
 | Language | TypeScript, `strict` |
 | UI | React 19 |
 | Styling | Tailwind v4 + CSS custom properties |
-| Components | shadcn/ui (also the React Bits Pro registry target) |
-| Routing | React Router (4 tab routes + modal route for the sheet) |
+| Components | Hand-written primitives in `src/ui/` (Button, Field, Segmented, Stepper, Toast, icons) |
+| Routing | React Router (4 tab routes; the register sheet is `AppShell` state, not a route) |
 | Server state | TanStack Query + IndexedDB persister |
 | Local writes | `idb-keyval` for the outbox |
 | Animation | `motion` (UI, celebrations) + CSS keyframes (water, fish idle) |
@@ -665,8 +665,9 @@ value tables and the picker.
 
 ### PWA specifics
 
-- `display: standalone`, `orientation: portrait`, `theme_color: #131F24`,
-  `background_color: #131F24`, maskable icons at 192/512.
+- `display: standalone`, `orientation: portrait`, `theme_color: #0A1421`,
+  `background_color: #0A1421`, maskable icons at 192/512. The `<meta name="theme-color">`
+  follows the picked theme at runtime via `applyTheme` (M7).
 - Service worker precaches the app shell. Supabase requests are **never** cached by the
   service worker — TanStack Query's persisted cache is the only read cache, so there is
   one source of staleness instead of two.
@@ -1028,44 +1029,55 @@ too much.
 ```
 src/
   main.tsx
-  globals.d.ts           declares the Vite `define` globals (version, build date)
+  globals.d.ts            declares the Vite `define` globals (version, build date)
   app/
-    router.tsx            routes: /hoje /ranking /historico /perfil
-                           (register sheet is an AppShell overlay, not a route —
-                           deep-linking a modal buys nothing here)
-    providers.tsx         query client, persister, auth, realtime
+    routes.tsx            the route table: /hoje /ranking /historico /perfil — the tab bar
+                           builds itself from it
+    AppShell.tsx          fixed frame, tab bar, update bar; the register sheet is AppShell
+                           state, not a route (deep-linking a modal buys nothing here)
+    AuthFrame.tsx         the same frame without the tab bar, for login and onboarding
+    Guard.tsx             session, profile and group checks before the tab shell
+    RedirectIfAuthed.tsx  keeps a signed-in user out of /entrar and /criar-conta
     TabBar.tsx
     ErrorBoundary.tsx
   screens/
     auth/                 Login, SignUp
-    onboarding/           Nome, Peixe, Grupo
+    onboarding/           Onboarding (nome → peixe → grupo)
     hoje/                 Hoje, ProgressStrip, MemberTube, WaveSurface, RegistersCard, EntryRow,
-                           EntryList, useWavePause
-    registrar/            RegisterSheet, BottleGrid, LooseAmount, OptionalChips,
-                           draft, submit
+                           EntryList, SyncPill, useWavePause
+    registrar/            RegisterSheet, BottleGrid, LooseAmount, OptionalChips, draft, submit
     ranking/              Ranking, PeriodControl, Standings, StatsCompare, MonthWrapUp
     historico/            Historico, CalendarGrid, DayDetail
     perfil/               Perfil, FishGallery, BottleManager, GroupCard
   features/
-    entries/              queries.ts mutations.ts outbox.ts sync.ts realtime.ts
-    bottles/              queries.ts mutations.ts
-    group/                queries.ts joinGroup.ts createGroup.ts useGroupData.ts
+    auth/                 AuthProvider.tsx api.ts validate.ts
+    entries/              api.ts cache.ts queries.ts mutations.ts outbox.ts outboxStore.ts
+                           flush.ts sync.ts realtime.ts photos.ts
+    bottles/              queries.ts mutations.ts BottleForm.tsx
+    group/                queries.ts mutations.ts inviteCode.ts useGroupData.ts
+    profile/              mutations.ts useBootstrap.ts
     fish/                 catalog.ts unlocks.ts Fish.tsx FishGrid.tsx svg/ (helpers.ts +
                            types.ts + one file per fish)
-    celebrations/         engine.ts dayState.ts seenUnlocks.ts CelebrationProvider.tsx CelebrationScreen.tsx
+    celebrations/         engine.ts dayState.ts seenUnlocks.ts bubbleField.ts Bubbles.tsx
+                           CelebrationProvider.tsx CelebrationScreen.tsx
     pwa/                  registerSW.ts UpdatePrompt.tsx
     theme/                themes.ts theme.ts useTheme.ts ThemePicker.tsx  (M7)
   lib/
-    supabase.ts  idb.ts  dates.ts  periods.ts  rankings.ts  averages.ts  calendar.ts  wrapup.ts
-    streaks.ts  composition.ts  format.ts  image.ts  strings.ts  version.ts  contrast.ts (M7)
+    supabase.ts  env.ts  idb.ts  dates.ts  periods.ts  rankings.ts  averages.ts  calendar.ts
+    wrapup.ts  streaks.ts  composition.ts  keypad.ts  gap.ts  accents.ts  format.ts  image.ts
+    strings.ts  version.ts  contrast.ts (M7)  database.types.ts (generated, never hand-edited)
   styles/
     tokens.css  globals.css
-  ui/                     icons.tsx (M7) + shadcn primitives + Button, Field, Card, Sheet,
-                           Segmented, Stepper, Toast, useCountUp
+  ui/                     Button, Field, Segmented, Stepper, Toast, icons.tsx (M7), useCountUp —
+                           a few hand-written primitives, no component library
+  test/                   setup.ts utils.tsx (Vitest setup and the render-with-providers helper)
 e2e/                    smoke.spec.ts (Playwright)
 playwright.config.ts
-scripts/                fish-sheet.mjs fish-sheet.entry.tsx (M7 — `npm run fish:sheet`
-                        renders all 13 fish to a contact sheet at `.tmp/fish-sheet.png`)
+scripts/                fish-sheet.mjs + fish-sheet.entry.tsx (M7 — `npm run fish:sheet` renders
+                        all 13 fish to a contact sheet)
+                        celebration-shots.mjs + .entry.tsx + .html (M8 — `npm run
+                        celebration:shots` records the three full-screen celebrations)
+public/                 icon.svg icon-192.png icon-512.png manifest.webmanifest
 docs/
   superpowers/specs/      this document
 ```

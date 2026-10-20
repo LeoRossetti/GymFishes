@@ -1,10 +1,10 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
 import { isAuthApiError } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
+import { signIn } from '@/features/auth/api'
 import { validateLoginCredentials, type CredentialErrors } from '@/features/auth/validate'
 
 export function Login() {
@@ -23,10 +23,7 @@ export function Login() {
 
     setBusy(true)
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      })
+      const { error } = await signIn(email.trim(), password)
       if (error) {
         setFailure(
           isAuthApiError(error) ? STRINGS.auth.credenciaisInvalidas : STRINGS.auth.falhaRede,
@@ -64,7 +61,7 @@ export function Login() {
       </Button>
       <Link
         to="/criar-conta"
-        className="mt-6 block text-center text-[13px] font-bold text-ink-2"
+        className="mt-3 flex min-h-[44px] items-center justify-center text-[13px] font-bold text-ink-2"
       >
         {STRINGS.auth.naoTenhoConta}
       </Link>
