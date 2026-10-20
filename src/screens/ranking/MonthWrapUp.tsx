@@ -46,7 +46,9 @@ export function MonthWrapUp({ entries, members, userId, today }: Props) {
           {STRINGS.ranking.encerrado(formatMonthTitle(wrap.period.start, today), result)}
         </p>
         <p className="mt-1 text-[20px] font-extrabold tracking-[-0.4px] text-water">
-          {wrap.rows.map((r) => formatVolume(r.ml)).join(STRINGS.ranking.versus)}
+          {wrap.rows
+            .map((r) => `${memberName(members, userId, r.profileId)} ${formatVolume(r.ml)}`)
+            .join(STRINGS.ranking.versus)}
         </p>
       </div>
       <button
