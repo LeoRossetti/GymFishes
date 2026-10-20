@@ -60,6 +60,19 @@ describe('EntryRow', () => {
     expect(screen.getByText('1,8 L')).toBeInTheDocument()
   })
 
+  it('a loose-only register shows its amount once and no chips when expanded', async () => {
+    const looseOnly = {
+      ...entry,
+      composition: [{ kind: 'loose', amount_ml: 600 }],
+      note: null,
+      total_ml: 600,
+    } as Entry
+    renderRow({ entry: looseOnly })
+    expect(screen.getAllByText('600 ml')).toHaveLength(1)
+    await userEvent.click(screen.getByRole('button', { expanded: false }))
+    expect(screen.queryByText('+ 600 ml')).toBeNull()
+  })
+
   it('marks the row aria-expanded and flips it on tap', async () => {
     renderRow()
     const row = screen.getByText(/Leo · 11:00/).closest('button')

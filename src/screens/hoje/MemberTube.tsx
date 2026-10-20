@@ -27,7 +27,8 @@ const GAP = 6
 
 /**
  * The fish's `bottom`, in px, for a given fill %: it swims just under the surface, and rests on
- * the tube floor while the water is still shallower than the fish. Because it sits inside the
+ * the tube floor while the water is still shallower than the fish (the fish itself is drawn only
+ * once the water covers it, M9). Because it sits inside the
  * water, a full tube never clips it — no special case is needed at 100%.
  */
 export function fishBottomPx(pct: number): number {
@@ -69,7 +70,7 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
           </span>
           <div className="h-full w-full bg-water" />
         </motion.div>
-        {totalMl > 0 ? (
+        {(pct / 100) * TUBE_H >= FISH_H ? (
           <motion.span
             aria-hidden
             className="absolute left-1/2 -translate-x-1/2"

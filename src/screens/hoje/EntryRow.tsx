@@ -22,7 +22,9 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
   const [expanded, setExpanded] = useState(false)
   const [confirmando, setConfirmando] = useState(false)
   const items = parseComposition(entry.composition)
-  const subtitle = entry.note ?? describeComposition(items)
+  const hasBottle = items.some((i) => i.kind === 'bottle')
+  const subtitle = entry.note ?? (hasBottle ? describeComposition(items) : null)
+  const singleLoose = items.length === 1 && items[0]?.kind === 'loose'
   const thumbUrl = useSignedUrl(entry.thumb_path)
   const photoUrl = useSignedUrl(expanded ? entry.photo_path : null)
 
@@ -94,16 +96,18 @@ export function EntryRow({ entry, authorName, isOwn, pending, failed, onEdit, on
             />
           ) : null}
           {entry.note ? <p className="mb-2 text-[13px] text-ink-2">{entry.note}</p> : null}
-          <div className="mb-2 flex flex-wrap gap-2">
-            {compositionChips(items).map((chip) => (
-              <span
-                key={chip}
-                className="rounded-[99px] border border-line bg-surface-2 px-3 py-1 text-[11px] font-bold text-ink-2"
-              >
-                {chip}
-              </span>
-            ))}
-          </div>
+          {singleLoose ? null : (
+            <div className="mb-2 flex flex-wrap gap-2">
+              {compositionChips(items).map((chip) => (
+                <span
+                  key={chip}
+                  className="rounded-[99px] border border-line bg-surface-2 px-3 py-1 text-[11px] font-bold text-ink-2"
+                >
+                  {chip}
+                </span>
+              ))}
+            </div>
+          )}
           {isOwn ? (
             <div className="flex gap-2">
               <Button variant="ghost" className="flex-1" onClick={onEdit}>

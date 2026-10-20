@@ -27,6 +27,7 @@ export function RegistersCard({ userId, groupId, members, entries, openRegister 
         </h2>
         {streak.days > 0 ? (
           <span
+            aria-label={STRINGS.peixes.sequenciaDias(streak.days)}
             className={`inline-flex h-6 items-center gap-1 rounded-[99px] border border-streak px-2.5 text-[12px] font-extrabold text-streak ${
               streak.atRisk ? 'opacity-50' : ''
             }`}

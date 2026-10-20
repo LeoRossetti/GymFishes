@@ -20,7 +20,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {msg ? (
         <div
           role="status"
-          className="fixed bottom-28 left-1/2 z-50 -translate-x-1/2 rounded-[99px]
+          className="fixed bottom-28 left-1/2 z-50 -translate-x-1/2 w-max max-w-[calc(100%-32px)] text-center rounded-[99px]
                      border border-line bg-surface-2 px-4 py-3 text-[13px] text-ink"
         >
           {msg}

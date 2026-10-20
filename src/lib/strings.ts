@@ -213,7 +213,7 @@ export const STRINGS = {
     pendente: 'Aguardando envio',
     falhou: 'Falha ao enviar',
     falhaTentarNovamente: 'Falha ao enviar — tentar novamente',
-    desatualizado: 'Dados desatualizados',
+    desatualizado: 'Pode estar desatualizado',
   },
   atualizacao: {
     disponivel: 'Nova versão disponível',

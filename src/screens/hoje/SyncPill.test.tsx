@@ -20,10 +20,10 @@ describe('SyncPill', () => {
     render(<SyncPill groupId="g1" />)
     expect(screen.getByText('Sem conexão')).toBeInTheDocument()
   })
-  it('shows Dados desatualizados when stale', () => {
+  it('shows Pode estar desatualizado when stale', () => {
     status.offline = false
     status.stale = true
     render(<SyncPill groupId="g1" />)
-    expect(screen.getByText('Dados desatualizados')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('Pode estar desatualizado')
   })
 })
