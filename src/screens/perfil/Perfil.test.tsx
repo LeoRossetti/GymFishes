@@ -78,6 +78,12 @@ describe('Perfil', () => {
     expect(updateProfile).toHaveBeenCalledWith('u1', { accent: 'pink' })
   })
 
+  it('marks the chosen accent swatch as pressed', () => {
+    renderWithProviders(<Perfil />)
+    expect(screen.getByRole('button', { name: 'Azul', pressed: true })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Rosa', pressed: false })).toBeInTheDocument()
+  })
+
   it('shows an error when saving the name fails', async () => {
     updateProfile.mockRejectedValueOnce(new Error('down'))
     renderWithProviders(<Perfil />)

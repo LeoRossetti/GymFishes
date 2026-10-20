@@ -225,7 +225,7 @@ describe('RegisterSheet', () => {
     await userEvent.click(screen.getByRole('button', { name: '+ nova garrafa' }))
     await userEvent.type(screen.getByLabelText('Nome da garrafa'), 'Copo')
     await userEvent.type(screen.getByLabelText('Volume (ml)'), '300')
-    await userEvent.click(screen.getByRole('button', { name: 'Salvar' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Salvar garrafa' }))
     expect(await screen.findByRole('status')).toHaveTextContent('Algo deu errado. Tente de novo.')
     expect(screen.getByLabelText('Nome da garrafa')).toBeInTheDocument()
   })

@@ -100,6 +100,7 @@ export function Perfil() {
               key={accent}
               type="button"
               aria-label={STRINGS.perfil.cores[accent]}
+              aria-pressed={accentOf(profile.accent) === accent}
               disabled={busy}
               onClick={() => save({ accent })}
               className={`h-11 w-11 rounded-full active:opacity-80 transition-opacity duration-100 ${ACCENT_BG[accent]} ${

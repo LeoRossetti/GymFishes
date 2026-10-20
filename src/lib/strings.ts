@@ -175,7 +175,7 @@ export const STRINGS = {
     nome: 'Nome da garrafa',
     volume: 'Volume (ml)',
     emoji: 'Emoji (opcional)',
-    salvar: 'Salvar',
+    salvar: 'Salvar garrafa',
     arquivar: 'Remover',
     arquivarMesmo: 'Remover mesmo?',
     nomeInvalido: 'Use de 1 a 30 caracteres',
