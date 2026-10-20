@@ -28,7 +28,7 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
   const reduced = useReducedMotion()
   const spring = reduced
     ? { duration: 0.12 }
-    : ({ type: 'spring', duration: 0.6, bounce: 0.25 } as const)
+    : ({ type: 'spring', duration: 1, bounce: 0.25 } as const)
   const [splash, setSplash] = useState(false)
   const prev = useRef(totalMl)
   const shownTotal = useCountUp(totalMl)

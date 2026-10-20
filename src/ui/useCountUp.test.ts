@@ -25,3 +25,10 @@ it('a retarget mid-count starts from the number on screen, not the previous targ
   expect(second?.[0]).toBe(120)
   expect(second?.[1]).toBe(500)
 })
+
+it('counts over a full second, easing out', () => {
+  renderHook(() => useCountUp(500, 0))
+  const opts = vi.mocked(animate).mock.calls[0]?.[2] as unknown as { duration: number; ease: number[] }
+  expect(opts.duration).toBe(1)
+  expect(opts.ease).toEqual([0.23, 1, 0.32, 1])
+})

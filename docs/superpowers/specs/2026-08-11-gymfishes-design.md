@@ -563,14 +563,14 @@ remain distinguishable from each other in the tubes; unaffected by the theme.
 |---|---|---|
 | State/toggle | 150 ms | ease-out |
 | Sheet in/out | 280 ms | spring, low bounce |
-| Water level change | 600 ms | spring |
-| Number count-up | 500 ms | ease-out |
+| Water level change | 1000 ms | spring, bounce 0.25 |
+| Number count-up | 1000 ms | ease-out |
 | Water surface wave | continuous loop | linear, see below |
 | Celebration sequence | 900–1400 ms | `motion` spring + stagger |
 
 `motion` handles component and layout transitions and the celebration sequences; the water
 and the fish idle loop are CSS keyframes. `prefers-reduced-motion` collapses everything to a
-120ms crossfade. (M9b) The count-up starts from the number on screen, never from the previous target; the register sheet crossfades under reduced motion too.
+120ms crossfade. (M9b) The count-up starts from the number on screen, never from the previous target; the register sheet crossfades under reduced motion too. (M10) The water lands in a full second and the number counts with it, after Leo saw 0.6 s against 0.8 s on the canvas and asked for slower still (2026-10-20).
 
 ### Water surface
 
@@ -590,7 +590,7 @@ scrolls out of view (`IntersectionObserver`), so an idle app costs nothing.
 
 This is **shape, not light**: flat fills and a wavy edge, no gradients and no glow.
 
-When a register lands, the level springs to its new height over 600 ms while the wave
+When a register lands, the level springs to its new height over 1 s while the wave
 amplitude briefly doubles and settles back over ~900 ms, so new water reads as a splash
 rather than a rectangle getting taller. The fish is displaced upward by the same spring.
 
