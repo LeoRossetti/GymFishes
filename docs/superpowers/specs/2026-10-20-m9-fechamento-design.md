@@ -119,7 +119,7 @@ user-felt fixes. The owner approved these ten; none adds a mechanism, option or 
 6. **Ranking with long names.** The standings name wraps inside the 44px row instead of truncating; the
    stats headers are spaced; stats cells never wrap; totals have a minimum width so the share bars share
    one track length.
-7. **An empty tube draws no crest.** The water block renders only when the total is above zero.
+7. **An empty tube draws no crest.** The water block always renders (so the first drink still rises); only the crest hides while the total is zero (amended in review).
 8. **Two bugs.** The splash resets when a register is deleted within 450 ms; see 4 for the sheet instance.
 9. **The fish rides the water.** The fish lives inside the water block, 6px under the crest, so it follows
    the level's own spring; `fishBottomPx` is deleted. The 480 ml threshold stays; between 480 and

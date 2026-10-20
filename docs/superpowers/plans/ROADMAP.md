@@ -19,7 +19,7 @@ codebase rather than an imagined one.
 | M6 | PWA e endurecimento | [`2026-09-22-m6-pwa-endurecimento.md`](2026-09-22-m6-pwa-endurecimento.md) | **code-complete** — pending owner verification: deploy, open the installed app on both phones and see the update bar appear after the next deploy; airplane mode → the app opens to yesterday's data; Perfil › Sobre shows the new version |
 | M7 | Redesign visual e casca do PWA | [`2026-09-24-m7-redesign.md`](2026-09-24-m7-redesign.md) | **code-complete** — pending owner verification: the §11 manual checklist of the M7 spec on both installed phones |
 | M8 | Conquistas | [`2026-09-24-m8-conquistas.md`](2026-09-24-m8-conquistas.md) | **code-complete** — pending owner verification: on a real phone, register with a bottle and see the Baiacu popup; open Perfil › Trocar peixe and read the nine conditions; watch the GIFs in `.tmp/celebracoes/` after `npm run celebration:shots` |
-| M9 | Fechamento | [`2026-10-20-m9-fechamento.md`](2026-10-20-m9-fechamento.md) | **code-complete** — pending owner verification: rerun `npm run e2e` after the Supabase reset; on both phones open the sheet with the note open and see the confirm button stay; register the first 250 ml of a day before anyone passes 3 L and see the tube without a fish, then 500 ml with it (the tube scale grows past 3 L on a big day, which raises the threshold); open the sheet with three bottles and tap nota: the field appears above the confirm button; the home-screen icon only changes after removing and re-adding the app on iPhone (sync the outbox first) |
+| M9 | Fechamento | [`2026-10-20-m9-fechamento.md`](2026-10-20-m9-fechamento.md) | **code-complete** — pending owner verification: rerun `npm run e2e` after the Supabase reset; on both phones open the sheet with the note open and see the confirm button stay; register the first 250 ml of a day before anyone passes 3 L and see the tube without a fish, then 500 ml with it (the tube scale grows past 3 L on a big day, which raises the threshold); open the sheet with three bottles and tap nota: the field appears above the confirm button; the home-screen icon only changes after removing and re-adding the app on iPhone (sync the outbox first); (M9b) three fast +250 taps, the counter never goes backwards; flick the sheet shut; long-press a tab shows no callout |
 
 ---
 
@@ -271,6 +271,8 @@ and the app installs with its own icon.
 - Small fixes: tabs open at the top, one focus ring on inputs, swatches expose `aria-pressed`, the toast
   on one line, "Salvar garrafa", `Sequência de 1 dia` in the singular
 - Version 1.3.0
+
+**Polimento pós-auditoria (M9b).** Four audits (mobile-native, Emil Kowalski's design-engineering review, a worst-case-data stress test and the motion standards) gave ten small fixes, none adding a screen or option: instant press feedback, a primary button that never shifts, counters that never run backwards, a sheet that closes on a flick and crossfades under reduced motion, no long-press callout, long names that wrap in Ranking, no crest on an empty tube, two bugs (splash reset, sheet reopened mid-exit), a fish that rides the water, and small polish (rounded highlights, aligned bottle rows, ease-out fades).
 
 Calls made here: rejected after the owner saw before/after renders on the canvas: larger totals on Hoje,
 a lead marker on the record and streak screens, a pulse of any kind, a streak animation on the chip or a

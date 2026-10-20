@@ -202,7 +202,7 @@ fill is a **live wave surface**, not a straight edge — see [Water surface](#wa
 The member's fish (56px) swims just under that surface, and rests on the bottom while the
 water is still shallower than the fish. Below the tube: the total ("1,8 L") and the name
 ("VOCÊ", "ELA"). Rising bubbles were tried in M7 and removed the same day at Leo's request. (M9) The fish is drawn only
-once the water covers it (35px of the 220px tube, 480 ml at 3 L); below that the tube shows water alone.
+once the water covers it (35px of the 220px tube, 480 ml at 3 L); below that the tube shows water alone. (M9b) The fish lives inside the water block, 6px under the crest, so it follows the level's own spring; an empty tube shows no crest, and the first drink still rises.
 
 The tube's full height is scaled to `max(3000, highestTotalToday)` ml, so the columns stay
 comparable and nobody's ever pinned at 100%. Since there are no goals, the scale is
@@ -236,11 +236,11 @@ down, or tapping the backdrop; the content scrolls freely. Everything on one scr
 steps, no wizard.
 
 (M9) The confirm button is sticky at the bottom of the sheet's scroll area, so it never falls below the
-fold when the note is open; Escape closes the sheet and opening it focuses the handle.
+fold when the note is open; Escape closes the sheet and opening it focuses the handle. (M9b) A flick down closes the sheet too (it need not travel the full distance).
 
 **Running total** — large, centered ("1,8 L"), with the composition beneath it in small
 muted text ("1 × Garrafa azul + 300 ml"). Counts up when it changes. (M9) The blue loose-amount line
-under the pills is gone; the total and this line already show it.
+under the pills is gone; the total and this line already show it. (M9b) The total echoes typed digits instantly; the count-up applies only to pills and bottles.
 
 **"Minhas garrafas"** — a 2-column grid of your bottles, each showing emoji, name and
 volume. Tapping adds one; tapping again increments to `×2`, `×3`. A badge shows the
@@ -287,7 +287,7 @@ Stepping into a past period is how you answer *"quem bebeu mais na semana passad
 `[position] [fish] [name] [·············· bar ··············] [total]`
 
 The bar shows each member's share of the period leader's total. First place is marked with
-a flat first-place treatment (yellow position badge); no crowns, no glow. Tied members
+a flat first-place treatment (yellow position badge); no crowns, no glow. (M9b) A long name wraps inside the row instead of truncating, and totals share one minimum width so every bar has the same track length. Tied members
 share a position (1, 1, 3) and every tied leader gets the badge. A period with no
 registers shows "Nada registrado neste período".
 
@@ -552,7 +552,7 @@ remain distinguishable from each other in the tubes; unaffected by the theme.
   💧", "Ela venceu 🏆", celebration text.
 - **Touch targets** never below 44px.
 - **Press feedback:** every tappable control has a 100 ms flat `active` state; nothing
-  relies on the removed tap highlight.
+  relies on the removed tap highlight. (M9b) The press lands on the first frame and fades only on release; the primary button never changes its box when pressed or disabled; counted numbers use tabular digits.
 - **Focus:** a 2px `--water` focus-visible ring, globally.
 - **Safe areas:** `env(safe-area-inset-*)` on the tab bar and sheets.
 
@@ -569,7 +569,7 @@ remain distinguishable from each other in the tubes; unaffected by the theme.
 
 `motion` handles component and layout transitions and the celebration sequences; the water
 and the fish idle loop are CSS keyframes. `prefers-reduced-motion` collapses everything to a
-120ms crossfade.
+120ms crossfade. (M9b) The count-up starts from the number on screen, never from the previous target; the register sheet crossfades under reduced motion too.
 
 ### Water surface
 
