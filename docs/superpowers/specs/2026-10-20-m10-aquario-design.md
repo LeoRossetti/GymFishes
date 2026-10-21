@@ -1,7 +1,7 @@
 # M10 — O tubo como aquário vivo (design, rascunho)
 
-**Status:** DRAFT. Brainstorm in progress with Leo on 2026-10-20; nothing is built. Leo asked to save
-the state and to wait for his "go" before the first drawing goes on the canvas.
+**Status:** DRAFT. Brainstorm in progress with Leo since 2026-10-20; nothing is built. Leo said "go" on
+2026-10-21 and the first drawing (the full freshwater tube) is on the canvas, awaiting his reaction.
 **Canvas:** https://claude.ai/artifact/UVfsN759ixhVdhbM4fozNR ("GymFishes M10").
 **Reads with:** `2026-08-11-gymfishes-design.md` (§8 visual rules, §8 Motion), the M10 handoff
 (`../plans/2026-10-21-m10-handoff.md` §2.1) and `CLAUDE.md`.
@@ -38,7 +38,7 @@ Asked what is already there at about a third, one litre in:
 - **Water colour:** "gradually changing shades until the actual river water when it's full"; the
   ocean tube "should also have a gradient change to reflect more the ocean color". The change is
   over time, not a spatial gradient (spec §8 still forbids gradients on surfaces). **Only the tube's
-  water changes.** Buttons, totals, crest keep the blue token.
+  water changes.** Buttons and totals keep the blue token.
 - **Customization:** for now only one switch, Enable/Disable "tube decorations and colour changes"
   together, **enabled by default**.
 - **The bar:** keep the app's style, nothing heavy, and nothing "brute and looking like a bunch of
@@ -100,3 +100,35 @@ On Leo's "go": draw the full freshwater tube on the canvas at real size (a still
 card, via the backend stand-in), then the ladder, then the reef, then the bubbles GIF. Decisions
 happen on his phone. After the brainstorm closes, this draft becomes the design, gets the builder
 check, and a plan follows (`superpowers:writing-plans`).
+
+## 7. Drawing 1 (2026-10-21): the full freshwater tube
+
+On the canvas, row "Aquário de rio": today's card (also the look with the toggle off), the proposal
+at real size (Leo at 3,05 L with the full scene, Ana at 1 L with rocks, a few plants and the first
+bubbles) and the full tube at 2×. Mockup source, git-ignored: `.tmp/m10/scene.mjs` (the scene, each
+piece tagged with its litre mark) and `.tmp/m10/capture.mjs` (injects it into the real Hoje card via
+the backend stand-in, scenario `aquario`).
+
+The agent's calls in this drawing, for Leo to accept or overturn:
+
+- **The crest follows the tube's water.** It is the water's surface; a blue crest on green water reads
+  broken. (Corrects the earlier guess that the crest keeps the blue token.)
+- **River water at 3 L: `#2A9C80`, crest `#6ACDB2`.** The shade moves from today's blue in OKLab,
+  linearly with the litres. Ocean end-colour proposed as `#1769C2` / `#4F98E6`, not drawn yet.
+- **Decor recedes, the fish leads.** Every decor tone is muted and pulled toward the river green; the
+  member's fish keeps its full species palette on top.
+- **Depth from a far plane:** grass silhouettes in one flat tone a step darker than the water, no
+  outline (`mix(water, bg, 0.24)`), behind everything.
+- **Technique:** organic pieces (roots, grass) are tapered ribbons along curves with a slightly uneven
+  width; moss is a cluster of round cushions sharing one outline. Outlines in each piece's darkest
+  tone, 0.5–1 px. No gradient, glow or shadow.
+- **Composition:** boulder with moss on the left wall, a sunken log with a broken end and a cut face
+  across the floor, prop roots springing from a trunk base at the right wall, Vallisneria among the
+  roots and on the left, an Amazon sword behind the log, an ochre leaf drifting mid-water and a rust
+  leaf leaning on the log, a shrimp on the log, a crab among the root feet, bubbles in two loose
+  columns. Nothing above the fish's band at the top.
+- **Provisional litre marks** (only 1 L and 3 L were judged): 0,5 L floor and rocks; 1 L short grass
+  and first bubbles; 1,5 L log and sword plant; 2 L roots, tall grass, far plane, moss; 2,5 L leaves,
+  shrimp, more bubbles; 3 L crab.
+- Not in this drawing: tiny fish (Leo listed "shrimp, river crabs, or really small fish"; shrimp and
+  crab were picked to keep the hero fish unambiguous), bubble motion, the reef.
