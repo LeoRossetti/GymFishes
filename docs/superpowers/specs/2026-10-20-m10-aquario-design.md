@@ -132,3 +132,40 @@ The agent's calls in this drawing, for Leo to accept or overturn:
   shrimp, more bubbles; 3 L crab.
 - Not in this drawing: tiny fish (Leo listed "shrimp, river crabs, or really small fish"; shrimp and
   crab were picked to keep the hero fish unambiguous), bubble motion, the reef.
+
+## 8. Round 2 (2026-10-21)
+
+Leo on drawing 1:
+
+> "first of all, for now I love it, couple changes I'd make is to add a couple more leaves, spread the
+> bubbles a bit more (remember they need an animation going up), the mangrove roots are also a little
+> weird on the side, try searching on how to make them look better. Maybe add some really small school
+> fish shadows in the background or even a bit below the actual fish, whichever you think is best"
+
+> "the thing I found off with the roots were their shape and how they were placed, and not the color,
+> the color was fine"
+
+What changed (canvas row "Aquário de rio · rodada 2": the card at real size and the full tube as an
+8 s GIF at 2×):
+
+- **Roots, reshaped and replaced; colours untouched.** Research: red mangrove prop roots drop from
+  branches above the water and arch toward the mud, carry pale air pores (lenticels), and illustrators
+  split and thin each root near the bottom, layer roots front and back, and shade one side with
+  irregular marks. So the roots no longer grow out of a bulge in the wall: three thick woody prop roots
+  and one darker root behind enter at the water surface from the top-right (the tree is above the
+  water), bend down with the prop-root shoulder, fork and splay into the riverbed. The fish's band at
+  the top stays clear. Two tall grass blades on the right were removed so the roots read.
+- **Leaves:** four now. An ochre one and an olive-brown one drift mid-water, a rust one leans on the
+  log, another rust one lies on the riverbed.
+- **School (agent's call on placement):** eight tiny fish shadows just below the member's fish, in the
+  far plane's depth: one flat tone a step darker than the water, no outline, heading left and slightly
+  up. Still, not animated.
+- **Bubbles, animated:** five sources spread across the floor (short grass, sword plant, log knot, root
+  feet, boulder), each joining at its litre mark. Each lets out a seeded burst of one to three bubbles
+  once per 8 s, so the tube never shows a regular rhythm and about four or five are up at once. A bubble
+  rises in a straight line at 39–48 px/s (bigger is faster), sways sideways 0.6–1.8 px, grows from 0.8
+  to 1.12 and fades out at the surface. Radius 1.5–3 px. CSS keyframes on transform and opacity only;
+  in the build they pause with the waves (`data-waves`) and are hidden under reduced motion.
+
+Builder note: the mockup scene SVG is about 140 KB (moss is many circles). The build should draw each
+habitat once, keep the piece list small, and never recompute paths per render.
