@@ -192,3 +192,29 @@ Leo on round 2:
 
 Canvas row "Aquário de rio · rodada 3": the card at real size and the full tube animated at 2×.
 Next parts of the brainstorm: the stage ladder between 1 L and 3 L, the reef, the toggle label.
+
+## 10. The stage ladder (proposed 2026-10-21, awaiting Leo)
+
+Leo, asked what arrives at 2 L:
+
+> "maybe the leaves, the log, the critters, and maaaybe partially the roots, idk what do you suggest?"
+
+The agent's proposal, on the canvas as "Etapas do rio" (six tubes rendered from the real app):
+
+- **Principle:** the river builds from the bottom up with the water. Floor pieces arrive first and
+  mid-water pieces last, once the member's fish has risen above them, so nothing ever sits in the
+  fish's way.
+- **One step every 0,5 L.** Most registers are 250–750 ml, so nearly every register adds something.
+- **The steps:**
+  - 0,5 L: the riverbed.
+  - 1 L: rocks, short grass, the first bubbles (Leo's words).
+  - 1,5 L: the log and the Amazon sword, plus a second bubble source.
+  - 2 L: shrimp, crab, the leaves on the log and the floor, moss, the first two roots. This is Leo's
+    list, except the log, which moves to 1,5 L so that step has its own piece.
+  - 2,5 L: the whole root fan, the tall grass, the far bank.
+  - 3 L: the school and the drifting leaves, and the water reaches river green.
+- **Roots run through the air.** Once they arrive, the roots come down from the top of the tube,
+  through the air and into the water, since the tree stands above the water. Cut at the water line,
+  they read as straight poles at 2 L and 2,5 L. Build rule: the part above the water is drawn above
+  the crest and overlaps the underwater part by about 1,5 px, so no seam shows at the surface.
+- Bubble sources follow the steps: one at 1 L, then one more per step, five at 3 L.
