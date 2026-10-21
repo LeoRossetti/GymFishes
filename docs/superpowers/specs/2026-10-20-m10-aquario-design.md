@@ -193,7 +193,7 @@ Leo on round 2:
 Canvas row "Aquário de rio · rodada 3": the card at real size and the full tube animated at 2×.
 Next parts of the brainstorm: the stage ladder between 1 L and 3 L, the reef, the toggle label.
 
-## 10. The stage ladder (proposed 2026-10-21, awaiting Leo)
+## 10. The stage ladder (2026-10-21)
 
 Leo, asked what arrives at 2 L:
 
@@ -206,8 +206,8 @@ The agent's proposal, on the canvas as "Etapas do rio" (six tubes rendered from 
   fish's way.
 - **One step every 0,5 L.** Most registers are 250–750 ml, so nearly every register adds something.
 - **The steps:**
-  - 0,5 L: the riverbed.
-  - 1 L: rocks, short grass, the first bubbles (Leo's words).
+  - 0,5 L: plain water, as today.
+  - 1 L: the riverbed, rocks, short grass, the first bubbles (Leo's words).
   - 1,5 L: the log and the Amazon sword, plus a second bubble source.
   - 2 L: shrimp, crab, the leaves on the log and the floor, moss, the first two roots. This is Leo's
     list, except the log, which moves to 1,5 L so that step has its own piece.
@@ -218,3 +218,18 @@ The agent's proposal, on the canvas as "Etapas do rio" (six tubes rendered from 
   they read as straight poles at 2 L and 2,5 L. Build rule: the part above the water is drawn above
   the crest and overlaps the underwater part by about 1,5 px, so no seam shows at the surface.
 - Bubble sources follow the steps: one at 1 L, then one more per step, five at 3 L.
+
+Leo on the ladder:
+
+> "I think its perfect, i just think in the first one the fish is too deep in the ground, so maybe we
+> bring him and the water a bit up? or even just lose the ground and keep it basic with just water and
+> also bring it a bit up, what do you think"
+
+Ruling: **the ladder is approved.** At 0,5 L the agent recommended, and the canvas now shows:
+
+- **No ground at 0,5 L.** The riverbed moves to 1 L with the rocks; the first half-litre is plain water.
+- **The fish rises, the water does not.** The water's height stays the honest measure of the litres.
+  The fish sits 6 px under the crest, but never lower than `water height − fish height`, so in shallow
+  water it rides closer to the surface and is never cut by the tube's floor. This also fixes today's
+  plain tube: at 0,5 L (36 px of water for a 35 px fish) the fish's belly was clipped by the floor.
+  Applies with decorations on and off.
