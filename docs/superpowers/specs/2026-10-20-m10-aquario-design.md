@@ -169,3 +169,26 @@ What changed (canvas row "Aquário de rio · rodada 2": the card at real size an
 
 Builder note: the mockup scene SVG is about 140 KB (moss is many circles). The build should draw each
 habitat once, keep the piece list small, and never recompute paths per render.
+
+## 9. Round 3 (2026-10-21): the full river tube is settled
+
+Leo on round 2:
+
+> "ok yeah thats perfect, only make the school of fish in a more \"natural shape\" and the water and the
+> top of the roots are bugging a little, probably because of the animation. just resolve these two and
+> I think we are done with this part"
+
+- **Bubbles: approved as drawn** in round 2 (five sources, seeded bursts, about four or five up at once).
+- **School:** now one flowing shape. Thirteen shadows scattered around a gentle curve, densest in the
+  middle and thinning at both ends, each heading along the curve with a few degrees of individual
+  variation, a little larger toward the head. Still, not animated.
+- **Roots against the water's crest:** the crest's waves used to slide over the root tops and make them
+  wiggle. **Build rule:** the scene layer sits above the crest and below the member's fish, so the waves
+  pass behind the roots. At a full tube the roots run cleanly to the top edge. When the tube is not
+  full the roots are cut at the water line, just under the crest (checked at 2,55 L); whether roots
+  should continue above the water is left for the stage ladder.
+- **Preview GIFs** fit whole cycles of the waves, the fish and the bubbles in the 8 s loop, so nothing
+  jumps when a GIF restarts. That was a preview artefact, not app behaviour.
+
+Canvas row "Aquário de rio · rodada 3": the card at real size and the full tube animated at 2×.
+Next parts of the brainstorm: the stage ladder between 1 L and 3 L, the reef, the toggle label.
