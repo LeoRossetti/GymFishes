@@ -45,6 +45,12 @@ describe('TabBar', () => {
     expect(screen.getByRole('navigation', { name: 'Abas' })).not.toHaveClass('fixed')
   })
 
+  it('stacks above the scroll region, so the part of the plus that rises over the screen is never covered', () => {
+    // jsdom cannot paint; this pins the stacking that WebKit and Chromium need (spec M7 §5).
+    renderAt('/hoje')
+    expect(screen.getByRole('navigation', { name: 'Abas' })).toHaveClass('relative', 'z-10')
+  })
+
   it('calls onRegister when the plus button is tapped', async () => {
     const onRegister = vi.fn()
     renderAt('/hoje', onRegister)
