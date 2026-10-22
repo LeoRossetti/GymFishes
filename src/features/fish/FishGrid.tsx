@@ -1,6 +1,8 @@
+import { useId } from 'react'
 import { STRINGS } from '@/lib/strings'
 import { fishName, unlockLabel, UNLOCKS, type FishId } from './catalog'
 import { Fish } from './Fish'
+import { progressText } from './progress'
 import type { Progress } from './unlocks'
 
 type Props = {
@@ -13,25 +15,13 @@ type Props = {
   progress?: (id: FishId) => Progress | null
 }
 
-const decimal = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-
-/** Numbers only: whole litres for a total, one decimal for a record, whole counts for the rest. */
-function progressText(id: FishId, { current, target }: Progress): string {
-  const kind = UNLOCKS[id].kind
-  const fmt =
-    kind === 'volume'
-      ? (ml: number) => String(Math.floor(ml / 1000))
-      : kind === 'record'
-        ? (ml: number) => decimal.format(Math.floor(ml / 100) / 10)
-        : String
-  return STRINGS.peixes.progressoDe(fmt(current), fmt(target))
-}
-
 /**
  * The gallery grid (spec §5.5): unlocked fish in colour and tappable, locked ones as flat
  * silhouettes with their condition. Also the onboarding picker, fed the four starters.
+ * A locked fish's name is its label; the condition and the "N de M" line are its description.
  */
 export function FishGrid({ variants, unlocked, selected, onSelect, disabled = false, progress }: Props) {
+  const uid = useId()
   return (
     <ul aria-label={STRINGS.peixes.galeria} className="grid grid-cols-2 gap-3">
       {variants.map((id) => {
@@ -39,11 +29,14 @@ export function FishGrid({ variants, unlocked, selected, onSelect, disabled = fa
         const locked = !open
         const picked = selected === id
         const howFar = locked ? progress?.(id) : null
+        const condId = `${uid}-${id}-cond`
+        const progId = `${uid}-${id}-prog`
         return (
           <li key={id}>
             <button
               type="button"
               aria-label={fishName(id)}
+              aria-describedby={locked ? (howFar ? `${condId} ${progId}` : condId) : undefined}
               aria-pressed={picked}
               aria-disabled={locked ? true : undefined}
               disabled={disabled}
@@ -58,21 +51,16 @@ export function FishGrid({ variants, unlocked, selected, onSelect, disabled = fa
               <Fish variant={id} size={140} state={open ? 'still' : 'locked'} />
               <span className={`mt-1 text-[13px] font-bold ${open ? 'text-ink' : 'text-ink-2'}`}>{fishName(id)}</span>
               {open ? null : (
-                <span className="mt-0.5 text-center text-[10px] font-extrabold uppercase tracking-[1px] text-ink-2">
+                <span id={condId} className="mt-0.5 text-center text-[10px] font-extrabold uppercase tracking-[1px] text-ink-2">
                   {unlockLabel(UNLOCKS[id])}
                 </span>
               )}
               {howFar ? (
                 <>
-                  <span className="mt-0.5 text-[11px] font-bold tabular-nums text-ink-2">{progressText(id, howFar)}</span>
-                  <span
-                    role="progressbar"
-                    aria-label={unlockLabel(UNLOCKS[id])}
-                    aria-valuenow={howFar.current}
-                    aria-valuemin={0}
-                    aria-valuemax={howFar.target}
-                    className="mt-1 h-1 w-full overflow-hidden rounded-full bg-line"
-                  >
+                  <span id={progId} className="mt-0.5 text-[11px] font-bold tabular-nums text-ink-2">
+                    {progressText(UNLOCKS[id], howFar)}
+                  </span>
+                  <span aria-hidden className="mt-1 h-1 w-full overflow-hidden rounded-full bg-line">
                     <span className="block h-full rounded-full bg-water" style={{ width: `${(howFar.current / howFar.target) * 100}%` }} />
                   </span>
                 </>
