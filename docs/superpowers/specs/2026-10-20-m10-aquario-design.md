@@ -233,3 +233,37 @@ Ruling: **the ladder is approved.** At 0,5 L the agent recommended, and the canv
   water it rides closer to the surface and is never cut by the tube's floor. This also fixes today's
   plain tube: at 0,5 L (36 px of water for a 35 px fish) the fish's belly was clipped by the floor.
   Applies with decorations on and off.
+
+## 11. The reef (proposed 2026-10-22, awaiting Leo)
+
+Leo, asked what he sees in a full saltwater tube:
+
+> "i would kinda need your help with this one, it should be similar but with coral, sea urchin maybe and
+> starfish, maybe an anchor with a chain coming down from the top to feel like an alternative to the
+> roots, some seahorses maybe, IDK those are some quick ideas, if you think of something better go
+> ahead and mix it in."
+
+The agent's proposal (canvas section "Recife"; mockup source `.tmp/m10/reef.mjs`): the river's ladder,
+piece for piece, so both habitats grow the same way.
+
+| Step | River | Reef |
+|---|---|---|
+| 0,5 L | plain water | plain water |
+| 1 L | riverbed, rocks, short grass, first bubbles | sand, reef rock with small encrusting corals, a brain coral, yellow finger corals, first bubbles |
+| 1,5 L | log, Amazon sword | a branching (staghorn) coral, a purple sea fan |
+| 2 L | shrimp, crab, leaves, moss, two roots | starfish, sea urchin, two shells, an anemone on the rock, the anchor with its chain from the top |
+| 2,5 L | all roots, tall grass, far bank | kelp, a small seahorse holding it, the far reef |
+| 3 L | school, drifting leaves | school, two small moon jellyfish |
+
+- **Leo's ideas, all in:** coral, sea urchin, starfish, the anchor and chain as the roots' counterpart,
+  a seahorse. **Added by the agent:** the anemone (the clownfish's home), kelp from his first message,
+  shells, the sea fan, and moon jellyfish as the reef's version of the drifting leaves.
+- **The chain** comes down from the top like the roots: through the air when the tube is not full,
+  above the crest, links alternating face-on and side-on. The anchor leans with one fluke sunk in a
+  small heap of sand.
+- **Ocean water at 3 L: `#1769C2`, crest `#4F98E6`.** Every reef tone is pulled 15 % toward that
+  blue (the sea fan 30 %, sand and shells 8 %), so the reef's natural colours stay calmer than the
+  member's fish.
+- **All thirteen fish checked** in their full habitat tube (canvas row "Todos os peixes"): every one
+  stays legible. The whale is the weakest case, blue on blue, held by its dark outline and pale belly.
+- A member wearing the seahorse will see two seahorses: theirs and the small decor one on the kelp.
