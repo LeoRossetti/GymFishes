@@ -21,7 +21,7 @@ e desde o início — com peixinhos que sobem conforme a água enche. 🐠
 - 📱 Feito para celular — instala direto na tela de início do iPhone
 - 🇧🇷 Todo em português
 - 🏆 Ranking diário, semanal, mensal e total
-- 🐡 Treze peixes desenhados: quatro para começar e nove que você ganha com conquistas simples
+- 🐡 Dezoito peixes desenhados: quatro para começar e catorze que você ganha com conquistas, num caminho de uns quatro meses
 - 🎨 Cinco temas escuros para escolher no Perfil
 - ✈️ Funciona até sem internet — sincroniza quando a conexão voltar
 
@@ -75,7 +75,7 @@ docs/         especificação e planos do projeto
 | `npm run build` | gera a versão final |
 | `npm run preview` | abre a versão final gerada pelo build |
 | `npm run e2e` | roda o teste ponta a ponta num iPhone simulado |
-| `npm run fish:sheet` | desenha os 13 peixes numa imagem para conferir |
+| `npm run fish:sheet` | desenha os 18 peixes numa imagem para conferir |
 | `npm run celebration:shots` | grava as celebrações em GIF para conferir |
 
 Detalhes técnicos (banco de dados, decisões de design) estão na

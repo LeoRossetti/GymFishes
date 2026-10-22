@@ -360,7 +360,11 @@ Settings and identity. Nothing competitive lives here.
 - **Seu peixe** — your current fish, large. Tapping expands the fish gallery in place: a grid of all
   fish, unlocked ones in full colour and tappable, locked ones as a flat silhouette with
   the unlock condition below ("Sequência de 30 dias"). Selecting one saves immediately and
-  the partner sees the change.
+  the partner sees the change. (M10) A locked fish also shows how far you are under its condition:
+  the number against the target ("12 de 30") and a slim 4 px bar (`bg-line` track, `bg-water` fill).
+  Records show one decimal ("2,8 de 3,5"), accumulated litres whole ("84 de 250"), the rest whole
+  numbers; a streak fish shows the current run, not the longest. Above the grid, one line counts the
+  collection, the worn fish included: "9 de 18 peixes". The onboarding picker shows no progress.
 - **Nome** — inline editable.
 - **Cor** — a row of six flat accent swatches used for your name label under the tube
   and your avatar ring. The water itself is always `--water` blue — it's water. (M10: under "Com
@@ -390,40 +394,56 @@ Settings and identity. Nothing competitive lives here.
 
 ## 6. Fish catalog and unlocks
 
-Thirteen fish: four starters plus nine earned through achievements ("conquistas", M8,
-2026-09-24). Every achievement is an all-time fact of your own registers, so nothing waits for
-a month to end, nothing re-locks, and a regular user completes the ladder in about a month.
-The order below is the order of the ladder and of the gallery, quickest first; the tambaqui
-sits in the middle.
+Eighteen fish: four starters plus fourteen earned through achievements ("conquistas", M8,
+2026-09-24; reworked in M10). Every achievement is an all-time fact of your own registers, so
+nothing waits for a month to end and, once earned, a fish never re-locks. The ladder is paced so
+that nothing opens before day 3 and a regular user lands the whale around month four. The order
+below is the order of the ladder and of the gallery, quickest first, which is also the animals'
+real size, the whale last. Ids stay English; the pt-BR name is what the app shows.
 
-| Fish | pt-BR | Achievement, as shown |
-|---|---|---|
-| Guppy | Guppy | Inicial |
-| Betta | Betta | Inicial |
-| Goldfish | Peixe-dourado | Inicial |
-| Neon tetra | Neon | Inicial |
-| Pufferfish | Baiacu | Registre com uma garrafa |
-| Clownfish | Peixe-palhaço | Registre com uma nota |
-| Octopus | Polvo | Registre antes das 9h |
-| Seahorse | Cavalo-marinho | Sequência de 3 dias |
-| Tambaqui | Tambaqui | Sequência de 7 dias |
-| Turtle | Tartaruga | Um dia acima de 3 L |
-| Dolphin | Golfinho | Sequência de 14 dias |
-| Shark | Tubarão | 50 registros |
-| Whale | Baleia | 60 L acumulados |
+| Fish | pt-BR | Habitat | Achievement, as shown |
+|---|---|---|---|
+| Guppy | Guppy | Rio | Inicial |
+| Betta | Betta | Rio | Inicial |
+| Goldfish | Kinguio | Rio | Inicial |
+| Neon tetra | Neon | Rio | Inicial |
+| Clownfish | Peixe-palhaço | Mar | Sequência de 3 dias |
+| Pufferfish | Baiacu | Mar | Antes das 9h em 5 dias |
+| Peacock bass | Tucunaré | Rio | Sequência de 7 dias |
+| Tambaqui | Tambaqui | Rio | 10 dias com 2 L |
+| Dorado | Dourado | Rio | 100 registros |
+| Barracuda | Barracuda | Mar | Sequência de 14 dias |
+| Mahi-mahi | Mahi-mahi | Mar | Um dia com 3,5 L |
+| Grouper | Garoupa | Mar | 100 L acumulados |
+| Pintado catfish | Pintado | Rio | 60 dias com registro |
+| Pirarucu | Pirarucu | Rio | Sequência de 30 dias |
+| Tuna | Atum | Mar | 45 dias com 2 L |
+| Swordfish | Espadarte | Mar | 400 registros |
+| Shark | Tubarão | Mar | 200 L acumulados |
+| Whale | Baleia | Mar | 120 dias com registro |
 
-"Registre com uma garrafa" is a register whose composition used one of your bottles; adding a
-bottle in the register sheet taps it into the draft, so the achievement lands with the register
-that follows. This keeps every condition derived from registers and evaluated in one place.
-"Antes das 9h" is the São Paulo wall clock (`hourOf` in `dates.ts`). Photos are not a condition
-because the photo path only lands after the upload, which would delay the popup to the next
-register. Monthly wins, the old Tubarão and Baleia conditions, are gone: they cannot be earned
-inside a month, and `monthsWon` went with them.
+The achievement kinds, all derived from registers and evaluated in one place (`UNLOCKS` in
+`catalog.ts`): a **streak** of N days in a row; **mornings**, registers before a given hour on N
+different days; **goal days**, N days at or above a given volume; **days**, N different days with
+any register; a **record**, one day at or above a volume; a **count** of registers; an accumulated
+**volume**. "Antes das 9h" is the São Paulo wall clock (`hourOf` in `dates.ts`). Photos and
+notes are not conditions: the photo path only lands after the upload, which would delay the popup
+to the next register.
 
-(M10) Every fish has a **habitat** (`HABITAT` / `habitatOf` in `catalog.ts`), which picks its
-tube's scene and water colour (§5.1): freshwater, a river (guppy, betta, goldfish, neon, tambaqui);
-saltwater, a reef (pufferfish, clownfish, octopus, seahorse, turtle, dolphin, shark, whale).
-Changing fish changes the scene at once.
+(M10) The M8 ladder (thirteen fish, done in about a month) was replaced by this one. The harder
+targets re-lock some fish earned before M10 once, for example the shark's 50 registers becoming
+400; that was accepted as the leanest path, with no schema change on the only database. Since every
+condition is an all-time fact, nothing re-locks after this. The fish you wear stays yours in the
+gallery, and a re-locked fish is celebrated again when re-earned (`seen_unlocks`). Four fish were
+dropped, and `fishOf` shows a stored `fish_variant` of one of them as its replacement: seahorse as
+barracuda, octopus as swordfish, turtle as mahi-mahi, dolphin as grouper; any other unknown value
+shows the guppy. The old condition "Registre com uma garrafa" went away with the fish it unlocked.
+
+Every fish has a **habitat** (`HABITAT` / `habitatOf` in `catalog.ts`), which picks its tube's
+scene and water colour (§5.1). Nine live in the river (freshwater): guppy, betta, kinguio, neon,
+tucunaré, tambaqui, dourado, pintado, pirarucu. Nine live on the reef (saltwater): clownfish,
+baiacu, barracuda, mahi-mahi, garoupa, atum, espadarte, tubarão, baleia. Changing fish changes
+the scene at once.
 
 ### How unlocks work
 
@@ -444,7 +464,7 @@ This means no extra table, no writes, no drift, and it self-heals if data change
 
 Every condition is an all-time fact — longest streak ever, best day ever, accumulated volume,
 number of registers, whether a bottle, a note or a morning register ever happened — so a fish
-never re-locks when a streak breaks. The streak milestones the celebrations use (3, 7, 14) are
+never re-locks when a streak breaks. The streak milestones the celebrations use (3, 7, 14, 30) are
 read off the streak fish, so the two can never disagree.
 
 The only stored value is `profiles.fish_variant` — your current choice — because the
@@ -452,7 +472,7 @@ other person has to see it.
 
 "Newly unlocked, not yet celebrated" is tracked per device in `localStorage`
 (`seen_unlocks`). A fish counts as seen only if it was already unlocked before the register
-being evaluated: the phones stored all thirteen while every fish was open, and that must not
+being evaluated: the phones stored all thirteen (then) while every fish was open, and that must not
 silence the achievements. The set seeds itself with whatever is already unlocked the first
 time it is needed, so a fresh device may miss a past celebration but never repeats one. The
 fish is unlocked either way. Acceptable.
@@ -463,11 +483,11 @@ Since M7, each fish is drawn in code from a layered model rather than a fixed fi
 structure: `FishArt` (`features/fish/svg/types.ts`) is a silhouette `body` plus an ordered
 list of `Layer`s — fins, shading, scales, head, mouth — built from shared pure helpers in
 `features/fish/svg/helpers.ts` (`part`, `shade`, `stroke`, `rays`, `scaleRows`, `dots`,
-`tone`), one file per fish, each under 200 lines. All thirteen face right in a shared
+`tone`), one file per fish, each under 200 lines. All eighteen face right in a shared
 160×100 box. Instead of the accent and ink tokens, each fish draws from its own species
 palette — hex constants in its art file, the one documented exception to the tokens-only
 rule (§8), because a real betta is red and blue whatever the theme. `npm run fish:sheet`
-renders all thirteen to a contact sheet (`scripts/fish-sheet.mjs` +
+renders all eighteen to a contact sheet (`scripts/fish-sheet.mjs` +
 `scripts/fish-sheet.entry.tsx`) for a quick visual check outside the running app.
 
 The public interface stays deliberately narrow so any single fish can later be swapped for a
@@ -497,7 +517,7 @@ celebrationsFor(before: DayState, after: DayState): Celebration[]
 |---|---|---|
 | New fish unlocked (§6) | Full screen | the achievement as a checked chip ("Sequência de 7 dias"), the fish springing in (M9: no ring), "Novo peixe!" + the name, "Escolher agora" / "Depois" |
 | New personal best day | Full screen | "Novo recorde! 4,2 L" |
-| Streak milestone (3/7/14, read off the streak fish) | Full screen | "🔥 7 dias seguidos!" |
+| Streak milestone (3/7/14/30, read off the streak fish) | Full screen | "🔥 7 dias seguidos!" |
 | Took the lead today | Toast | "Você assumiu a liderança 🏆" |
 | Round litre crossed (1L, 2L, 3L…) | Inline | water surge + count-up + "2 L hoje" |
 
@@ -1051,7 +1071,7 @@ winning. Those are cheap to test and expensive to get wrong.
 - `rankings.ts` — totals per member per period, ordering, ties, empty periods
 - `averages.ts` — days-elapsed divisor, best day, days registered
 - `streaks.ts` — consecutive days, today-not-yet-logged behaviour, gaps, backdated repair
-- `features/fish/unlocks.ts` — every one of the thirteen fish conditions, boundary values
+- `features/fish/unlocks.ts` — every one of the eighteen fish conditions, boundary values
 - `features/celebrations/engine.ts` — priority ordering, one-full-screen rule, day-one has
   no record
 - `composition.ts` — bottles × quantity + loose amount, rounding, formatting
@@ -1134,7 +1154,7 @@ src/
 e2e/                    smoke.spec.ts (Playwright)
 playwright.config.ts
 scripts/                fish-sheet.mjs + fish-sheet.entry.tsx (M7 — `npm run fish:sheet` renders
-                        all 13 fish to a contact sheet)
+                        all 18 fish to a contact sheet)
                         celebration-shots.mjs + .entry.tsx + .html (M8 — `npm run
                         celebration:shots` records the three full-screen celebrations)
 public/                 apple-touch-icon.png icon-192.png icon-512.png icon-maskable-512.png

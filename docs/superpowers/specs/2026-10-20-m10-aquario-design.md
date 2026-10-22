@@ -55,8 +55,9 @@ something and a full tube feels like a reward.
 
 ### 3.1 Habitat
 
-Every fish has a habitat. Freshwater (river): guppy, betta, goldfish, neon, tambaqui. Saltwater
-(reef): clownfish, pufferfish, seahorse, octopus, turtle, dolphin, shark, whale. Each member's tube
+Every fish has a habitat, nine and nine (fish spec §3). Freshwater (river): guppy, betta, goldfish,
+neon, tucunaré, tambaqui, dourado, pintado, pirarucu. Saltwater (reef): clownfish, pufferfish,
+barracuda, mahi-mahi, grouper, tuna, swordfish, shark, whale. Each member's tube
 shows the habitat of the fish **that member** wears: Leo's clownfish tube is a reef next to Ana's betta
 river (canvas "Recife · 3 L, ao lado do rio da Ana"). Changing fish changes the scene at once.
 

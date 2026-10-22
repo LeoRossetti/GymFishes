@@ -1,6 +1,6 @@
 # M10 — Peixes novos e conquistas mais difíceis (design)
 
-**Status:** the fish part was designed with Leo on the canvas on 2026-10-22 (rulings in §7, verbatim). The
+**Status:** built on branch `m10` (2026-10-23), not merged. The fish part was designed with Leo on the canvas on 2026-10-22 (rulings in §7, verbatim). The
 roster changes and the achievements came in one message the same night, ending: "You can build everything
 uninterrupted with this information. I'll review the fish once everything is done". So nothing below waits for
 another answer: what Leo did not decide is the agent's call, listed in §8 for him to check at the end.
