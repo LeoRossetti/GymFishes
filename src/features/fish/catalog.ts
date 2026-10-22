@@ -31,6 +31,9 @@ export type Unlock =
   | { kind: 'note' }
   | { kind: 'morning'; before: number }
   | { kind: 'streak'; days: number }
+  | { kind: 'mornings'; before: number; days: number }
+  | { kind: 'goalDays'; ml: number; days: number }
+  | { kind: 'days'; days: number }
   | { kind: 'record'; ml: number }
   | { kind: 'count'; registers: number }
   | { kind: 'volume'; ml: number }
@@ -111,6 +114,12 @@ export function unlockLabel(u: Unlock): string {
       return STRINGS.peixes.registreAntesDas(u.before)
     case 'streak':
       return STRINGS.peixes.sequenciaDias(u.days)
+    case 'mornings':
+      return STRINGS.peixes.antesDasEmDias(u.before, u.days)
+    case 'goalDays':
+      return STRINGS.peixes.diasCom(u.days, formatVolume(u.ml))
+    case 'days':
+      return STRINGS.peixes.diasComRegistro(u.days)
     case 'record':
       return STRINGS.peixes.umDiaAcimaDe(formatVolume(u.ml))
     case 'count':

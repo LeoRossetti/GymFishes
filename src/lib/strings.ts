@@ -157,6 +157,9 @@ export const STRINGS = {
     umDiaAcimaDe: (volume: string) => `Um dia acima de ${volume}`,
     registros: (n: number) => `${n} registros`,
     acumulados: (volume: string) => `${volume} acumulados`,
+    antesDasEmDias: (hora: number, dias: number) => `Antes das ${hora}h em ${dias} dias`,
+    diasCom: (dias: number, volume: string) => `${dias} dias com ${volume}`,
+    diasComRegistro: (dias: number) => `${dias} dias com registro`,
   },
   celebracoes: {
     novoPeixe: 'Novo peixe!',

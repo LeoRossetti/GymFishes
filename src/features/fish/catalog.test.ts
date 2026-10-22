@@ -57,4 +57,10 @@ describe('catalog', () => {
     expect(unlockLabel(UNLOCKS.shark)).toBe('50 registros')
     expect(unlockLabel(UNLOCKS.whale)).toBe('60 L acumulados')
   })
+
+  it('names the counted achievements in pt-BR', () => {
+    expect(unlockLabel({ kind: 'mornings', before: 9, days: 5 })).toBe('Antes das 9h em 5 dias')
+    expect(unlockLabel({ kind: 'goalDays', ml: 2000, days: 10 })).toBe('10 dias com 2 L')
+    expect(unlockLabel({ kind: 'days', days: 60 })).toBe('60 dias com registro')
+  })
 })
