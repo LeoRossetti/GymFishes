@@ -1,6 +1,6 @@
 # M10 — Peixes novos e conquistas mais difíceis (design)
 
-**Status:** built on branch `m10` (2026-10-23), not merged. The fish part was designed with Leo on the canvas on 2026-10-22 (rulings in §7, verbatim). The
+**Status:** built on branch `m10` (2026-10-22), not merged. The fish part was designed with Leo on the canvas on 2026-10-22 (rulings in §7, verbatim). The
 roster changes and the achievements came in one message the same night, ending: "You can build everything
 uninterrupted with this information. I'll review the fish once everything is done". So nothing below waits for
 another answer: what Leo did not decide is the agent's call, listed in §8 for him to check at the end.
@@ -175,7 +175,7 @@ happen.
 
 Both members have used the app since August, so most facts carry over (registers, litres, days, the longest
 streak), and many fish stay or become unlocked at once. Some fish they had will **re-lock** under the harder
-targets (the shark's 50 registers become 400, for example). That is accepted, as the leanest path: no schema
+targets (the shark's 50 registers become 200 L, for example). That is accepted, as the leanest path: no schema
 change on the only database, and every condition stays an all-time fact, so nothing re-locks ever again after
 this update. The fish each member wears stays theirs in the gallery, as today.
 

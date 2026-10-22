@@ -432,7 +432,7 @@ to the next register.
 
 (M10) The M8 ladder (thirteen fish, done in about a month) was replaced by this one. The harder
 targets re-lock some fish earned before M10 once, for example the shark's 50 registers becoming
-400; that was accepted as the leanest path, with no schema change on the only database. Since every
+200 L; that was accepted as the leanest path, with no schema change on the only database. Since every
 condition is an all-time fact, nothing re-locks after this. The fish you wear stays yours in the
 gallery, and a re-locked fish is celebrated again when re-earned (`seen_unlocks`). Four fish were
 dropped, and `fishOf` shows a stored `fish_variant` of one of them as its replacement: seahorse as
