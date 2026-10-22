@@ -123,7 +123,7 @@ accepted files.
   mahi-mahi (*Coryphaena hippurus*, adult bull), garoupa
   (dusky grouper, *Epinephelus marginatus*, Brazil's garoupa-verdadeira).
 - Redrawn in full (Leo's five worst, minus the polvo that leaves): baiacu, tubarão (great white), peixe-palhaço
-  (*Amphiprion ocellaris*), kinguio (the ryukin form; a first fantail drawing was redrawn after Leo's review, §7).
+  (*Amphiprion ocellaris*), kinguio (a red-and-white telescope, the demekin, after a fantail and a ryukin, §7).
 - Redrawn at the same bar (Leo's "kinda meh"): guppy (male), betta (male halfmoon), neon (*Paracheirodon
   innesi*), baleia (humpback, *Megaptera novaeangliae*, the jubarte of Abrolhos).
 
@@ -217,6 +217,8 @@ That is the welcome to the new collection, not a storm.
 - Review of the eighteen (2026-10-22): "the swordfish is wrong but its my fault, it should be a sailfish. The
   kinguio is also wrong and shitty try making it based on other images from the internet." The sailfish took the
   swordfish's slot and achievement; the kinguio was redrawn from new photos, as a red-orange ryukin.
+- Kinguio, round 2: "yeah try again with the kinguio, idk go for a big eyed red and white kinguio". Redrawn as a
+  red-and-white telescope goldfish.
 - The sailfish's name: "I prefer agulhão-bandeira" (over "Peixe-vela").
 
 ## 8. The agent's calls, for Leo to check
@@ -231,10 +233,12 @@ That is the welcome to the new collection, not a storm.
   Dourado), "Garoupa", "Atum", "Barracuda", "Pirarucu" (for the arapaima).
 - **Species picks** where Leo named only the animal: yellowfin tuna, great barracuda, dusky grouper, the great
   white for the shark, the humpback for the whale, the checkered puffer family for the baiacu (the agent drawing
-  it confirms the most recognisable one); for the kinguio, after Leo turned down the fantail, the ryukin: in
-  Brazilian pet shops "kinguio" is the round, double-tailed fancy goldfish (the slim single-tailed one is sold as
-  "cometa"), and the ryukin, deep body, shoulder hump and long double tail, is its plainest form, with no wen to
-  read as a blob at the tube's size.
+  it confirms the most recognisable one); for Leo's "big eyed red and white kinguio", the telescope (demekin): the
+  one goldfish whose big eyes are its anatomy, each standing out on a short cone, so from the side it is a large
+  disc in a raised cup at the front of the head that still reads at the tube's 56 px. Bubble-eyes and celestials
+  were left out (their sacs and upturned eyes look odd side on, and they have no dorsal). The body is the round
+  double-tailed fancy goldfish's egg, about 0.7 as deep as it is long, the red over the head and a saddle on the
+  white.
 - **Dropped fish map to their replacements** for anyone wearing them.
 
 ## 9. Left to the builder
