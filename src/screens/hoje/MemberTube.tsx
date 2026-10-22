@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import { fishTop } from '@/features/aquarium/ladder'
 import { fishOf } from '@/features/fish/catalog'
 import { Fish } from '@/features/fish/Fish'
 import { ACCENT_TEXT, accentOf } from '@/lib/accents'
@@ -62,7 +63,11 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
             </span>
           ) : null}
           {(pct / 100) * TUBE_H >= FISH_H ? (
-            <span aria-hidden className="absolute left-1/2 top-[6px] -translate-x-1/2">
+            <span
+              aria-hidden
+              className="absolute left-1/2 -translate-x-1/2"
+              style={{ top: fishTop((pct / 100) * TUBE_H, FISH_H) }}
+            >
               <Fish variant={fishOf(fishVariant)} size={FISH_W} state="idle" />
             </span>
           ) : null}

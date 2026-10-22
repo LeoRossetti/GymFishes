@@ -20,6 +20,12 @@ describe('MemberTube', () => {
     expect(container.querySelector('svg[data-fish="betta"]')).not.toBeNull()
   })
 
+  it('lifts the fish in shallow water so its belly is not clipped', () => {
+    const { container } = render(<MemberTube {...base} totalMl={500} />)
+    const wrapper = container.querySelector('svg[data-fish]')?.parentElement
+    expect(parseFloat(wrapper?.style.top ?? '')).toBeCloseTo(Math.min(6, 36.7 - 35), 1)
+  })
+
   it('an empty tube has no fish', () => {
     const { container } = render(<MemberTube {...base} totalMl={0} />)
     expect(container.querySelector('svg[data-fish]')).toBeNull()
