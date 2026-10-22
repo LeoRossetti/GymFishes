@@ -21,7 +21,7 @@ describe('catalog', () => {
       'pintado',
       'pirarucu',
       'tuna',
-      'swordfish',
+      'sailfish',
       'shark',
       'whale',
     ])
@@ -44,7 +44,7 @@ describe('catalog', () => {
       pintado: { kind: 'days', days: 60 },
       pirarucu: { kind: 'streak', days: 30 },
       tuna: { kind: 'goalDays', ml: 2000, days: 45 },
-      swordfish: { kind: 'count', registers: 400 },
+      sailfish: { kind: 'count', registers: 400 },
       shark: { kind: 'volume', ml: 200_000 },
       whale: { kind: 'days', days: 120 },
     })
@@ -62,7 +62,8 @@ describe('catalog', () => {
   it('shows a dropped fish as its replacement, and any other unknown variant as the guppy', () => {
     expect(fishOf('betta')).toBe('betta')
     expect(fishOf('seahorse')).toBe('barracuda')
-    expect(fishOf('octopus')).toBe('swordfish')
+    expect(fishOf('octopus')).toBe('sailfish')
+    expect(fishOf('swordfish')).toBe('sailfish')
     expect(fishOf('turtle')).toBe('mahimahi')
     expect(fishOf('dolphin')).toBe('grouper')
     expect(fishOf('')).toBe('guppy')
@@ -83,7 +84,7 @@ describe('catalog', () => {
     expect(fishName('pintado')).toBe('Pintado')
     expect(fishName('pirarucu')).toBe('Pirarucu')
     expect(fishName('tuna')).toBe('Atum')
-    expect(fishName('swordfish')).toBe('Espadarte')
+    expect(fishName('sailfish')).toBe('Agulhão-bandeira')
     expect(fishName('shark')).toBe('Tubarão')
     expect(fishName('whale')).toBe('Baleia')
   })
@@ -101,7 +102,7 @@ describe('catalog', () => {
     expect(unlockLabel(UNLOCKS.pintado)).toBe('60 dias com registro')
     expect(unlockLabel(UNLOCKS.pirarucu)).toBe('Sequência de 30 dias')
     expect(unlockLabel(UNLOCKS.tuna)).toBe('45 dias com 2 L')
-    expect(unlockLabel(UNLOCKS.swordfish)).toBe('400 registros')
+    expect(unlockLabel(UNLOCKS.sailfish)).toBe('400 registros')
     expect(unlockLabel(UNLOCKS.shark)).toBe('200 L acumulados')
     expect(unlockLabel(UNLOCKS.whale)).toBe('120 dias com registro')
   })

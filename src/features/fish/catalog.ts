@@ -22,7 +22,7 @@ export const FISH_IDS = [
   'pintado',
   'pirarucu',
   'tuna',
-  'swordfish',
+  'sailfish',
   'shark',
   'whale',
 ] as const
@@ -57,7 +57,7 @@ export const UNLOCKS: Record<FishId, Unlock> = {
   pintado: { kind: 'days', days: 60 },
   pirarucu: { kind: 'streak', days: 30 },
   tuna: { kind: 'goalDays', ml: 2000, days: 45 },
-  swordfish: { kind: 'count', registers: 400 },
+  sailfish: { kind: 'count', registers: 400 },
   shark: { kind: 'volume', ml: 200_000 },
   whale: { kind: 'days', days: 120 },
 }
@@ -81,7 +81,7 @@ export const HABITAT: Record<FishId, Habitat> = {
   pintado: 'fresh',
   pirarucu: 'fresh',
   tuna: 'salt',
-  swordfish: 'salt',
+  sailfish: 'salt',
   shark: 'salt',
   whale: 'salt',
 }
@@ -104,10 +104,14 @@ export const STREAK_MILESTONES: readonly number[] = FISH_IDS.flatMap((id) => {
   return u.kind === 'streak' ? [u.days] : []
 })
 
-/** The four fish M10 dropped, each shown as the fish that took its place (M10 spec §3). */
+/**
+ * The fish M10 dropped, each shown as the fish that took its place (M10 spec §3): the four of the old set, and
+ * the swordfish drawn first for the octopus's slot, which Leo turned into the sailfish.
+ */
 const REPLACED = new Map<string, FishId>([
   ['seahorse', 'barracuda'],
-  ['octopus', 'swordfish'],
+  ['octopus', 'sailfish'],
+  ['swordfish', 'sailfish'],
   ['turtle', 'mahimahi'],
   ['dolphin', 'grouper'],
 ])

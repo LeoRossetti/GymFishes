@@ -11,8 +11,8 @@ import { neon } from './neon'
 import { pintado } from './pintado'
 import { pirarucu } from './pirarucu'
 import { pufferfish } from './pufferfish'
+import { sailfish } from './sailfish'
 import { shark } from './shark'
-import { swordfish } from './swordfish'
 import { tambaqui } from './tambaqui'
 import { tucunare } from './tucunare'
 import { tuna } from './tuna'
@@ -37,7 +37,7 @@ export const ART: Record<FishId, FishArt> = {
   pintado,
   pirarucu,
   tuna,
-  swordfish,
+  sailfish,
   shark,
   whale,
 }

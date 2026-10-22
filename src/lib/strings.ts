@@ -150,7 +150,7 @@ export const STRINGS = {
       pintado: 'Pintado',
       pirarucu: 'Pirarucu',
       tuna: 'Atum',
-      swordfish: 'Espadarte',
+      sailfish: 'Agulhão-bandeira',
       shark: 'Tubarão',
       whale: 'Baleia',
     },

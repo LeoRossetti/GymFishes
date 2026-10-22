@@ -68,12 +68,12 @@ describe('unlockedFish', () => {
     expect(unlockedFish([e('a', 2000, '2026-06-01'), e('a', 1500, '2026-06-01')], 'a').has('mahimahi')).toBe(true)
   })
 
-  it('unlocks the dourado at 100 registers and the swordfish at 400, whatever their size', () => {
+  it('unlocks the dourado at 100 registers and the sailfish at 400, whatever their size', () => {
     const many = (n: number) => Array.from({ length: n }, (_, i) => e('a', 100, addDays('2026-06-01', i % 5)))
     expect(unlockedFish(many(99), 'a').has('dourado')).toBe(false)
     expect(unlockedFish(many(100), 'a').has('dourado')).toBe(true)
-    expect(unlockedFish(many(399), 'a').has('swordfish')).toBe(false)
-    expect(unlockedFish(many(400), 'a').has('swordfish')).toBe(true)
+    expect(unlockedFish(many(399), 'a').has('sailfish')).toBe(false)
+    expect(unlockedFish(many(400), 'a').has('sailfish')).toBe(true)
   })
 
   it('unlocks the grouper at 100 L accumulated and the shark at 200 L', () => {
