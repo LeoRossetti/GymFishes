@@ -9,6 +9,7 @@ import { containsDay, monthPeriod, stepPeriod, type Period } from '@/lib/periods
 import { firstRegisterDay, totalsByDay } from '@/lib/rankings'
 import { STRINGS } from '@/lib/strings'
 import { SyncPill } from '@/screens/hoje/SyncPill'
+import { ScreenHeader } from '@/ui/ScreenHeader'
 import { Segmented } from '@/ui/Segmented'
 import { Stepper } from '@/ui/Stepper'
 import { CalendarGrid } from './CalendarGrid'
@@ -36,10 +37,7 @@ export function Historico() {
 
   return (
     <div className="px-3 pt-2">
-      <header className="mb-4 px-1">
-        <h1 className="text-[24px] font-extrabold tracking-[-0.4px]">{STRINGS.historico.titulo}</h1>
-        <SyncPill groupId={groupId} />
-      </header>
+      <ScreenHeader title={STRINGS.historico.titulo} status={<SyncPill groupId={groupId} />} />
       <section className="rounded-card border border-line bg-surface p-4">
         <Segmented
           label={STRINGS.historico.membro}

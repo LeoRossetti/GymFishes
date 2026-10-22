@@ -6,6 +6,7 @@ import { allPeriod, dayPeriod, type Period } from '@/lib/periods'
 import { firstRegisterDay, standings, totalsForPeriod } from '@/lib/rankings'
 import { STRINGS } from '@/lib/strings'
 import { SyncPill } from '@/screens/hoje/SyncPill'
+import { ScreenHeader } from '@/ui/ScreenHeader'
 import { MonthWrapUp } from './MonthWrapUp'
 import { PeriodControl } from './PeriodControl'
 import { Standings } from './Standings'
@@ -28,10 +29,7 @@ export function Ranking() {
 
   return (
     <div className="px-3 pt-2">
-      <header className="mb-4 px-1">
-        <h1 className="text-[24px] font-extrabold tracking-[-0.4px]">{STRINGS.ranking.titulo}</h1>
-        <SyncPill groupId={groupId} />
-      </header>
+      <ScreenHeader title={STRINGS.ranking.titulo} status={<SyncPill groupId={groupId} />} />
       <MonthWrapUp entries={entries} members={members} userId={userId} today={today} />
       <section className="rounded-card border border-line bg-surface p-4">
         <PeriodControl period={shown} today={today} firstDay={firstDay} onChange={setPeriod} />

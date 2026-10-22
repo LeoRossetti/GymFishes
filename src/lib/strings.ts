@@ -49,7 +49,6 @@ export const STRINGS = {
     empate: 'Empate técnico',
     voceNaFrente: (volume: string) => `Você está ${volume} na frente`,
     parceiroNaFrente: (nome: string, volume: string) => `${nome} está ${volume} na frente`,
-    abrirPerfil: 'Abrir perfil',
     streak: (dias: number) => `${dias} ${dias === 1 ? 'dia' : 'dias'}`,
     streakPrefixo: 'Sequência de ',
   },
