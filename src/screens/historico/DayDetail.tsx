@@ -27,7 +27,8 @@ export function DayDetail({ day, userId, groupId, members, entries, openRegister
     .join(' · ')
 
   useEffect(() => {
-    ref.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    const reduceMotion = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
+    ref.current?.scrollIntoView({ block: 'nearest', behavior: reduceMotion ? 'auto' : 'smooth' })
   }, [day])
 
   return (

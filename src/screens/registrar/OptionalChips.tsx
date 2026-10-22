@@ -15,7 +15,7 @@ type Props = {
   entryHasPhoto: boolean
 }
 
-const CHIP = 'inline-flex min-h-[44px] items-center gap-1.5 rounded-[99px] border px-4 text-[13px] font-bold'
+const CHIP = 'inline-flex min-h-[44px] items-center gap-1.5 rounded-[99px] border px-4 text-[13px] font-bold active:bg-line transition-colors duration-100'
 const CHIP_OFF = `${CHIP} border-dashed border-line text-ink-2`
 const CHIP_ON = `${CHIP} border-ok text-ok`
 const MAX_NOTE = 140
@@ -27,16 +27,21 @@ function RemoveBadge({ onClick }: { onClick: () => void }) {
       type="button"
       aria-label={STRINGS.registrar.removerFoto}
       onClick={onClick}
-      className="absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center active:bg-line transition-colors duration-100"
+      className="group absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center"
     >
       <span
         className="flex h-6 w-6 items-center justify-center rounded-[99px] border
-                   border-water bg-water text-ink-on-water"
+                   border-water bg-water text-ink-on-water group-active:bg-water-edge group-active:duration-0 transition-colors duration-100"
       >
         <Close size={12} strokeWidth={3} />
       </span>
     </button>
   )
+}
+
+/** Keep a field that just opened above the sticky confirm bar (the sheet has scroll-padding for it). */
+function reveal(el: HTMLElement | null) {
+  el?.scrollIntoView?.({ block: 'nearest' })
 }
 
 export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }: Props) {
@@ -118,23 +123,26 @@ export function OptionalChips({ draft, dispatch, open, setOpen, entryHasPhoto }:
       {open === 'nota' ? (
         <>
           <textarea
+            ref={reveal}
+            autoFocus
             value={draft.note}
             maxLength={MAX_NOTE}
             rows={2}
             onChange={(e) => dispatch({ type: 'setNote', note: e.target.value })}
             className="mt-2 w-full rounded-control border border-line bg-surface-2 p-3
-                       text-[16px] text-ink focus:border-water"
+                       text-[16px] text-ink"
           />
           <p className="mt-1 text-[11px] text-ink-2">{STRINGS.registrar.contador(draft.note.length, MAX_NOTE)}</p>
         </>
       ) : null}
       {open === 'hora' ? (
         <input
+          ref={reveal}
           type="datetime-local"
           value={toDatetimeLocal(draft.drankAt)}
           onChange={(e) => e.target.value && dispatch({ type: 'setDrankAt', at: fromDatetimeLocal(e.target.value) })}
           className="mt-2 min-h-[44px] w-full rounded-control border border-line bg-surface-2 px-3
-                     text-[16px] text-ink focus:border-water"
+                     text-[16px] text-ink"
         />
       ) : null}
     </section>

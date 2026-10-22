@@ -1,4 +1,3 @@
-import { formatVolume } from '@/lib/format'
 import type { KeypadKey } from '@/lib/keypad'
 import { STRINGS } from '@/lib/strings'
 import type { Draft, DraftAction } from './draft'
@@ -6,7 +5,7 @@ import type { Draft, DraftAction } from './draft'
 const PILLS = [100, 200, 250, 500]
 const KEYS: KeypadKey[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '00', '0', 'back']
 
-export function LooseAmount({ draft, dispatch }: { draft: Draft; dispatch: (a: DraftAction) => void }) {
+export function LooseAmount({ dispatch }: { draft: Draft; dispatch: (a: DraftAction) => void }) {
   return (
     <section className="mt-4">
       <h2 className="mb-2 text-[10px] font-extrabold uppercase tracking-[1px] text-ink-3">
@@ -25,9 +24,6 @@ export function LooseAmount({ draft, dispatch }: { draft: Draft; dispatch: (a: D
           </button>
         ))}
       </div>
-      {draft.loose > 0 ? (
-        <p className="mb-2 text-center text-[15px] font-bold text-water">{formatVolume(draft.loose)}</p>
-      ) : null}
       <div className="grid grid-cols-3 gap-2">
         {KEYS.map((key) => (
           <button
@@ -35,8 +31,8 @@ export function LooseAmount({ draft, dispatch }: { draft: Draft; dispatch: (a: D
             type="button"
             aria-label={key === 'back' ? STRINGS.registrar.apagar : key}
             onClick={() => dispatch({ type: 'key', key })}
-            className="min-h-[44px] rounded-key border border-line bg-surface-2
-                       text-[17px] font-bold active:bg-line transition-colors duration-100"
+            className="min-h-[48px] rounded-key border border-line bg-surface-2
+                       text-[20px] font-extrabold active:bg-line transition-colors duration-100"
           >
             {key === 'back' ? '⌫' : key}
           </button>

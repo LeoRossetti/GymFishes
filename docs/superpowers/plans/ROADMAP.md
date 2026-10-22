@@ -19,6 +19,8 @@ codebase rather than an imagined one.
 | M6 | PWA e endurecimento | [`2026-09-22-m6-pwa-endurecimento.md`](2026-09-22-m6-pwa-endurecimento.md) | **code-complete** — pending owner verification: deploy, open the installed app on both phones and see the update bar appear after the next deploy; airplane mode → the app opens to yesterday's data; Perfil › Sobre shows the new version |
 | M7 | Redesign visual e casca do PWA | [`2026-09-24-m7-redesign.md`](2026-09-24-m7-redesign.md) | **code-complete** — pending owner verification: the §11 manual checklist of the M7 spec on both installed phones |
 | M8 | Conquistas | [`2026-09-24-m8-conquistas.md`](2026-09-24-m8-conquistas.md) | **code-complete** — pending owner verification: on a real phone, register with a bottle and see the Baiacu popup; open Perfil › Trocar peixe and read the nine conditions; watch the GIFs in `.tmp/celebracoes/` after `npm run celebration:shots` |
+| M9 | Fechamento | [`2026-10-20-m9-fechamento.md`](2026-10-20-m9-fechamento.md) | **merged into `development` 2026-10-22** (local, not pushed); e2e passed after the Supabase reset — pending owner verification: on both phones open the sheet with the note open and see the confirm button stay; register the first 250 ml of a day before anyone passes 3 L and see the tube without a fish, then 500 ml with it (the tube scale grows past 3 L on a big day, which raises the threshold); open the sheet with three bottles and tap nota: the field appears above the confirm button; the home-screen icon only changes after removing and re-adding the app on iPhone (sync the outbox first); (M9b) register twice within half a second (or on both phones at once) and Hoje's tube total never counts backwards; flick the sheet shut; long-press a tab shows no callout; (candidates) a row slides open and shut, the toast rises in and fades out, the sheet's backdrop fades with the sheet, the period pill slides between Hoje / Semana / Mês, the celebration screen fades out on tap, "Excluir mesmo?" returns to "Excluir" by itself after 3 s, the month wrap-up names both totals, Histórico's ‹ dims on the first register's month; (pre-M10) a register lands with the water taking a full second and the number counting along with it |
+| M10 | Aquário vivo, peixes e conquistas | [`2026-10-22-m10-aquario-peixes-conquistas.md`](2026-10-22-m10-aquario-peixes-conquistas.md); the aquarium's design: [`../specs/2026-10-20-m10-aquario-design.md`](../specs/2026-10-20-m10-aquario-design.md); the fish and achievements design: [`../specs/2026-10-22-m10-peixes-conquistas-design.md`](../specs/2026-10-22-m10-peixes-conquistas-design.md); next steps: [`2026-10-22-m10-handoff.md`](2026-10-22-m10-handoff.md) | **built on `m10` 2026-10-22, not merged** — the living aquarium (river and reef tubes, bubbles, the Tubo switch), eighteen fish and the four-month achievement ladder with progress in the gallery; version 1.4.0. Pending owner verification on the phone: the tubes at several litres for a river fish and a reef fish; both habitats' bubbles; the Tubo switch (Com cenário / Só água); the gallery progress lines and the "N de 18 peixes" count; all 18 fish at real size; each fish in its full habitat tube; Hoje smooth with two full tubes (one river, one reef), scrolling, bubbles running; the water colour steps per 0,5 L while the level springs — does it look right |
 
 ---
 
@@ -245,3 +247,47 @@ dropped: a month has to end first, which no "all in a month" ladder can wait for
 streak and first-place colour, now also marks a completed achievement. Playwright's ffmpeg has
 no GIF muxer and no filters, so the GIF is frames at 12 fps through Pillow with one shared
 palette; without Pillow the strip and the video remain.
+
+## M9 — Fechamento
+
+**Done when:** the final review's soft joints are closed without adding a screen or an option: the
+register sheet keeps its confirm button in reach, Hoje stops drawing a fish the water does not cover,
+and the app installs with its own icon.
+
+- Register sheet: confirm sticky at the bottom of the scroll area, unit case kept ("REGISTRAR 250 ml"),
+  focus on the handle and Escape closes, loose-amount line removed, keys 48px with 20px / 800 digits,
+  15px segmented labels, 2px selected bottle tile
+- Hoje: the fish only once the water covers it (35px, 480 ml at 3 L); loose-only rows without subtitle
+  or chips; streak chip and sync pill with accessible names
+- Ranking and Histórico: "Médias e recordes" only for week, month and all with data; the shared `Close`
+  icon on the month wrap-up; today's ring in `--ink`
+- Celebrations: no toast under a full screen; a yellow trophy on the unlock screen when the register also
+  took the lead; the ring behind the fish removed
+- Themes: Tinta removed (five left, a stored `tinta` falls back to Fundo do mar); Breu `--surface` `#1B1E24`
+- Install: "Instalar o app" in Perfil through `beforeinstallprompt`, an iPhone hint otherwise; manifest
+  `description`, `lang`, `id`; README "Como instalar"
+- Icon: the owner's dreaming-fish illustration (`docs/img/icone-origem.jpg`) as 512, 192, 180 and a
+  maskable 512; `icon.svg` deleted; only `icon-192.png` is precached (`globIgnores` keeps the other
+  three out)
+- Small fixes: tabs open at the top, one focus ring on inputs, swatches expose `aria-pressed`, the toast
+  on one line, "Salvar garrafa", `Sequência de 1 dia` in the singular
+- Version 1.3.0
+
+**Polimento pós-auditoria (M9b).** Four audits (mobile-native, Emil Kowalski's design-engineering review, a worst-case-data stress test and the motion standards) gave ten small fixes, none adding a screen or option: instant press feedback, a primary button that never shifts, counters that never run backwards, a sheet that closes on a flick and crossfades under reduced motion, no long-press callout, long names that wrap in Ranking, no crest on an empty tube, two bugs (splash reset, sheet reopened mid-exit), a fish that rides the water, and small polish (rounded highlights, aligned bottle rows, ease-out fades).
+
+Calls made here: rejected after the owner saw before/after renders on the canvas: larger totals on Hoje,
+a lead marker on the record and streak screens, a pulse of any kind, a streak animation on the chip or a
+Duolingo-style streak screen, a red border on destructive buttons (the red text stays), and an
+"e-mail not confirmed" branch at login (confirmations are off in the cloud project). The version bump
+doubles as the persister buster. The trophy lives only on the unlock screen, which waits for the owner's
+tap, so it is never missed; the lead still shows on Hoje's gap line. The icon source is the owner's
+illustration, so the three install-only PNGs stay out of the precache and the shell does not grow.
+The comparison card is also hidden on empty periods, where it printed zeros. Pending owner
+verifications are in the table row; every cloud-dependent check waits for the Supabase reset.
+
+**Candidatos (2026-10-21):** eight mechanisms proposed by the audits were built in a throwaway copy,
+shown before/after on the canvas and kept by the owner (sheet backdrop fade, toast motion, row expand,
+sliding segmented pill, celebration fade-out, delete auto-disarm, names on the wrap-up totals, Histórico
+lower bound); faster springs and narrower tubes were rejected. Pending owner verification: the candidate
+motions on a real phone, and the slower water rise once rendered. Next milestone brief:
+[`2026-10-21-m10-handoff.md`](2026-10-21-m10-handoff.md).

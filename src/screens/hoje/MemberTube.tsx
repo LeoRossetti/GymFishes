@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
+import { Aquarium, useAquarium, waterVars } from '@/features/aquarium/Aquarium'
+import { fishTop, SCENE_H } from '@/features/aquarium/ladder'
 import { fishOf } from '@/features/fish/catalog'
 import { Fish } from '@/features/fish/Fish'
 import { ACCENT_TEXT, accentOf } from '@/lib/accents'
@@ -17,29 +19,20 @@ type Props = {
   scaleMl: number
 }
 
-/** Tube height in px (matches `h-[220px]` below). */
-export const TUBE_H = 220
 /** Fish width in px — about a third of the tube (spec M7 §8.2). Height follows the 1.6:1 art box. */
-export const FISH_W = 56
+const FISH_W = 56
 export const FISH_H = FISH_W * 0.625
-/** Air between the fish's back and the surface, so the wave crest never cuts the fish. */
-const GAP = 6
-
-/**
- * The fish's `bottom`, in px, for a given fill %: it swims just under the surface, and rests on
- * the tube floor while the water is still shallower than the fish. Because it sits inside the
- * water, a full tube never clips it — no special case is needed at 100%.
- */
-export function fishBottomPx(pct: number): number {
-  return Math.max(0, (pct / 100) * TUBE_H - FISH_H - GAP)
-}
 
 export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl }: Props) {
   const pct = Math.min(100, (totalMl / scaleMl) * 100)
+  // the water is a share of the tube's inner box (220 px less a 2 px border on each side), where the scene is drawn too
+  const waterPx = (pct / 100) * SCENE_H
+  const fish = fishOf(fishVariant)
+  const aquarium = useAquarium(fish, totalMl, scaleMl)
   const reduced = useReducedMotion()
   const spring = reduced
     ? { duration: 0.12 }
-    : ({ type: 'spring', duration: 0.6, bounce: 0.25 } as const)
+    : ({ type: 'spring', duration: 1, bounce: 0.25 } as const)
   const [splash, setSplash] = useState(false)
   const prev = useRef(totalMl)
   const shownTotal = useCountUp(totalMl)
@@ -47,7 +40,10 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
   useEffect(() => {
     const grew = totalMl > prev.current
     prev.current = totalMl
-    if (!grew || reduced) return
+    if (!grew || reduced) {
+      setSplash(false)
+      return
+    }
     setSplash(true)
     const t = window.setTimeout(() => setSplash(false), 450)
     return () => window.clearTimeout(t)
@@ -55,32 +51,33 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
 
   return (
     <div className="min-w-[140px] max-w-[160px] flex-1 shrink-0">
-      <div className="relative h-[220px] overflow-hidden rounded-card border-2 border-line bg-surface-2">
+      <div
+        className="relative h-[220px] overflow-hidden rounded-card border-2 border-line bg-surface-2"
+        style={aquarium ? waterVars(aquarium.markup.water) : undefined}
+      >
         <motion.div className="absolute inset-x-0 bottom-0" animate={{ height: `${pct}%` }} transition={spring}>
-          <span
-            className="absolute inset-x-0 top-0 block"
-            style={{
-              transform: splash ? 'scaleY(2)' : 'scaleY(1)',
-              transformOrigin: 'bottom',
-              transition: 'transform 450ms ease-out',
-            }}
-          >
-            <WaveSurface />
-          </span>
+          {totalMl > 0 ? (
+            <span
+              className="absolute inset-x-0 top-0 block"
+              style={{
+                transform: splash ? 'scaleY(2)' : 'scaleY(1)',
+                transformOrigin: 'bottom',
+                transition: 'transform 450ms ease-out',
+              }}
+            >
+              <WaveSurface />
+            </span>
+          ) : null}
+          {aquarium ? <Aquarium {...aquarium} /> : null}
+          {waterPx >= FISH_H ? (
+            <span aria-hidden className="absolute left-1/2 -translate-x-1/2" style={{ top: fishTop(waterPx, FISH_H) }}>
+              <Fish variant={fish} size={FISH_W} state="idle" />
+            </span>
+          ) : null}
           <div className="h-full w-full bg-water" />
         </motion.div>
-        {totalMl > 0 ? (
-          <motion.span
-            aria-hidden
-            className="absolute left-1/2 -translate-x-1/2"
-            animate={{ bottom: `${fishBottomPx(pct)}px` }}
-            transition={spring}
-          >
-            <Fish variant={fishOf(fishVariant)} size={FISH_W} state="idle" />
-          </motion.span>
-        ) : null}
       </div>
-      <p className="mt-2 text-center text-[24px] font-extrabold tracking-[-0.4px]">
+      <p className="mt-2 text-center text-[24px] font-extrabold tabular-nums tracking-[-0.4px]">
         {formatVolume(shownTotal)}
       </p>
       <p

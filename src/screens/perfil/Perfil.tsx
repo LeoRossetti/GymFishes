@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { TubeStylePicker } from '@/features/aquarium/TubeStylePicker'
+import { signOut } from '@/features/auth/api'
 import { useSession } from '@/features/auth/AuthProvider'
 import { useBootstrap } from '@/features/profile/useBootstrap'
 import { updateProfile } from '@/features/profile/mutations'
+import { useInstallPrompt } from '@/features/pwa/useInstallPrompt'
 import { ThemePicker } from '@/features/theme/ThemePicker'
 import { ACCENTS, ACCENT_BG, accentOf } from '@/lib/accents'
 import { formatBuildDate } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
-import { supabase } from '@/lib/supabase'
 import { APP_VERSION, BUILD_DATE } from '@/lib/version'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
@@ -21,6 +23,7 @@ export function Perfil() {
   const userId = session?.user.id
   const bootstrap = useBootstrap(userId)
   const client = useQueryClient()
+  const { install, iphone } = useInstallPrompt()
   const profile = bootstrap.data?.profile
   const [nome, setNome] = useState<string | null>(null)
   const [confirmandoSaida, setConfirmandoSaida] = useState(false)
@@ -98,6 +101,7 @@ export function Perfil() {
               key={accent}
               type="button"
               aria-label={STRINGS.perfil.cores[accent]}
+              aria-pressed={accentOf(profile.accent) === accent}
               disabled={busy}
               onClick={() => save({ accent })}
               className={`h-11 w-11 rounded-full active:opacity-80 transition-opacity duration-100 ${ACCENT_BG[accent]} ${
@@ -108,18 +112,26 @@ export function Perfil() {
         </div>
 
         <ThemePicker />
+        <TubeStylePicker />
       </section>
 
       <BottleManager userId={userId} />
 
       <GroupCard groupId={bootstrap.data?.groupId} />
 
+      {install ? (
+        <Button variant="ghost" className="mt-4" onClick={() => void install()}>
+          {STRINGS.perfil.instalar}
+        </Button>
+      ) : null}
+      {iphone ? <p className="mt-4 text-center text-[11px] text-ink-2">{STRINGS.perfil.instalarDica}</p> : null}
+
       <Button
         variant={confirmandoSaida ? 'armed' : 'danger'}
         className="mt-4"
         onClick={() => {
           if (!confirmandoSaida) return setConfirmandoSaida(true)
-          void supabase.auth.signOut()
+          void signOut()
         }}
       >
         {confirmandoSaida ? STRINGS.perfil.sairMesmo : STRINGS.auth.sair}

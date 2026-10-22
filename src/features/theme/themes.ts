@@ -1,5 +1,5 @@
-/** Spec M7 §7. Six dark themes; the id is what `localStorage` and `data-theme` carry. */
-export const THEME_IDS = ['fundo-do-mar', 'tinta', 'aquario', 'meia-noite', 'areia', 'breu'] as const
+/** Spec M7 §7. Five dark themes; the id is what `localStorage` and `data-theme` carry. */
+export const THEME_IDS = ['fundo-do-mar', 'aquario', 'meia-noite', 'areia', 'breu'] as const
 export type ThemeId = (typeof THEME_IDS)[number]
 
 export const DEFAULT_THEME: ThemeId = 'fundo-do-mar'
@@ -24,11 +24,6 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     ink: '#F2F7FB', ink2: '#A3B9CB', ink3: '#6F879B',
     water: '#1CB0F6', waterEdge: '#1791CC', waterHi: '#62CDFF', inkOnWater: '#072536',
   },
-  tinta: {
-    bg: '#0B0E12', surface: '#1A2028', surface2: '#262E38', line: '#3B4552',
-    ink: '#F4F6F8', ink2: '#A0ADBA', ink3: '#6F7D8A',
-    water: '#22C4F5', waterEdge: '#1A9CC6', waterHi: '#7ADDFF', inkOnWater: '#06232E',
-  },
   aquario: {
     bg: '#04171D', surface: '#0F2C36', surface2: '#17404D', line: '#255A6B',
     ink: '#EEF8FA', ink2: '#94BAC4', ink3: '#628B96',
@@ -45,7 +40,7 @@ export const THEMES: Record<ThemeId, ThemeTokens> = {
     water: '#1CB0F6', waterEdge: '#1791CC', waterHi: '#62CDFF', inkOnWater: '#072536',
   },
   breu: {
-    bg: '#0D0F12', surface: '#181B20', surface2: '#23272D', line: '#373C44',
+    bg: '#0D0F12', surface: '#1B1E24', surface2: '#23272D', line: '#373C44',
     ink: '#F3F5F7', ink2: '#A2ABB3', ink3: '#6F7880',
     water: '#1CB0F6', waterEdge: '#1791CC', waterHi: '#62CDFF', inkOnWater: '#072536',
   },

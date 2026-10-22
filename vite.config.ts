@@ -23,6 +23,8 @@ export default defineConfig({
       workbox: {
         // App shell only. No runtimeCaching: Supabase is never cached by the worker (spec §9).
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest}'],
+        // The OS copies these at install; the app never renders them (spec §1 criterion 4).
+        globIgnores: ['icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'],
         navigateFallback: '/index.html',
       },
     }),

@@ -42,6 +42,19 @@ button {
   touch-action: manipulation;
 }
 
+/* A press lands on the first frame; release keeps each control's own fade. */
+:is(button, a):active {
+  transition-duration: 0ms;
+}
+
+/* No text selection on keys, no iOS link callout on the tabs. */
+button,
+nav a {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-water);
   outline-offset: 2px;
@@ -77,8 +90,16 @@ button {
 .fish-bob { animation: fish-bob 2.4s ease-in-out infinite alternate; }
 [data-waves='paused'] .fish-tail,
 [data-waves='paused'] .fish-bob { animation-play-state: paused; }
+/* !important: each bubble sets its `animation` shorthand inline, which would reset the play state to running. */
+[data-waves='paused'] .aq-bubble,
+[data-waves='paused'] .aq-bubble > g { animation-play-state: paused !important; }
+/* A piece a drink brings fades in (M10 §3.6); each tube's <style> names its new pieces. */
+@keyframes aq-fade {
+  from { opacity: 0; }
+}
 .fish-locked path,
 .fish-locked circle { fill: var(--color-ink-3); stroke: none; }
 @media (prefers-reduced-motion: reduce) {
   .fish-tail, .fish-bob { animation: none; }
+  .aq-bubble { display: none; }
 }

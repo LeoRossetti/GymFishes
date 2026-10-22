@@ -1,6 +1,7 @@
 import { useId } from 'react'
 import type { FishId } from './catalog'
 import { ART } from './svg'
+import { EYE_PUPIL, EYE_WHITE } from './svg/helpers'
 import { VIEW_H, VIEW_W, type Layer } from './svg/types'
 
 export type FishState = 'idle' | 'still' | 'locked'
@@ -58,12 +59,11 @@ export function Fish({ variant, size = 24, state = 'still' }: Props) {
         {art.layers.map((layer, i) => (
           <LayerPath key={i} layer={layer} clipId={clipId} />
         ))}
-        {/* Eyes are fixed hex like the species palettes: fish do not follow the theme (spec M7 §7.5). */}
         {art.eyes.map((e) => (
           <g key={`${e.cx},${e.cy}`}>
-            <circle cx={e.cx} cy={e.cy} r={e.r} fill="#F2F7FB" />
-            <circle cx={e.cx + e.r * 0.2} cy={e.cy} r={e.r * 0.58} fill="#072536" />
-            <circle cx={e.cx + e.r * 0.45} cy={e.cy - e.r * 0.35} r={e.r * 0.18} fill="#F2F7FB" />
+            <circle cx={e.cx} cy={e.cy} r={e.r} fill={EYE_WHITE} />
+            <circle cx={e.cx + e.r * 0.2} cy={e.cy} r={e.r * 0.58} fill={EYE_PUPIL} />
+            <circle cx={e.cx + e.r * 0.45} cy={e.cy - e.r * 0.35} r={e.r * 0.18} fill={EYE_WHITE} />
           </g>
         ))}
       </g>

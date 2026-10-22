@@ -5,7 +5,7 @@ import { Fish } from '@/features/fish/Fish'
 import { formatVolume } from '@/lib/format'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
-import { Check } from '@/ui/icons'
+import { Check, Trophy } from '@/ui/icons'
 import { useCountUp } from '@/ui/useCountUp'
 import { Bubbles } from './Bubbles'
 import { celebrationText, type FullScreenCelebration } from './engine'
@@ -14,6 +14,8 @@ export const AUTO_DISMISS_MS = 4000
 
 type Props = {
   celebration: FullScreenCelebration
+  /** The register also took the lead: the unlock screen carries a trophy for it. */
+  lead?: boolean
   onClose: () => void
   onChoose: (fish: FishId) => void
 }
@@ -21,10 +23,11 @@ type Props = {
 /**
  * The one full screen a register may earn (spec §7). Tap anywhere to dismiss; record and streak
  * also leave on their own after 4 s, while the unlock waits for "Escolher agora" / "Depois".
- * Flat shapes only: bubbles rise, the content springs up, the number counts. Reduced motion
+ * Flat shapes only: bubbles rise, the content springs up, the number counts. The trophy marks
+ * the lead on the unlock screen only (M9). Reduced motion
  * collapses everything to a 120 ms crossfade.
  */
-export function CelebrationScreen({ celebration, onClose, onChoose }: Props) {
+export function CelebrationScreen({ celebration, lead = false, onClose, onChoose }: Props) {
   const reduced = useReducedMotion() ?? false
   const ref = useRef<HTMLDivElement>(null)
 
@@ -38,7 +41,7 @@ export function CelebrationScreen({ celebration, onClose, onChoose }: Props) {
     ref.current?.focus()
   }, [])
 
-  const fade = { duration: reduced ? 0.12 : 0.25 }
+  const fade = { duration: reduced ? 0.12 : 0.25, ease: 'easeOut' } as const
   const spring = reduced ? { duration: 0.12 } : ({ type: 'spring', duration: 0.9, bounce: 0.35 } as const)
 
   return (
@@ -51,6 +54,7 @@ export function CelebrationScreen({ celebration, onClose, onChoose }: Props) {
       onClick={onClose}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: reduced ? 0.12 : 0.2, ease: 'easeOut' } }}
       transition={fade}
       className="fixed inset-0 z-50 mx-auto flex max-w-[430px] flex-col items-center justify-center overflow-hidden bg-bg/95 px-6 text-center"
     >
@@ -58,6 +62,18 @@ export function CelebrationScreen({ celebration, onClose, onChoose }: Props) {
         {celebrationText(celebration)}
       </p>
       {reduced ? null : <Bubbles />}
+      {lead && celebration.kind === 'unlock' ? (
+        <motion.span
+          role="img"
+          aria-label={STRINGS.celebracoes.naFrente}
+          className="mb-4 text-streak"
+          initial={reduced ? { opacity: 0 } : { scale: 0.4, opacity: 0, rotate: -12 }}
+          animate={reduced ? { opacity: 1 } : { scale: 1, opacity: 1, rotate: 0 }}
+          transition={reduced ? { duration: 0.12 } : { type: 'spring', duration: 0.7, bounce: 0.4, delay: 0.45 }}
+        >
+          <Trophy size={44} filled strokeWidth={2.2} />
+        </motion.span>
+      ) : null}
       <motion.div initial={{ opacity: 0, y: reduced ? 0 : 60 }} animate={{ opacity: 1, y: 0 }} transition={spring}>
         <Body celebration={celebration} reduced={reduced} />
       </motion.div>
@@ -104,7 +120,7 @@ function Body({ celebration, reduced }: { celebration: FullScreenCelebration; re
 
 /**
  * The reward screen (spec §7): the achievement just completed as a checked chip, then the fish
- * springs in behind one flat ring that expands and fades, then its name. One authored moment.
+ * springs in, then its name. One authored moment.
  */
 function Unlock({ fish, reduced }: { fish: FishId; reduced: boolean }) {
   const pop = reduced ? { duration: 0.12 } : ({ type: 'spring', duration: 0.8, bounce: 0.45, delay: 0.2 } as const)
@@ -116,15 +132,6 @@ function Unlock({ fish, reduced }: { fish: FishId; reduced: boolean }) {
         {unlockLabel(UNLOCKS[fish])}
       </p>
       <div className="relative mt-8 flex justify-center">
-        {reduced ? null : (
-          <motion.span
-            aria-hidden
-            className="absolute left-1/2 top-1/2 h-44 w-44 rounded-full border-2 border-streak"
-            initial={{ x: '-50%', y: '-50%', scale: 0.4, opacity: 1 }}
-            animate={{ x: '-50%', y: '-50%', scale: 1.5, opacity: 0 }}
-            transition={{ duration: 0.9, delay: 0.3, ease: 'easeOut' }}
-          />
-        )}
         <motion.div initial={{ scale: reduced ? 1 : 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={pop}>
           <Fish variant={fish} size={200} state="idle" />
         </motion.div>
@@ -138,7 +145,7 @@ function Unlock({ fish, reduced }: { fish: FishId; reduced: boolean }) {
 function Record({ ml }: { ml: number }) {
   const shown = useCountUp(ml, 0)
   return (
-    <p className="text-[38px] font-extrabold tracking-[-0.4px] text-water">
+    <p className="text-[38px] font-extrabold tabular-nums tracking-[-0.4px] text-water">
       {STRINGS.celebracoes.novoRecorde(formatVolume(shown))}
     </p>
   )

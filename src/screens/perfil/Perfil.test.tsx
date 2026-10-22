@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '@/test/utils'
 import { Perfil } from './Perfil'
@@ -39,6 +39,8 @@ vi.mock('@/features/bottles/mutations', () => ({
   updateBottle: vi.fn(),
   archiveBottle: vi.fn(),
 }))
+const installMock = vi.hoisted(() => vi.fn())
+vi.mock('@/features/pwa/useInstallPrompt', () => ({ useInstallPrompt: () => installMock() }))
 const syncStatus = vi.hoisted(() => ({ offline: false, stale: false }))
 vi.mock('@/features/entries/queries', () => ({
   useEntries: () => ({ data: [] }),
@@ -51,6 +53,7 @@ describe('Perfil', () => {
     signOut.mockReset().mockResolvedValue({ error: null })
     syncStatus.offline = false
     syncStatus.stale = false
+    installMock.mockReset().mockReturnValue({ install: null, iphone: false })
   })
 
   it('shows group name, invite code and members', () => {
@@ -73,6 +76,12 @@ describe('Perfil', () => {
     renderWithProviders(<Perfil />)
     await userEvent.click(screen.getByRole('button', { name: 'Rosa' }))
     expect(updateProfile).toHaveBeenCalledWith('u1', { accent: 'pink' })
+  })
+
+  it('marks the chosen accent swatch as pressed', () => {
+    renderWithProviders(<Perfil />)
+    expect(screen.getByRole('button', { name: 'Azul', pressed: true })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Rosa', pressed: false })).toBeInTheDocument()
   })
 
   it('shows an error when saving the name fails', async () => {
@@ -120,8 +129,8 @@ describe('Perfil', () => {
     await userEvent.click(screen.getByRole('button', { name: /Trocar peixe/ }))
     expect(screen.getByRole('button', { name: 'Betta' })).not.toHaveAttribute('aria-disabled')
     expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveAttribute('aria-disabled', 'true')
-    expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveTextContent('Registre com uma garrafa')
-    expect(screen.getByRole('button', { name: 'Tambaqui' })).toHaveTextContent('Sequência de 7 dias')
+    expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveTextContent('Antes das 9h em 5 dias')
+    expect(screen.getByRole('button', { name: 'Tambaqui' })).toHaveTextContent('10 dias com 2 L')
     expect(screen.getByRole('button', { name: 'Guppy' })).toHaveAttribute('aria-pressed', 'true')
   })
 
@@ -141,5 +150,34 @@ describe('Perfil', () => {
     renderWithProviders(<Perfil />)
     expect(screen.getByRole('heading', { name: 'Tema' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Aquário' })).toBeInTheDocument()
+  })
+
+  it('offers the Tubo switch under Tema, Com cenário by default, and stores Só água per device', async () => {
+    localStorage.clear()
+    renderWithProviders(<Perfil />)
+    expect(screen.getByRole('heading', { name: 'Tubo' })).toBeInTheDocument()
+    const group = within(screen.getByRole('group', { name: 'Tubo' }))
+    expect(group.getByRole('button', { name: 'Com cenário' })).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(group.getByRole('button', { name: 'Só água' }))
+    expect(group.getByRole('button', { name: 'Só água' })).toHaveAttribute('aria-pressed', 'true')
+    expect(localStorage.getItem('gymfishes:tube')).toBe('agua')
+    localStorage.clear()
+  })
+
+  it('offers Instalar o app only when the browser can install', async () => {
+    const { unmount } = renderWithProviders(<Perfil />)
+    expect(screen.queryByRole('button', { name: 'Instalar o app' })).toBeNull()
+    unmount()
+    const install = vi.fn().mockResolvedValue(undefined)
+    installMock.mockReturnValue({ install, iphone: false })
+    renderWithProviders(<Perfil />)
+    await userEvent.click(screen.getByRole('button', { name: 'Instalar o app' }))
+    expect(install).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows the iPhone hint instead on an iPhone browser', () => {
+    installMock.mockReturnValue({ install: null, iphone: true })
+    renderWithProviders(<Perfil />)
+    expect(screen.getByText(/Adicionar à Tela de Início/)).toBeInTheDocument()
   })
 })

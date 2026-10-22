@@ -38,7 +38,7 @@ describe('CelebrationScreen', () => {
     const onClose = vi.fn()
     const onChoose = vi.fn()
     render(<CelebrationScreen celebration={{ kind: 'unlock', fish: 'pufferfish' }} onClose={onClose} onChoose={onChoose} />)
-    expect(screen.getByText(/Registre com uma garrafa/)).toHaveTextContent('Conquista: Registre com uma garrafa')
+    expect(screen.getByText(/Antes das 9h em 5 dias/)).toHaveTextContent('Conquista: Antes das 9h em 5 dias')
     expect(screen.getByText('Novo peixe!')).toBeInTheDocument()
     expect(screen.getByText('Baiacu')).toBeInTheDocument()
     expect(document.querySelector('svg[data-fish="pufferfish"]')).not.toBeNull()
@@ -54,5 +54,17 @@ describe('CelebrationScreen', () => {
     render(<CelebrationScreen celebration={{ kind: 'unlock', fish: 'shark' }} onClose={onClose} onChoose={vi.fn()} />)
     fireEvent.click(screen.getByRole('button', { name: 'Depois' }))
     expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('the unlock screen shows the lead trophy when the register also took the lead', () => {
+    render(<CelebrationScreen celebration={{ kind: 'unlock', fish: 'pufferfish' }} lead onClose={vi.fn()} onChoose={vi.fn()} />)
+    expect(screen.getByRole('img', { name: 'Você está na frente' })).toBeInTheDocument()
+  })
+
+  it('record and streak screens never show the trophy, and unlock without lead has none', () => {
+    const { rerender } = render(<CelebrationScreen celebration={{ kind: 'record', ml: 4200 }} lead onClose={vi.fn()} onChoose={vi.fn()} />)
+    expect(screen.queryByRole('img', { name: 'Você está na frente' })).toBeNull()
+    rerender(<CelebrationScreen celebration={{ kind: 'unlock', fish: 'pufferfish' }} onClose={vi.fn()} onChoose={vi.fn()} />)
+    expect(screen.queryByRole('img', { name: 'Você está na frente' })).toBeNull()
   })
 })

@@ -68,14 +68,24 @@ describe('RegisterSheet', () => {
     expect(onClose).toHaveBeenCalled()
   })
 
+  it('tapping the backdrop closes the sheet', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    const dialog = screen.getByRole('dialog')
+    // aria-hidden strips the backdrop's accessible name, so it is simply the one button outside the dialog
+    const backdrop = screen.getAllByRole('button', { hidden: true }).find((b) => !dialog.contains(b))
+    expect(backdrop).toBeDefined()
+    await userEvent.click(backdrop!)
+    expect(onClose).toHaveBeenCalled()
+  })
+
   it('tapping a bottle raises the running total; tapping again increments', async () => {
     renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
     const chip = screen.getByRole('button', { name: /Garrafa azul/ })
     await userEvent.click(chip)
-    // '1,5 L' appears on the chip AND in the running total — assert on count, not uniqueness
-    expect(await screen.findAllByText('1,5 L')).toHaveLength(2)
+    // '1,5 L' appears on the chip, in the running total and in the confirm label's unit span
+    expect(await screen.findAllByText('1,5 L')).toHaveLength(3)
     await userEvent.click(chip)
-    expect(await screen.findByText('3 L')).toBeInTheDocument()
+    expect(await screen.findAllByText('3 L')).toHaveLength(2)
     expect(screen.getByText('×2')).toBeInTheDocument()
   })
 
@@ -83,7 +93,7 @@ describe('RegisterSheet', () => {
     renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
     await userEvent.click(screen.getByRole('button', { name: '+250' }))
     await userEvent.click(screen.getByRole('button', { name: '+250' }))
-    // '500 ml' shows both as the running total and as the loose-amount readout
+    // '500 ml' shows as the running total and in the confirm label's unit span
     expect(await screen.findAllByText('500 ml')).toHaveLength(2)
   })
 
@@ -107,6 +117,15 @@ describe('RegisterSheet', () => {
     fireEvent.click(cta)
     fireEvent.click(cta)
     expect(insertMutate).toHaveBeenCalledTimes(1)
+  })
+
+  it('opening the nota focuses the field and scrolls it above the confirm bar', async () => {
+    const scroll = vi.spyOn(HTMLElement.prototype, 'scrollIntoView')
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: /nota/ }))
+    expect(screen.getByRole('textbox')).toHaveFocus()
+    expect(scroll).toHaveBeenCalledTimes(1)
+    scroll.mockRestore()
   })
 
   it('includes a typed nota on submit', async () => {
@@ -225,8 +244,41 @@ describe('RegisterSheet', () => {
     await userEvent.click(screen.getByRole('button', { name: '+ nova garrafa' }))
     await userEvent.type(screen.getByLabelText('Nome da garrafa'), 'Copo')
     await userEvent.type(screen.getByLabelText('Volume (ml)'), '300')
-    await userEvent.click(screen.getByRole('button', { name: 'Salvar' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Salvar garrafa' }))
     expect(await screen.findByRole('status')).toHaveTextContent('Algo deu errado. Tente de novo.')
     expect(screen.getByLabelText('Nome da garrafa')).toBeInTheDocument()
+  })
+
+  it('moves focus to the handle on open and closes on Escape', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    expect(screen.getByRole('button', { name: 'Fechar' })).toHaveFocus()
+    await userEvent.keyboard('{Escape}')
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows the loose amount only in the running total and the confirm label', async () => {
+    renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+    await userEvent.click(screen.getByRole('button', { name: '+250' }))
+    // total + confirm label span; the old blue line under the pills would make it 3
+    expect(await screen.findAllByText('250 ml')).toHaveLength(2)
+  })
+
+  it('the running total echoes the typed digits immediately', async () => {
+    // matchMedia present and not reduced: the old count-up hook would have animated here
+    vi.stubGlobal('matchMedia', () => ({
+      matches: false,
+      addEventListener() {},
+      removeEventListener() {},
+    }))
+    try {
+      renderWithProviders(<RegisterSheet entry={undefined} onClose={onClose} />)
+      for (const key of ['2', '5', '0']) {
+        await userEvent.click(screen.getByRole('button', { name: key }))
+      }
+      // total + confirm span, asserted synchronously (no findBy / waitFor)
+      expect(screen.getAllByText('250 ml')).toHaveLength(2)
+    } finally {
+      vi.unstubAllGlobals()
+    }
   })
 })

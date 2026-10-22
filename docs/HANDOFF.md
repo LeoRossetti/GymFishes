@@ -1,6 +1,6 @@
 # GymFishes — Agent Handoff
 
-**Written:** 2026-09-01, at the end of the M1 build session.
+**Written:** 2026-09-01, at the end of the M1 build session. **Refreshed:** 2026-10-20.
 **Audience:** the next AI agent (or human) continuing this project.
 
 ## What this project is
@@ -16,9 +16,8 @@ theme only, installed to iPhone home screens. Simplicity is a stated product fea
    Every product and architecture decision, including security decisions recorded
    mid-build (§3 accepted-risk note, §11 RLS matrix). If code and spec disagree, the
    spec wins; if you must deviate, update the spec in the same change.
-2. `docs/superpowers/plans/ROADMAP.md` — milestone backlog (M1–M6), M1 status, and
-   **"Carry-ins from M1's reviews"** under M2 — real debts, address them when touching
-   the relevant code.
+2. `docs/superpowers/plans/ROADMAP.md` — milestone backlog (M1–M9) with each milestone's
+   status and its pending owner verifications.
 3. `CLAUDE.md` at the repo root — **on disk but git-ignored** (owner wants Claude
    tooling out of the repo). It holds the working conventions: pt-BR strings only via
    `src/lib/strings.ts`, date math only in `src/lib/dates.ts`/`periods.ts`, tokens-only
@@ -29,19 +28,14 @@ theme only, installed to iPhone home screens. Simplicity is a stated product fea
    (AuthProvider, auth-form details, tab strings) — reviews changed the code after
    the plan was written. The repo is the truth for code.
 
-## Current state (verified at handoff)
+## Current state (verified at the 2026-10-20 refresh)
 
-- **M1 is code-complete.** 55/55 tests, typecheck and build clean, branch
-  `development`, all work reviewed (per-task review + adversarial RLS security review
-  + final whole-branch review; all findings fixed or recorded).
-- **PR #1 is open**: `development` → `main` (https://github.com/LeoRossetti/GymFishes/pull/1).
-  Merging is the owner's call.
-- **The app is deployed** (owner deployed to Vercel himself) and both real accounts
-  exist in one group in production. The owner has used the app in a browser; whether
-  both phones have the home-screen install is unconfirmed.
-- What works: signup/login (email+password), onboarding (name → create group with
-  displayed invite code / join by code), guarded routing, empty "Hoje" screen, tab
-  bar with an inert "+" button. Registering water does not exist yet — that is M2.
+- **All nine milestones (M1–M9) are code-complete**, version 1.3.0. 492 tests, typecheck
+  and build clean.
+- `development` is merged to `main` through PR #8
+  (https://github.com/LeoRossetti/GymFishes/pull/8).
+- Each milestone's pending owner verifications (real-phone checks, the RLS checklist) are
+  listed in the status column of `docs/superpowers/plans/ROADMAP.md`.
 
 ## Environment — things that will bite you if you don't know them
 
@@ -57,10 +51,10 @@ theme only, installed to iPhone home screens. Simplicity is a stated product fea
   do not "verify" it by running it here.
 - **The cloud database is the only database.** There is no sandbox. Migrations are
   never edited after being applied — always create a new one
-  (`npx supabase migration new <name>`). Three are applied: schema, rls, rls_hardening.
+  (`npx supabase migration new <name>`). Four are applied: schema, rls, rls_hardening,
+  m2_defaults_photos_realtime.
 - **Cloud auth setting:** email confirmations are OFF (there is no confirmation UI).
-- **Windows machine, Git Bash for POSIX commands.** Multi-line heredocs containing
-  code/quotes have failed here — prefer file-write tools over `cat <<EOF`.
+- **Windows machine, Git Bash for POSIX commands.**
 - Node 24 / npm 11. Commands: `npm run dev` / `test` (watch) / `test:run` /
   `typecheck` / `build`.
 
@@ -89,15 +83,10 @@ record: no member eviction, permanent invite codes (spec §3).
   rounded display font (e.g. Nunito) for the Duolingo feel he wants, and pad or center
   the tab bar until more tabs exist.
 
-## Next work: M2 (core loop)
+## Next work
 
-Per ROADMAP: bottles CRUD + Perfil basics, the register sheet (bottle chips + keypad),
-`composition.ts`, entry insert/edit/soft-delete with optimistic updates, the Hoje tubes
-with the animated wave surface (spec §8 "Water surface" has exact parameters), photo
-pipeline + the `photos` storage bucket AND its storage RLS policies (spec §11 — not yet
-created), realtime subscription on entries, plus the M2 carry-ins listed in ROADMAP.
-
-Process used so far (owner is happy with it): brainstorm → write the detailed
-per-milestone plan immediately before executing it (against the real codebase) →
-execute task-by-task with fresh implementer subagents and a reviewer per task →
-final whole-branch review. TDD for pure logic; never commit with a failing test.
+M10 — the living aquarium (staged tube decoration by fish habitat, sparse random bubbles), a fish-set
+review (habitat balance, redraws) and harder achievements. The full brief, the chores that come first
+(tests for the cherry-picked candidates, the slower water rise, the branch integration decision, the e2e
+rerun after the Supabase reset) and the tooling notes are in
+`docs/superpowers/plans/2026-10-21-m10-handoff.md`.

@@ -32,6 +32,7 @@ export function RegistersCard({ userId, groupId, members, entries, openRegister 
             }`}
           >
             <Flame size={14} />
+            <span className="sr-only">{STRINGS.hoje.streakPrefixo}</span>
             {STRINGS.hoje.streak(streak.days)}
           </span>
         ) : null}

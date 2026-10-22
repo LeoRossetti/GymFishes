@@ -54,7 +54,7 @@ describe('Onboarding', () => {
     expect(createProfile).toHaveBeenCalledWith('user-1', 'Leo')
     expect(await screen.findByText('Escolha seu peixe')).toBeInTheDocument()
     expect(screen.getAllByRole('listitem')).toHaveLength(4)
-    expect(screen.getByRole('button', { name: 'Peixe-dourado' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Kinguio' })).toBeEnabled()
   })
 
   it('picking a fish saves it and offers both group options', async () => {

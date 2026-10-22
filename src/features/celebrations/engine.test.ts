@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { FishId } from '@/features/fish/catalog'
-import { celebrationText, celebrationsFor, present, type Celebration, type DayState } from './engine'
+import { celebrationText, celebrationsFor, present, type DayState } from './engine'
 
 const STARTERS: FishId[] = ['guppy', 'betta', 'goldfish', 'neon']
 
@@ -38,7 +38,9 @@ describe('celebrationsFor', () => {
     expect(celebrationsFor(state({ streakDays: 6 }), state({ streakDays: 7 }))).toEqual([{ kind: 'streak', days: 7 }])
     expect(celebrationsFor(state({ streakDays: 7 }), state({ streakDays: 7 }))).toEqual([])
     expect(celebrationsFor(state({ streakDays: 2 }), state({ streakDays: 3 }))).toEqual([{ kind: 'streak', days: 3 }])
-    expect(celebrationsFor(state({ streakDays: 5 }), state({ streakDays: 31 }))).toEqual([{ kind: 'streak', days: 14 }])
+    expect(celebrationsFor(state({ streakDays: 5 }), state({ streakDays: 20 }))).toEqual([{ kind: 'streak', days: 14 }])
+    expect(celebrationsFor(state({ streakDays: 29 }), state({ streakDays: 30 }))).toEqual([{ kind: 'streak', days: 30 }])
+    expect(celebrationsFor(state({ streakDays: 5 }), state({ streakDays: 31 }))).toEqual([{ kind: 'streak', days: 30 }])
   })
 
   it('fires the lead only on the transition', () => {
@@ -65,18 +67,26 @@ describe('celebrationsFor', () => {
 })
 
 describe('present', () => {
-  it('shows at most one full screen and demotes the other big ones to toasts', () => {
-    const cels: Celebration[] = [
-      { kind: 'unlock', fish: 'pufferfish' },
-      { kind: 'record', ml: 4200 },
-      { kind: 'streak', days: 7 },
-      { kind: 'lead' },
-      { kind: 'litre', litres: 2 },
-    ]
-    const p = present(cels)
+  it('shows at most one full screen and drops everything else while it is up', () => {
+    const p = present([
+      { kind: 'unlock', fish: 'pufferfish' }, { kind: 'record', ml: 4200 },
+      { kind: 'streak', days: 7 }, { kind: 'lead' }, { kind: 'litre', litres: 4 },
+    ])
     expect(p.fullScreen).toEqual({ kind: 'unlock', fish: 'pufferfish' })
-    expect(p.toasts).toEqual([{ kind: 'record', ml: 4200 }, { kind: 'streak', days: 7 }, { kind: 'lead' }])
+    expect(p.toasts).toEqual([])
+    expect(p.lead).toBe(true)
     expect(p.inline).toBeNull()
+  })
+
+  it('a lead with no full screen is still a toast', () => {
+    const p = present([{ kind: 'lead' }])
+    expect(p.fullScreen).toBeNull()
+    expect(p.toasts).toEqual([{ kind: 'lead' }])
+    expect(p.lead).toBe(true)
+  })
+
+  it('lead is false when nobody took the lead', () => {
+    expect(present([{ kind: 'record', ml: 4200 }]).lead).toBe(false)
   })
 
   it('shows the litre inline only when it is alone', () => {
@@ -84,12 +94,13 @@ describe('present', () => {
     expect(present([{ kind: 'lead' }, { kind: 'litre', litres: 2 }])).toEqual({
       fullScreen: null,
       toasts: [{ kind: 'lead' }],
+      lead: true,
       inline: null,
     })
   })
 
   it('is all empty for no celebrations', () => {
-    expect(present([])).toEqual({ fullScreen: null, toasts: [], inline: null })
+    expect(present([])).toEqual({ fullScreen: null, toasts: [], lead: false, inline: null })
   })
 })
 

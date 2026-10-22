@@ -44,6 +44,22 @@ describe('AppShell', () => {
     expect(screen.getByText('perfil ok')).toBeInTheDocument()
   })
 
+  it('replaces the main element when the route changes so tabs open at the top', async () => {
+    renderWithProviders(
+      <Routes>
+        <Route element={<AppShell />}>
+          <Route path="/hoje" element={<p>hoje ok</p>} />
+          <Route path="/perfil" element={<p>perfil ok</p>} />
+        </Route>
+      </Routes>,
+      { route: '/hoje' },
+    )
+    const before = document.querySelector('main')
+    await userEvent.click(screen.getByRole('link', { name: /Perfil/ }))
+    expect(screen.getByText('perfil ok')).toBeInTheDocument()
+    expect(document.querySelector('main')).not.toBe(before)
+  })
+
   it('shows the update bar inside the shell when a new build is waiting', () => {
     update.ready = true
     renderWithProviders(
@@ -92,5 +108,22 @@ describe('AppShell', () => {
     const nav = screen.getByRole('navigation', { name: 'Abas' })
     expect(main.compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(bar.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('reopening the sheet gives a fresh dialog instance', async () => {
+    renderWithProviders(
+      <Routes>
+        <Route element={<AppShell />}>
+          <Route path="/hoje" element={<p>hoje ok</p>} />
+        </Route>
+      </Routes>,
+      { route: '/hoje' },
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Registrar água' }))
+    const first = await screen.findByRole('dialog', { name: 'Registrar água' })
+    await userEvent.click(screen.getByRole('button', { name: 'Fechar' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Registrar água' }))
+    const dialogs = await screen.findAllByRole('dialog', { name: 'Registrar água' })
+    expect(dialogs[dialogs.length - 1]).not.toBe(first)
   })
 })

@@ -37,7 +37,9 @@ export function Ranking() {
         <PeriodControl period={shown} today={today} firstDay={firstDay} onChange={setPeriod} />
         <Standings rows={rows} members={members} userId={userId} />
       </section>
-      <StatsCompare members={members} userId={userId} stats={stats} />
+      {shown.kind !== 'day' && rows.some((r) => r.ml > 0) ? (
+        <StatsCompare members={members} userId={userId} stats={stats} />
+      ) : null}
     </div>
   )
 }

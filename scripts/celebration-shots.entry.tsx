@@ -24,11 +24,12 @@ const SAMPLES: Record<string, FullScreenCelebration> = {
 
 const kind = new URLSearchParams(location.search).get('kind') ?? 'unlock'
 const celebration = SAMPLES[kind] ?? SAMPLES.unlock!
+const lead = new URLSearchParams(location.search).get('lead') === '1'
 
 function Stage() {
   const [shown, setShown] = useState(false)
   window.__start = () => setShown(true)
-  return shown ? <CelebrationScreen celebration={celebration} onClose={() => {}} onChoose={() => {}} /> : null
+  return shown ? <CelebrationScreen celebration={celebration} lead={lead} onClose={() => {}} onChoose={() => {}} /> : null
 }
 
 createRoot(document.getElementById('root')!).render(<Stage />)

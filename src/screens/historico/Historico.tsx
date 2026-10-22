@@ -25,6 +25,7 @@ export function Historico() {
   if (!userId || !groupId) return null
 
   const shown = memberId ?? userId
+  const firstDay = firstRegisterDay(entries)
   const stats = statsFor(entries, month, today, shown)
   const title = formatMonthTitle(month.start, today)
 
@@ -54,6 +55,7 @@ export function Historico() {
             label={title}
             prevLabel={STRINGS.historico.mesAnterior}
             nextLabel={STRINGS.historico.proximoMes}
+            prevDisabled={firstDay !== undefined && containsDay(month, firstDay)}
             nextDisabled={containsDay(month, today)}
             onPrev={() => goToMonth(-1)}
             onNext={() => goToMonth(1)}
@@ -63,7 +65,7 @@ export function Historico() {
           period={month}
           totals={totalsByDay(entries, month, shown)}
           today={today}
-          firstDay={firstRegisterDay(entries)}
+          firstDay={firstDay}
           selected={selected}
           onSelect={setSelected}
         />

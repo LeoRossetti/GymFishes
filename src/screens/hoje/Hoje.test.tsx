@@ -79,5 +79,6 @@ describe('Hoje', () => {
   it('shows the streak chip once you registered today', () => {
     renderHoje()
     expect(screen.getByText('1 dia')).toBeInTheDocument()
+    expect(screen.getByText('1 dia')).toHaveTextContent('Sequência de 1 dia')
   })
 })

@@ -50,11 +50,16 @@ describe('theme (spec M7 §7.1)', () => {
       throw new Error('blocked')
     })
     expect(readStoredTheme()).toBe('fundo-do-mar')
-    expect(() => storeTheme('tinta')).not.toThrow()
+    expect(() => storeTheme('aquario')).not.toThrow()
     const { result } = renderHook(() => useTheme())
-    act(() => result.current.setTheme('tinta'))
-    expect(result.current.theme).toBe('tinta')
-    expect(document.documentElement.dataset.theme).toBe('tinta')
+    act(() => result.current.setTheme('aquario'))
+    expect(result.current.theme).toBe('aquario')
+    expect(document.documentElement.dataset.theme).toBe('aquario')
+  })
+
+  it('a stored id that no longer exists falls back to the default theme', () => {
+    localStorage.setItem(THEME_STORAGE_KEY, 'tinta')
+    expect(readStoredTheme()).toBe('fundo-do-mar')
   })
 
   it('useTheme persists the pick and applies it', () => {

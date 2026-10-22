@@ -21,13 +21,19 @@ e desde o início — com peixinhos que sobem conforme a água enche. 🐠
 - 📱 Feito para celular — instala direto na tela de início do iPhone
 - 🇧🇷 Todo em português
 - 🏆 Ranking diário, semanal, mensal e total
-- 🐡 Treze peixes desenhados: quatro para começar e nove que você ganha com conquistas simples
-- 🎨 Seis temas escuros para escolher no Perfil
+- 🐡 Dezoito peixes desenhados: quatro para começar e catorze que você ganha com conquistas, num caminho de uns quatro meses
+- 🎨 Cinco temas escuros para escolher no Perfil
 - ✈️ Funciona até sem internet — sincroniza quando a conexão voltar
+
+## 📲 Como instalar no celular
+
+- 🍎 iPhone (Safari): toque em Compartilhar e depois em Adicionar à Tela de Início
+- 🤖 Android (Chrome): menu ⋮ e depois Instalar app — ou o botão "Instalar o app" no Perfil
+- 💻 Computador: clique no ícone de instalar na barra de endereço do Chrome ou do Edge
 
 ## 🚀 Como rodar no computador
 
-Você só precisa do [Node.js](https://nodejs.org) (versão 20 ou mais nova).
+Você só precisa do [Node.js](https://nodejs.org) (versão 22 ou mais nova).
 
 ```bash
 npm install                 # baixa as dependências
@@ -45,11 +51,15 @@ Para rodar o teste ponta a ponta (abre o app num iPhone simulado e registra 500 
 
 ```
 src/
+  app/        casca do app: rotas, barra de abas, guarda de login
   screens/    as telas do app (Hoje, Ranking, Histórico, Perfil…)
   features/   cada funcionalidade (registros, garrafas, grupo, peixes…)
   lib/        lógica pura: datas, períodos, formatação
   ui/         botões e componentes visuais básicos
-  styles/     cores dos seis temas e estilos globais
+  styles/     cores dos cinco temas e estilos globais
+e2e/          teste ponta a ponta
+scripts/      ferramentas de desenvolvimento: folha de peixes, GIFs das celebrações
+public/       ícones e manifesto do PWA
 supabase/     banco de dados (mudanças no banco)
 docs/         especificação e planos do projeto
 ```
@@ -60,8 +70,12 @@ docs/         especificação e planos do projeto
 |---|---|
 | `npm run dev` | abre o app para desenvolver |
 | `npm run test:run` | roda os testes |
+| `npm run test` | roda os testes e fica de olho nas mudanças (modo watch) |
+| `npm run typecheck` | confere se os tipos do código estão certos |
 | `npm run build` | gera a versão final |
-| `npm run fish:sheet` | desenha os 13 peixes numa imagem para conferir |
+| `npm run preview` | abre a versão final gerada pelo build |
+| `npm run e2e` | roda o teste ponta a ponta num iPhone simulado |
+| `npm run fish:sheet` | desenha os 18 peixes numa imagem para conferir |
 | `npm run celebration:shots` | grava as celebrações em GIF para conferir |
 
 Detalhes técnicos (banco de dados, decisões de design) estão na

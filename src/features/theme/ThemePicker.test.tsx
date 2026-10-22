@@ -10,10 +10,10 @@ describe('ThemePicker (spec M7 §7.4)', () => {
     document.documentElement.removeAttribute('data-theme')
   })
 
-  it('offers the six themes by name with the current one pressed', () => {
+  it('offers the five themes by name with the current one pressed', () => {
     render(<ThemePicker />)
     expect(screen.getByRole('heading', { name: 'Tema' })).toBeInTheDocument()
-    const names = ['Fundo do mar', 'Tinta', 'Aquário', 'Meia-noite', 'Areia', 'Breu']
+    const names = ['Fundo do mar', 'Aquário', 'Meia-noite', 'Areia', 'Breu']
     for (const name of names) expect(screen.getByRole('button', { name })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Fundo do mar' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getAllByRole('button', { pressed: true })).toHaveLength(1)

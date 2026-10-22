@@ -34,14 +34,14 @@ export function Standings({ rows, members, userId }: Props) {
             </span>
             <Fish variant={fishOf(member?.fish_variant ?? '')} size={28} state="still" />
             <span
-              className={`w-24 shrink-0 truncate text-[13px] font-extrabold ${ACCENT_TEXT[accentOf(member?.accent ?? 'blue')]}`}
+              className={`w-24 shrink-0 text-[13px] font-extrabold leading-tight break-words ${ACCENT_TEXT[accentOf(member?.accent ?? 'blue')]}`}
             >
               {name}
             </span>
             <span className="h-2 flex-1 overflow-hidden rounded-[99px] bg-surface-2">
               <span className="block h-full rounded-[99px] bg-water" style={{ width: `${Math.round(r.share * 100)}%` }} />
             </span>
-            <span className="shrink-0 text-[17px] font-extrabold tracking-[-0.4px] text-water">
+            <span className="min-w-[4.5rem] shrink-0 text-right tabular-nums text-[17px] font-extrabold tracking-[-0.4px] text-water">
               {formatVolume(r.ml)}
             </span>
           </li>

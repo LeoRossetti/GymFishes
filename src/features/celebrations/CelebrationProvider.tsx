@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { AnimatePresence } from 'motion/react'
 import { useQueryClient } from '@tanstack/react-query'
 import type { Entry } from '@/features/entries/cache'
 import { ALL_FISH_AVAILABLE, type FishId } from '@/features/fish/catalog'
@@ -38,7 +39,7 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   const { userId, members } = useGroupData()
   const client = useQueryClient()
   const toast = useToast()
-  const [full, setFull] = useState<FullScreenCelebration | null>(null)
+  const [full, setFull] = useState<{ celebration: FullScreenCelebration; lead: boolean } | null>(null)
   const [inline, setInline] = useState<string | null>(null)
   const inlineTimer = useRef<number | undefined>(undefined)
 
@@ -57,8 +58,9 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
       const stored = loadSeenUnlocks() ?? b.unlocked
       const seen = ALL_FISH_AVAILABLE ? a.unlocked : new Set([...stored].filter((f) => b.unlocked.has(f)))
       const shown = present(celebrationsFor({ ...b, unlocked: seen }, a))
-      saveSeenUnlocks(new Set([...seen, ...a.unlocked]))
-      if (shown.fullScreen) setFull(shown.fullScreen)
+      // only the fish that got the screen is spent; outranked ones are celebrated at the next register
+      saveSeenUnlocks(new Set([...seen, ...(shown.fullScreen?.kind === 'unlock' ? [shown.fullScreen.fish] : [])]))
+      if (shown.fullScreen) setFull({ celebration: shown.fullScreen, lead: shown.lead })
       if (shown.toasts.length > 0) toast(shown.toasts.map(celebrationText).join(STRINGS.celebracoes.separador))
       if (shown.inline) {
         setInline(celebrationText(shown.inline))
@@ -87,7 +89,11 @@ export function CelebrationProvider({ children }: { children: ReactNode }) {
   return (
     <CelebrationContext.Provider value={value}>
       {children}
-      {full ? <CelebrationScreen celebration={full} onClose={close} onChoose={choose} /> : null}
+      <AnimatePresence>
+        {full ? (
+          <CelebrationScreen key="celebration" celebration={full.celebration} lead={full.lead} onClose={close} onChoose={choose} />
+        ) : null}
+      </AnimatePresence>
     </CelebrationContext.Provider>
   )
 }

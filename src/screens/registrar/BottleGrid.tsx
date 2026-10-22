@@ -34,7 +34,7 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
               <button
                 type="button"
                 onClick={() => dispatch({ type: 'tapBottle', name: b.name, volume_ml: b.volume_ml })}
-                className={`min-h-[44px] w-full rounded-control border p-2 text-left text-[13px]
+                className={`min-h-[44px] w-full rounded-control border-2 p-[7px] text-left text-[13px]
                             font-bold active:bg-line transition-colors duration-100 ${qty > 0 ? 'border-water text-water' : 'border-line text-ink-2'} bg-surface-2`}
               >
                 {b.emoji ? `${b.emoji} ` : ''}
@@ -48,11 +48,11 @@ export function BottleGrid({ userId, bottles, draft, dispatch }: Props) {
                   type="button"
                   aria-label={STRINGS.registrar.menosUm(b.name)}
                   onClick={() => dispatch({ type: 'decBottle', name: b.name, volume_ml: b.volume_ml })}
-                  className="absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center"
+                  className="group absolute -top-3 -right-3 flex h-11 w-11 items-center justify-center"
                 >
                   <span
                     className="rounded-[99px] border border-water bg-water px-2 text-[11px]
-                               font-extrabold text-ink-on-water active:bg-water-edge transition-colors duration-100"
+                               font-extrabold text-ink-on-water group-active:bg-water-edge group-active:duration-0 transition-colors duration-100"
                   >
                     ×{qty}
                   </span>

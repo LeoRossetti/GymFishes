@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
-import { supabase } from '@/lib/supabase'
 import { STRINGS } from '@/lib/strings'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
+import { signUp } from '@/features/auth/api'
 import { validateCredentials, type CredentialErrors } from '@/features/auth/validate'
 
 export function SignUp() {
@@ -24,7 +24,7 @@ export function SignUp() {
 
     setBusy(true)
     try {
-      const { data, error } = await supabase.auth.signUp({ email: email.trim(), password })
+      const { data, error } = await signUp(email.trim(), password)
       if (error) setFailure(STRINGS.erro.generico)
       else if (!data.session) setConfirmacao(true)
     } catch {
@@ -58,7 +58,10 @@ export function SignUp() {
       <Button type="submit" disabled={busy} aria-busy={busy || undefined}>
         {busy ? STRINGS.auth.criandoConta : STRINGS.auth.criarConta}
       </Button>
-      <Link to="/entrar" className="mt-6 block text-center text-[13px] font-bold text-ink-2">
+      <Link
+        to="/entrar"
+        className="mt-3 flex min-h-[44px] items-center justify-center text-[13px] font-bold text-ink-2"
+      >
         {STRINGS.auth.jaTenhoConta}
       </Link>
     </form>
