@@ -77,11 +77,13 @@ export function roots(ids: IdSpace, C: RiverPalette, water: TubeWater, ml = FULL
   const wC: Profile = (t) => 6.4 - 3 * t + node(0.55, 0.6)(t) + foot(t)
   const wFork: Profile = (t) => 4.2 - 1.8 * t + foot(t)
   const all = ml >= 2500
-  return (all ? piece(ids, { body: ribbonPath(Cb, wC, { tip: 'flat' }), fill: back.base, line: back.line, width: 0.7 }) + feet(133, 200, back) : '') +
-    (all ? front(E, wE, [0.3, 0.55, 0.8], [0.2, 0.34, 0.5, 0.7]) + feet(144, 200, c) : '') +
-    (all ? front(B2, wFork, [0.5], [0.3, 0.7]) + feet(130, 200, c) : '') +
+  /** The rest of the fan, from 2,5 L: its own piece name, so it fades in over the two roots already there. */
+  const fan = (draw: () => string) => (all ? `<g data-piece="roots-fan">${draw()}</g>` : '')
+  return fan(() => piece(ids, { body: ribbonPath(Cb, wC, { tip: 'flat' }), fill: back.base, line: back.line, width: 0.7 }) + feet(133, 200, back)) +
+    fan(() => front(E, wE, [0.3, 0.55, 0.8], [0.2, 0.34, 0.5, 0.7]) + feet(144, 200, c)) +
+    fan(() => front(B2, wFork, [0.5], [0.3, 0.7]) + feet(130, 200, c)) +
     front(B, wB, [0.28, 0.5, 0.72], [0.16, 0.28, 0.42, 0.6]) + feet(121, 200, c) +
-    (all ? front(A2, wFork, [0.5], [0.35]) : '') +
+    fan(() => front(A2, wFork, [0.5], [0.35])) +
     front(A, wA, [0.3, 0.5, 0.7, 0.86], [0.14, 0.24, 0.38, 0.54, 0.72]) + feet(102, 200, c)
 }
 

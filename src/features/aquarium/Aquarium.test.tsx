@@ -73,6 +73,14 @@ describe('Aquarium', () => {
     expect(css).not.toContain('[data-piece="bed"]')
   })
 
+  it('at 2,5 L fades in the rest of the root fan, not the roots already there', () => {
+    const { container, rerender } = render(<Tube fish="betta" ml={2000} />)
+    rerender(<Tube fish="betta" ml={2500} />)
+    const css = styleText(container)
+    expect(css).toContain('[data-piece="roots-fan"]')
+    expect(css).not.toContain('[data-piece="roots"]')
+  })
+
   it('under reduced motion shows the scene still: no bubbles, no fade', () => {
     motionPrefs.reduced = true
     const { container, rerender } = render(<Tube fish="betta" ml={1500} />)
