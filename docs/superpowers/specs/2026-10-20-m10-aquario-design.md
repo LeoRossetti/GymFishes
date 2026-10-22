@@ -1,8 +1,9 @@
 # M10 — O tubo como aquário vivo (design)
 
 **Status:** designed with Leo on the canvas, 2026-10-20 to 2026-10-22; every visual decision below was
-approved there. A builder check found two points, both folded in (§3.4 tube width, §6/§7). Awaiting
-Leo's read of this document before a plan is written. Nothing is built.
+approved there. A builder check found two points, both folded in (§3.4 tube width, §6/§7).
+**Approved by Leo as written on 2026-10-22** ("thats good"), including the agent's calls in §7.
+Nothing is built yet.
 **Canvas:** https://claude.ai/artifact/UVfsN759ixhVdhbM4fozNR ("GymFishes M10"), the visual record.
 **Art reference (committed):** [`2026-10-20-m10-aquario/river.mjs`](2026-10-20-m10-aquario/river.mjs) and
 [`reef.mjs`](2026-10-20-m10-aquario/reef.mjs): the approved drawing, as code that generates the SVG. Every
@@ -273,3 +274,5 @@ in." The agent added the anemone (the clownfish's home), kelp, shells, the sea f
 and pulled the reef's colours toward the ocean so the fish leads. Leo: "I think its fine."
 
 **The switch:** "yes, its all fine."
+
+**This document:** "thats good … this right here is approved".
