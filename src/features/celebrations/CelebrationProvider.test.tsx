@@ -154,4 +154,26 @@ describe('CelebrationProvider', () => {
     expect(screen.getByRole('dialog', { name: 'Novo peixe! Tucunaré' })).toBeInTheDocument()
     expect(stored()).toContain('tucunare')
   })
+
+  it('after the M10 update a device that saw the old thirteen welcomes the new ladder one fish per register (fish spec §5.3)', async () => {
+    const OLD_THIRTEEN = ['guppy', 'betta', 'goldfish', 'neon', 'pufferfish', 'clownfish', 'octopus', 'seahorse', 'tambaqui', 'turtle', 'dolphin', 'shark', 'whale']
+    localStorage.setItem(SEEN_UNLOCKS_KEY, JSON.stringify(OLD_THIRTEEN))
+    // 20 days ending yesterday, five noon registers of 500 ml each: 100 registers, a 20-day run, 20 days of 2,5 L.
+    // Met already: clownfish and tambaqui (seen), tucunaré, dourado and barracuda (new). The puffer (no
+    // mornings), the shark (50 L of 200 L) and the whale (20 of 120 days) re-lock.
+    const history = Array.from({ length: 100 }, (_, i) => row(`h${i}`, 'u1', 500, addDays(today, -(Math.floor(i / 5) + 1))))
+    const first = [...history, row('e1', 'u1', 500, today)]
+    renderTrigger(history, first)
+    await userEvent.click(screen.getByRole('button', { name: 'go' }))
+    expect(screen.getAllByRole('dialog')).toHaveLength(1)
+    expect(screen.getByRole('dialog', { name: 'Novo peixe! Tucunaré' })).toBeInTheDocument()
+    expect(screen.queryByText(/Novo peixe! (Dourado|Barracuda)/)).toBeNull()
+    for (const gone of ['octopus', 'seahorse', 'turtle', 'dolphin', 'shark']) expect(stored()).not.toContain(gone)
+    expect(stored()).toEqual(['guppy', 'betta', 'goldfish', 'neon', 'clownfish', 'tambaqui', 'tucunare'])
+    // the next register brings the next fish in ladder order
+    cleanup()
+    renderTrigger(first, [...first, row('e2', 'u1', 100, today)])
+    await userEvent.click(screen.getByRole('button', { name: 'go' }))
+    expect(screen.getByRole('dialog', { name: 'Novo peixe! Dourado' })).toBeInTheDocument()
+  })
 })
