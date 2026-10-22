@@ -418,7 +418,7 @@ real size, the whale last. Ids stay English; the pt-BR name is what the app show
 | Pintado catfish | Pintado | Rio | 60 dias com registro |
 | Pirarucu | Pirarucu | Rio | Sequência de 30 dias |
 | Tuna | Atum | Mar | 45 dias com 2 L |
-| Swordfish | Espadarte | Mar | 400 registros |
+| Sailfish | Agulhão-bandeira | Mar | 400 registros |
 | Shark | Tubarão | Mar | 200 L acumulados |
 | Whale | Baleia | Mar | 120 dias com registro |
 
@@ -436,13 +436,14 @@ targets re-lock some fish earned before M10 once, for example the shark's 50 reg
 condition is an all-time fact, nothing re-locks after this. The fish you wear stays yours in the
 gallery, and a re-locked fish is celebrated again when re-earned (`seen_unlocks`). Four fish were
 dropped, and `fishOf` shows a stored `fish_variant` of one of them as its replacement: seahorse as
-barracuda, octopus as swordfish, turtle as mahi-mahi, dolphin as grouper; any other unknown value
-shows the guppy. The old condition "Registre com uma garrafa" went away with the fish it unlocked.
+barracuda, octopus as sailfish, turtle as mahi-mahi, dolphin as grouper (and `swordfish`, the first
+drawing for the octopus's slot, as the sailfish that replaced it); any other unknown value shows the
+guppy. The old condition "Registre com uma garrafa" went away with the fish it unlocked.
 
 Every fish has a **habitat** (`HABITAT` / `habitatOf` in `catalog.ts`), which picks its tube's
 scene and water colour (§5.1). Nine live in the river (freshwater): guppy, betta, kinguio, neon,
 tucunaré, tambaqui, dourado, pintado, pirarucu. Nine live on the reef (saltwater): clownfish,
-baiacu, barracuda, mahi-mahi, garoupa, atum, espadarte, tubarão, baleia. Changing fish changes
+baiacu, barracuda, mahi-mahi, garoupa, atum, agulhão-bandeira, tubarão, baleia. Changing fish changes
 the scene at once.
 
 ### How unlocks work

@@ -75,13 +75,14 @@ species has a common English name, Portuguese for the Brazilian species (as `tam
 | 9 | `pintado` | Pintado | rio | 60 dias com registro | ~2,3 months |
 | 10 | `pirarucu` | Pirarucu | rio | Sequência de 30 dias | ~1–3 months |
 | 11 | `tuna` | Atum | mar | 45 dias com 2 L | ~2,5 months |
-| 12 | `swordfish` | Espadarte | mar | 400 registros | ~3,3 months |
+| 12 | `sailfish` | **Agulhão-bandeira** | mar | 400 registros | ~3,3 months |
 | 13 | `shark` | Tubarão | mar | 200 L acumulados | ~3,3 months |
 | 14 | `whale` | Baleia | mar | 120 dias com registro | ~4–4,5 months |
 
 Gone: `octopus` (Polvo), `seahorse` (Cavalo-marinho), `turtle` (Tartaruga), `dolphin` (Golfinho). A profile
 that still stores one of them shows its replacement, the swap Leo named: seahorse → barracuda, octopus →
-swordfish, turtle → mahimahi, dolphin → grouper. Any other unknown value stays the guppy, as today. The
+sailfish, turtle → mahimahi, dolphin → grouper; `swordfish`, the first drawing for the octopus's slot (§7), also
+shows the sailfish. Any other unknown value stays the guppy, as today. The
 aquarium's small decor seahorse on the reef's kelp is scenery, not the fish, and stays.
 
 **The order follows the animals' real size** (small reef fish, then the metre-long river fish, then the
@@ -118,10 +119,11 @@ accepted files.
 - Kept as is: the tambaqui.
 - Approved and ported: pintado, dourado, tucunaré, pirarucu.
 - New, saltwater: atum (yellowfin tuna, *Thunnus albacares*), barracuda (great barracuda, *Sphyraena
-  barracuda*), espadarte (swordfish, *Xiphias gladius*), mahi-mahi (*Coryphaena hippurus*, adult bull), garoupa
+  barracuda*), agulhão-bandeira (sailfish, *Istiophorus platypterus*; it replaced a first swordfish drawing, §7),
+  mahi-mahi (*Coryphaena hippurus*, adult bull), garoupa
   (dusky grouper, *Epinephelus marginatus*, Brazil's garoupa-verdadeira).
 - Redrawn in full (Leo's five worst, minus the polvo that leaves): baiacu, tubarão (great white), peixe-palhaço
-  (*Amphiprion ocellaris*), kinguio (fantail goldfish).
+  (*Amphiprion ocellaris*), kinguio (the ryukin form; a first fantail drawing was redrawn after Leo's review, §7).
 - Redrawn at the same bar (Leo's "kinda meh"): guppy (male), betta (male halfmoon), neon (*Paracheirodon
   innesi*), baleia (humpback, *Megaptera novaeangliae*, the jubarte of Abrolhos).
 
@@ -212,6 +214,10 @@ That is the welcome to the new collection, not a storm.
 - The roster: keep all nine freshwater; add a tuna; barracuda for the seahorse, swordfish for the octopus,
   mahi-mahi for the turtle, grouper for the dolphin; "they need to have a lot of effort put in them".
 - Achievements: harder, better gamification, not grindy, every fish within "4-5 months max".
+- Review of the eighteen (2026-10-22): "the swordfish is wrong but its my fault, it should be a sailfish. The
+  kinguio is also wrong and shitty try making it based on other images from the internet." The sailfish took the
+  swordfish's slot and achievement; the kinguio was redrawn from new photos, as a red-orange ryukin.
+- The sailfish's name: "I prefer agulhão-bandeira" (over "Peixe-vela").
 
 ## 8. The agent's calls, for Leo to check
 
@@ -221,12 +227,14 @@ That is the welcome to the new collection, not a storm.
 - **Re-lock accepted** (§5.3) instead of storing unlocks; the welcome unlock screens after the update.
 - **Progress in the gallery** ("12 de 30" with a slim bar) and the collection count, the only new UI; streak fish
   count the current run (§5.2).
-- **Names:** "Espadarte" (the Brazilian name for the swordfish; "peixe-espada" is a different fish),
-  "Mahi-mahi" as Leo wrote it (its other Brazilian name, dourado-do-mar, would clash with the river Dourado),
-  "Garoupa", "Atum", "Barracuda", "Pirarucu" (for the arapaima).
+- **Names:** "Mahi-mahi" as Leo wrote it (its other Brazilian name, dourado-do-mar, would clash with the river
+  Dourado), "Garoupa", "Atum", "Barracuda", "Pirarucu" (for the arapaima).
 - **Species picks** where Leo named only the animal: yellowfin tuna, great barracuda, dusky grouper, the great
-  white for the shark, the humpback for the whale, the fantail for the kinguio, the checkered puffer family for
-  the baiacu (the agent drawing it confirms the most recognisable one).
+  white for the shark, the humpback for the whale, the checkered puffer family for the baiacu (the agent drawing
+  it confirms the most recognisable one); for the kinguio, after Leo turned down the fantail, the ryukin: in
+  Brazilian pet shops "kinguio" is the round, double-tailed fancy goldfish (the slim single-tailed one is sold as
+  "cometa"), and the ryukin, deep body, shoulder hump and long double tail, is its plainest form, with no wen to
+  read as a blob at the tube's size.
 - **Dropped fish map to their replacements** for anyone wearing them.
 
 ## 9. Left to the builder
