@@ -85,7 +85,8 @@ against screenshots of the production build on a WebKit iPhone viewport (2026-09
 │                           overscroll-behavior: contain; -webkit-overflow-scrolling: touch
 │   └── the active screen (header scrolls with its content — no sticky headers)
 ├── update bar              a static row above the tab bar, only while an update waits
-└── tab bar                 56px + env(safe-area-inset-bottom); never position: fixed
+└── tab bar                 56px + env(safe-area-inset-bottom); never position: fixed;
+                            relative z-10 (2026-10-22) so the raised plus paints over the scroll region
 ```
 
 - `html, body { height: 100%; overflow: hidden; }`. The document never scrolls.
@@ -129,6 +130,10 @@ against screenshots of the production build on a WebKit iPhone viewport (2026-09
   Press state: `--line` background for 100ms, as today.
 - The plus: a 52px circle, `--water` fill, 3px `--water-edge` bottom edge, `--ink-on-water`
   plus glyph at 26px, raised 14px above the bar's top border, `aria-label` "Registrar água".
+- (2026-10-22) The raised 14px sit over the scroll region, so the bar carries `relative z-10`.
+  Without it the screen scrolling behind covered that part: all of it in WebKit, where the scroll
+  region is its own composited layer, and positioned pieces (segmented thumbs, theme tiles) in
+  Chromium. Sheets (z-40) and celebrations (z-50) stay above the bar.
 - `TabRoute.icon` changes from `string` to a component `(props: { active: boolean }) =>
   ReactNode`. The route table stays the single source of truth for both routing and the bar.
 
@@ -260,9 +265,11 @@ Any value tuned during implementation stays inside these bounds; the test is the
 
 ### 8.1 Header
 
-"Hoje" at 24px / 800, the date at 13px / 500 `--ink-2` beneath it. On the right, the avatar:
-a 44px circle, `--surface-2` fill, 2px border in the member's accent, the fish at 30px inside.
-Tap → Perfil, as today.
+"Hoje" at 24px / 800, the date at 13px / 500 `--ink-2` beneath it. On the right there was the
+avatar: a 44px circle, `--surface-2` fill, 2px border in the member's accent, the fish at 30px
+inside, tap → Perfil. It was removed on 2026-10-22 at Leo's request, since Perfil is a tab. All
+four tabs now share one header (main spec §5): the title, Hoje's date, and the sync pill at the
+right end of the title row while it shows.
 
 ### 8.2 Hero card
 
@@ -376,7 +383,7 @@ type FishArt = {
 | Placement | Today | M7 |
 |---|---|---|
 | Hoje tube | 44 | 56 |
-| Hoje header avatar | 36 | 30 inside a 44px ring |
+| Hoje header avatar | 36 | 30 inside a 44px ring (removed 2026-10-22) |
 | Standings row | 22 | 28 |
 | Perfil "Seu peixe" | 72 | 120 |
 | Gallery tile | 56 in a 4-column grid | 140 in a 2-column grid; name and condition under it |
