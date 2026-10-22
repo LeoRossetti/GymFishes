@@ -50,7 +50,7 @@ describe('riverInAir', () => {
   it('has the roots from 2 L on', () => {
     expect(riverInAir(1999, water(1999), idSpace('a'))).toBe('')
     const air = riverInAir(2000, water(2000), idSpace('a'))
-    expect(air).not.toBe('')
+    expect(air.startsWith('<g data-piece="roots">')).toBe(true)
     expect(air).not.toMatch(/NaN|undefined/)
     for (const id of idsIn(air)) expect(id.startsWith('a')).toBe(true)
   })

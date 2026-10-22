@@ -3,7 +3,7 @@
 **Status:** designed with Leo on the canvas, 2026-10-20 to 2026-10-22; every visual decision below was
 approved there. A builder check found two points, both folded in (§3.4 tube width, §6/§7).
 **Approved by Leo as written on 2026-10-22** ("thats good"), including the agent's calls in §7.
-Nothing is built yet.
+Built on branch m10 (2026-10-22): `src/features/aquarium/`, wired into `src/screens/hoje/MemberTube.tsx`.
 **Canvas:** https://claude.ai/artifact/UVfsN759ixhVdhbM4fozNR ("GymFishes M10"), the visual record.
 **Art reference (committed):** [`2026-10-20-m10-aquario/river.mjs`](2026-10-20-m10-aquario/river.mjs) and
 [`reef.mjs`](2026-10-20-m10-aquario/reef.mjs): the approved drawing, as code that generates the SVG. Every

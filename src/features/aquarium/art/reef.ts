@@ -89,9 +89,10 @@ export function reefScene(ml: number, water: TubeWater, surfaceY: number, ids: I
  * The chain alone, for the air above the water (it comes from a boat above, like the mangrove's tree).
  * Same arguments as `riverInAir`, so the tube can call either. The chain draws no clip ids and no
  * water-derived tones today, but the caller still gives it its own `IdSpace`, with a prefix distinct from
- * the scene's (the reference used `<prefix>r` for the scene and `<prefix>c` for the chain).
+ * the scene's (the reference used `<prefix>r` for the scene and `<prefix>c` for the chain). Same piece name
+ * as the underwater part, so both halves fade in together.
  */
 export function reefInAir(ml: number, _water: TubeWater, _ids: IdSpace): string {
   if (ml < 2000) return ''
-  return chain(R)
+  return `<g data-piece="chain">${chain(R)}</g>`
 }

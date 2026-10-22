@@ -205,6 +205,21 @@ floor by a few pixels, M9b). Below the tube: the total ("1,8 L") and the name
 ("VOCÊ", "ELA"). Rising bubbles were tried in M7 and removed the same day at Leo's request. (M9) The fish is drawn only
 once the water covers it (35px of the 220px tube, 480 ml at 3 L); below that the tube shows water alone. (M9b) The fish lives inside the water block, 6px under the crest, so it follows the level's own spring; an empty tube shows no crest, and the first drink still rises.
 
+(M10) **The tube is a small aquarium** (aquarium spec `2026-10-20-m10-aquario-design.md`). Under "Com
+cenário" (§5.5) the tube's water moves in OKLab from the theme's water to river green (`#2A9C80`,
+crest `#6ACDB2`) or reef blue (`#1769C2`, crest `#4F98E6`) by 3 L, after the habitat of the fish
+that member wears (§6). The tube's root carries the mix as inline `--color-water` /
+`--color-water-hi`, so the body, both crests and the reduced-motion band take it and nothing
+outside the tube changes. A river or a reef builds up one step every 0,5 L: plain water at 0,5 L,
+floor pieces first, mid-water pieces last and only once the water covers them. The drawing is the
+tube's inner box (156×216 px) anchored to the floor and squeezed to the tube's real width. Back to
+front: water, crest, scene (clipped to the water), the mangrove roots or the anchor chain above the
+water (clipped to the air, 1,5 px into the water so no seam shows), the fish. A few bubbles rise in
+irregular bursts from up to five sources (they return, few and irregular, at Leo's request). "Só
+água" is the plain tube above. With either choice the fish rides up in shallow water: its top sits
+`min(6, water − 35)` px under the crest, so it never sinks into the floor, and the water is measured
+in the tube's inner 216px, so the fish shows from 486 ml at 3 L.
+
 The tube's full height is scaled to `max(3000, highestTotalToday)` ml, so the columns stay
 comparable and nobody's ever pinned at 100%. Since there are no goals, the scale is
 relative, not a target.
@@ -348,12 +363,17 @@ Settings and identity. Nothing competitive lives here.
   the partner sees the change.
 - **Nome** — inline editable.
 - **Cor** — a row of six flat accent swatches used for your name label under the tube
-  and your avatar ring. The water itself is always `--water` blue — it's water.
+  and your avatar ring. The water itself is always `--water` blue — it's water. (M10: under "Com
+  cenário" each tube's water shifts toward its fish's habitat colour, §5.1.)
 - **Tema** (M7) — five previewing tiles in a 3-column grid, each painted in that theme's own
   background, card and water colour, not the current theme's. Tapping applies it
   immediately, no save button. Lives per device in `localStorage`, not synced. Default
   "Fundo do mar". See the M7 spec §7 for the five token sets and the picker layout (M9: Tinta removed; a stored `tinta` falls back to
   Fundo do mar).
+- **Tubo** (M10) — right under Tema, the two-option selector "Com cenário" (default) / "Só água".
+  Per device in `localStorage` (`gymfishes:tube`), like the theme, and it applies to every tube that
+  device shows, the partner's included. "Só água" is the plain tube: the theme's water, no scene, no
+  bubbles, no colour shift (§5.1).
 - **Instalar o app** (M9) — a ghost button between the group card and Sair, shown only while the browser has
   offered `beforeinstallprompt` and the app is not standalone; tapping it opens the browser's prompt. On an iPhone
   browser, not standalone, one line replaces it: "No iPhone: Compartilhar → Adicionar à Tela de Início".
@@ -399,6 +419,11 @@ that follows. This keeps every condition derived from registers and evaluated in
 because the photo path only lands after the upload, which would delay the popup to the next
 register. Monthly wins, the old Tubarão and Baleia conditions, are gone: they cannot be earned
 inside a month, and `monthsWon` went with them.
+
+(M10) Every fish has a **habitat** (`HABITAT` / `habitatOf` in `catalog.ts`), which picks its
+tube's scene and water colour (§5.1): freshwater, a river (guppy, betta, goldfish, neon, tambaqui);
+saltwater, a reef (pufferfish, clownfish, octopus, seahorse, turtle, dolphin, shark, whale).
+Changing fish changes the scene at once.
 
 ### How unlocks work
 
@@ -535,6 +560,11 @@ remain distinguishable from each other in the tubes; unaffected by the theme.
   1px `--line` border and, on primary buttons, a 3–4px solid `--water-edge` bottom edge.
 - **One accent at a time.** Beyond blue, only green (confirm), yellow (streak/first) and
   red (delete) exist. If a screen needs a fourth, the screen is wrong.
+- (M10) **Two documented palettes** sit outside the tokens: each fish's species palette (§6 Art)
+  and the aquarium's decor palettes, hex constants per habitat in `features/aquarium/art/river.ts`
+  and `reef.ts` (the reef's tones pulled toward the ocean blue). The far bank, the far reef, the
+  school and the jellyfish derive their tones from the tube's current water. Flat tones and a
+  darkest-tone outline, like the fish: no gradients, glow or shadows.
 - **Numbers carry the emphasis.** Totals are the largest, heaviest text on any screen.
 - **Radius:** 16px cards and sheets, 12px controls, 10px keypad keys, 99px pills.
 - (M9) Segmented controls use 15px labels; keypad keys are 48px tall with 20px / 800 digits; the toast keeps its
@@ -567,10 +597,12 @@ remain distinguishable from each other in the tubes; unaffected by the theme.
 | Number count-up | 1000 ms | ease-out |
 | Water surface wave | continuous loop | linear, see below |
 | Celebration sequence | 900–1400 ms | `motion` spring + stagger |
+| (M10) Aquarium bubble | one seeded burst per source every 8 s | linear rise, sway ease-in-out |
+| (M10) Aquarium piece joins | 400 ms | ease-out, opacity only |
 
 `motion` handles component and layout transitions and the celebration sequences; the water
 and the fish idle loop are CSS keyframes. `prefers-reduced-motion` collapses everything to a
-120ms crossfade. (M9b) The count-up starts from the number on screen, never from the previous target; the register sheet crossfades under reduced motion too. (M10) The water lands in a full second and the number counts with it, after Leo saw 0.6 s against 0.8 s on the canvas and asked for slower still (2026-10-20).
+120ms crossfade. (M9b) The count-up starts from the number on screen, never from the previous target; the register sheet crossfades under reduced motion too. (M10) The water lands in a full second and the number counts with it, after Leo saw 0.6 s against 0.8 s on the canvas and asked for slower still (2026-10-20). (M10) The aquarium's bubbles are CSS keyframes on `transform` and `opacity` only, rising at `30 + 6 × radius` px/s; they pause with the waves and are left out under reduced motion, where the scene shows still. When a drink brings new pieces while Hoje is open they fade in over 400 ms; pieces already earned when Hoje opens are simply there, and nothing fades under reduced motion.
 
 ### Water surface
 

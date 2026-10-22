@@ -1,5 +1,5 @@
-// One tube's aquarium markup: the scene under the water, the air above it, and the bubbles' keyframes.
-// Memoized, so re-renders never rebuild paths.
+// One tube's aquarium markup: the scene under the water, its bubbles, the air above it, and the bubbles'
+// keyframes. Memoized, so re-renders never rebuild paths.
 import type { Habitat } from '../fish/catalog'
 import { reefInAir, reefScene, REEF_SOURCES } from './art/reef'
 import { idSpace } from './art/prims'
@@ -8,7 +8,8 @@ import { bubbleField } from './bubbles'
 import { tubeWater, type TubeWater } from './color'
 import { surfaceYOf } from './ladder'
 
-export type SceneMarkup = { water: TubeWater; scene: string; air: string; css: string }
+/** `bubbles` and their keyframes in `css` stay apart from the pieces: reduced motion leaves them out. */
+export type SceneMarkup = { water: TubeWater; scene: string; bubbles: string; air: string; css: string }
 
 const CACHE_SIZE = 16
 const cache = new Map<string, SceneMarkup>()
@@ -31,7 +32,7 @@ export function buildScene(habitat: Habitat, ml: number, scaleMl: number, start:
   const air = river ? riverInAir(ml, water, idSpace(prefix + 'a')) : reefInAir(ml, water, idSpace(prefix + 'c'))
   const bubbles = bubbleField(ml, water, surfaceY, river ? RIVER_SOURCES : REEF_SOURCES, prefix)
 
-  const built: SceneMarkup = { water, scene: pieces + bubbles.svg, air, css: bubbles.css }
+  const built: SceneMarkup = { water, scene: pieces, bubbles: bubbles.svg, air, css: bubbles.css }
   cache.set(key, built)
   if (cache.size > CACHE_SIZE) cache.delete(cache.keys().next().value as string)
   return built

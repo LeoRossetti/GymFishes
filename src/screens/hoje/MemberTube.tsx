@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { fishTop } from '@/features/aquarium/ladder'
+import { Aquarium, useAquarium, waterVars } from '@/features/aquarium/Aquarium'
+import { fishTop, SCENE_H } from '@/features/aquarium/ladder'
 import { fishOf } from '@/features/fish/catalog'
 import { Fish } from '@/features/fish/Fish'
 import { ACCENT_TEXT, accentOf } from '@/lib/accents'
@@ -18,14 +19,16 @@ type Props = {
   scaleMl: number
 }
 
-/** Tube height in px (matches `h-[220px]` below). */
-export const TUBE_H = 220
 /** Fish width in px — about a third of the tube (spec M7 §8.2). Height follows the 1.6:1 art box. */
 const FISH_W = 56
 export const FISH_H = FISH_W * 0.625
 
 export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl }: Props) {
   const pct = Math.min(100, (totalMl / scaleMl) * 100)
+  // the water is a share of the tube's inner box (220 px less the 2 px border), where the scene is drawn too
+  const waterPx = (pct / 100) * SCENE_H
+  const fish = fishOf(fishVariant)
+  const aquarium = useAquarium(fish, totalMl, scaleMl)
   const reduced = useReducedMotion()
   const spring = reduced
     ? { duration: 0.12 }
@@ -48,7 +51,10 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
 
   return (
     <div className="min-w-[140px] max-w-[160px] flex-1 shrink-0">
-      <div className="relative h-[220px] overflow-hidden rounded-card border-2 border-line bg-surface-2">
+      <div
+        className="relative h-[220px] overflow-hidden rounded-card border-2 border-line bg-surface-2"
+        style={aquarium ? waterVars(aquarium.markup.water) : undefined}
+      >
         <motion.div className="absolute inset-x-0 bottom-0" animate={{ height: `${pct}%` }} transition={spring}>
           {totalMl > 0 ? (
             <span
@@ -62,13 +68,10 @@ export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl
               <WaveSurface />
             </span>
           ) : null}
-          {(pct / 100) * TUBE_H >= FISH_H ? (
-            <span
-              aria-hidden
-              className="absolute left-1/2 -translate-x-1/2"
-              style={{ top: fishTop((pct / 100) * TUBE_H, FISH_H) }}
-            >
-              <Fish variant={fishOf(fishVariant)} size={FISH_W} state="idle" />
+          {aquarium ? <Aquarium {...aquarium} /> : null}
+          {waterPx >= FISH_H ? (
+            <span aria-hidden className="absolute left-1/2 -translate-x-1/2" style={{ top: fishTop(waterPx, FISH_H) }}>
+              <Fish variant={fish} size={FISH_W} state="idle" />
             </span>
           ) : null}
           <div className="h-full w-full bg-water" />

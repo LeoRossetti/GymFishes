@@ -53,6 +53,7 @@ describe('buildScene', () => {
     expect(buildScene('fresh', 1500, 3000, START, 't').air).toBe('')
     const plain = buildScene('fresh', 500, 3000, START, 't')
     expect(plain.scene).toBe('')
+    expect(plain.bubbles).toBe('')
     expect(plain.css).toBe('')
   })
 
@@ -74,7 +75,9 @@ describe('buildScene', () => {
     expect(idsIn(s.scene).filter((id) => idsIn(s.air).includes(id))).toEqual([])
   })
 
-  it('puts the bubbles in the scene', () => {
-    expect(count(buildScene('fresh', 3000, 3000, START, 'a').scene, 'aq-bubble')).toBeGreaterThan(0)
+  it('keeps the bubbles apart from the pieces, so reduced motion can leave them out', () => {
+    const s = buildScene('fresh', 3000, 3000, START, 'a')
+    expect(count(s.bubbles, 'aq-bubble')).toBeGreaterThan(0)
+    expect(count(s.scene, 'aq-bubble')).toBe(0)
   })
 })

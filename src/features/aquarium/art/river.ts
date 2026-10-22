@@ -80,9 +80,10 @@ export function riverScene(ml: number, water: TubeWater, surfaceY: number, ids: 
 /**
  * The roots alone, for the air above the water: once the roots arrive they run from the top of the tube,
  * through the surface, down to the floor (the tree stands above the water). Shown clipped to the part of
- * the tube above the water; the underwater part stays in the scene in its paint order.
+ * the tube above the water; the underwater part stays in the scene in its paint order. Same piece name as the
+ * underwater part, so both halves fade in together.
  */
 export function riverInAir(ml: number, water: TubeWater, ids: IdSpace): string {
   if (ml < 2000) return ''
-  return roots(ids, C, water, ml)
+  return `<g data-piece="roots">${roots(ids, C, water, ml)}</g>`
 }

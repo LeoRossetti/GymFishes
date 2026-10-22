@@ -92,6 +92,10 @@ nav a {
 [data-waves='paused'] .fish-bob { animation-play-state: paused; }
 [data-waves='paused'] .aq-bubble,
 [data-waves='paused'] .aq-bubble > g { animation-play-state: paused; }
+/* A piece a drink brings fades in (M10 §3.6); each tube's <style> names its new pieces. */
+@keyframes aq-fade {
+  from { opacity: 0; }
+}
 .fish-locked path,
 .fish-locked circle { fill: var(--color-ink-3); stroke: none; }
 @media (prefers-reduced-motion: reduce) {

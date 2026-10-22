@@ -54,7 +54,7 @@ describe('reefInAir', () => {
   it('has the chain from 2 L on', () => {
     expect(reefInAir(1999, water(1999), idSpace('c'))).toBe('')
     const air = reefInAir(2000, water(2000), idSpace('c'))
-    expect(air).not.toBe('')
+    expect(air.startsWith('<g data-piece="chain">')).toBe(true)
     expect(air).not.toMatch(/NaN|undefined/)
     for (const id of idsIn(air)) expect(id.startsWith('c')).toBe(true)
   })
