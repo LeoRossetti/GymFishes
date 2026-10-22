@@ -187,12 +187,23 @@ center "+" is not a tab but a button.
 └─────────────────────────────────────────────┘
 ```
 
+The "+" rises 14px above the bar's top border, over the screen. The bar stacks above the scroll
+region (`relative z-10`), so content scrolling behind never covers the raised part, in WebKit or
+Chromium, in any theme (2026-10-22: in WebKit the whole cap was hidden behind the scroll region).
+
+**Header** — every tab opens with the same one (`ui/ScreenHeader`): the screen's name at 24px on
+the left, an optional 13px `--ink-2` line under it (only Hoje has one, the date), and the sync
+pill (§14) at the right end of the title row while it shows, so a dropped connection never pushes
+the screen down. Nothing else lives up there: no avatar, no shortcut to Perfil, which is a tab
+(2026-10-22, Leo).
+
 ### 5.1 Hoje
 
 The default screen. Answers *how are we doing right now*.
 
-**Header** — "Hoje" at 24px, the date in full pt-BR ("segunda, 10 de agosto") beneath it, and
-your fish avatar on the right: a 44px circle ringed in your member accent (tap → Perfil).
+**Header** — "Hoje" at 24px, the date in full pt-BR ("segunda, 10 de agosto") beneath it. The fish
+avatar that sat on the right (a 44px circle ringed in your accent, tap → Perfil) was removed on
+2026-10-22 at Leo's request: the Perfil tab already goes there.
 
 **Progress card** — with two members, both tubes render side by side inside the card,
 centred, 16px apart, with no scroll; a third member brings back the horizontally scrollable
@@ -367,7 +378,7 @@ Settings and identity. Nothing competitive lives here.
   collection, the worn fish included: "9 de 18 peixes". The onboarding picker shows no progress.
 - **Nome** — inline editable.
 - **Cor** — a row of six flat accent swatches used for your name label under the tube
-  and your avatar ring. The water itself is always `--water` blue — it's water. (M10: under "Com
+  and in the ranking. The water itself is always `--water` blue — it's water. (M10: under "Com
   cenário" each tube's water shifts toward its fish's habitat colour, §5.1.)
 - **Tema** (M7) — five previewing tiles in a 3-column grid, each painted in that theme's own
   background, card and water colour, not the current theme's. Tapping applies it
@@ -1149,7 +1160,7 @@ src/
     strings.ts  version.ts  contrast.ts (M7)  database.types.ts (generated, never hand-edited)
   styles/
     tokens.css  globals.css
-  ui/                     Button, Field, Segmented, Stepper, Toast, icons.tsx (M7), useCountUp —
+  ui/                     Button, Field, ScreenHeader, Segmented, Stepper, Toast, icons.tsx (M7), useCountUp —
                            a few hand-written primitives, no component library
   test/                   setup.ts utils.tsx (Vitest setup and the render-with-providers helper)
 e2e/                    smoke.spec.ts (Playwright)

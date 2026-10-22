@@ -25,7 +25,9 @@ function Tab({ route }: { route: TabRoute }) {
 /**
  * Four tabs around the floating plus (spec M7 §5). A normal flex row: the shell frame places it
  * under the scroll region, so it is never `position: fixed`. The bottom padding is the home
- * indicator inset and nothing else.
+ * indicator inset and nothing else. `relative z-10` lifts the bar over the scroll region: the
+ * plus rises 14px into it, and without its own layer the screen scrolling behind covers that
+ * part (all of it in WebKit, positioned pieces in Chromium).
  */
 export function TabBar({ onRegister }: { onRegister: () => void }) {
   const half = Math.ceil(TAB_ROUTES.length / 2)
@@ -35,7 +37,7 @@ export function TabBar({ onRegister }: { onRegister: () => void }) {
   return (
     <nav
       aria-label={STRINGS.nav.abas}
-      className="flex shrink-0 items-start border-t border-line bg-bg"
+      className="relative z-10 flex shrink-0 items-start border-t border-line bg-bg"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       {left.map((route) => (

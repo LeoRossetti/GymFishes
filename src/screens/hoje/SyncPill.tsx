@@ -1,12 +1,12 @@
 import { useSyncStatus } from '@/features/entries/queries'
 import { STRINGS } from '@/lib/strings'
 
-/** Yellow = attention without alarm; red stays reserved for delete (spec §8). */
+/** Yellow = attention without alarm; red stays reserved for delete (spec §8). Sits at the right of the screen title. */
 export function SyncPill({ groupId }: { groupId: string | null | undefined }) {
   const { offline, stale } = useSyncStatus(groupId)
   if (!offline && !stale) return null
   return (
-    <span role="status" className="mt-1 inline-block rounded-[99px] border border-streak px-3 py-1 text-[11px] font-bold text-streak">
+    <span role="status" className="shrink-0 rounded-[99px] border border-streak px-3 py-1 text-[11px] font-bold text-streak">
       {offline ? STRINGS.erro.semConexao : STRINGS.sync.desatualizado}
     </span>
   )

@@ -69,12 +69,16 @@ describe('Hoje', () => {
     renderHoje()
     expect(screen.getByText(/Ana ·/)).toBeInTheDocument()
   })
-  it('draws each member fish on the tube and yours in the header', () => {
+  it('draws each member fish once, on their tube', () => {
     renderHoje()
-    // yours twice (header + tube), the partner's once
-    expect(document.querySelectorAll('svg[data-fish="guppy"]')).toHaveLength(2)
+    expect(document.querySelectorAll('svg[data-fish="guppy"]')).toHaveLength(1)
     expect(document.querySelectorAll('svg[data-fish="betta"]')).toHaveLength(1)
     expect(screen.queryByText('🐟')).toBeNull()
+  })
+  it('heads the screen with the title and the date, and no shortcut to Perfil', () => {
+    renderHoje()
+    expect(screen.getByRole('heading', { level: 1, name: 'Hoje' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /perfil/i })).toBeNull()
   })
   it('shows the streak chip once you registered today', () => {
     renderHoje()

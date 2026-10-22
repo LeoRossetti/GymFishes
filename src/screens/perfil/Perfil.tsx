@@ -14,6 +14,7 @@ import { APP_VERSION, BUILD_DATE } from '@/lib/version'
 import { Button } from '@/ui/Button'
 import { Field } from '@/ui/Field'
 import { SyncPill } from '@/screens/hoje/SyncPill'
+import { ScreenHeader } from '@/ui/ScreenHeader'
 import { BottleManager } from './BottleManager'
 import { FishGallery } from './FishGallery'
 import { GroupCard } from './GroupCard'
@@ -58,10 +59,7 @@ export function Perfil() {
 
   return (
     <div className="px-3 pt-2">
-      <header className="mb-4 px-1">
-        <h1 className="text-[24px] font-extrabold tracking-[-0.4px]">{STRINGS.perfil.titulo}</h1>
-        <SyncPill groupId={bootstrap.data?.groupId} />
-      </header>
+      <ScreenHeader title={STRINGS.perfil.titulo} status={<SyncPill groupId={bootstrap.data?.groupId} />} />
 
       {userId ? (
         <FishGallery
