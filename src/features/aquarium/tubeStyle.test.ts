@@ -4,6 +4,7 @@ import { TUBE_STYLE_KEY, readTubeStyle, storeTubeStyle } from './tubeStyle'
 describe('tube style storage', () => {
   afterEach(() => {
     vi.restoreAllMocks()
+    storeTubeStyle('cenario') // a write that lands clears the pick kept in memory
     localStorage.clear()
   })
 
@@ -35,5 +36,13 @@ describe('tube style storage', () => {
       throw new Error('blocked')
     })
     expect(() => storeTubeStyle('cenario')).not.toThrow()
+  })
+
+  it('keeps a pick that storage refused for the rest of the session', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('blocked')
+    })
+    storeTubeStyle('agua')
+    expect(readTubeStyle()).toBe('agua')
   })
 })
