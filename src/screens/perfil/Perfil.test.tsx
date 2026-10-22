@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '@/test/utils'
 import { Perfil } from './Perfil'
@@ -150,6 +150,18 @@ describe('Perfil', () => {
     renderWithProviders(<Perfil />)
     expect(screen.getByRole('heading', { name: 'Tema' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Aquário' })).toBeInTheDocument()
+  })
+
+  it('offers the Tubo switch under Tema, Com cenário by default, and stores Só água per device', async () => {
+    localStorage.clear()
+    renderWithProviders(<Perfil />)
+    expect(screen.getByRole('heading', { name: 'Tubo' })).toBeInTheDocument()
+    const group = within(screen.getByRole('group', { name: 'Tubo' }))
+    expect(group.getByRole('button', { name: 'Com cenário' })).toHaveAttribute('aria-pressed', 'true')
+    await userEvent.click(group.getByRole('button', { name: 'Só água' }))
+    expect(group.getByRole('button', { name: 'Só água' })).toHaveAttribute('aria-pressed', 'true')
+    expect(localStorage.getItem('gymfishes:tube')).toBe('agua')
+    localStorage.clear()
   })
 
   it('offers Instalar o app only when the browser can install', async () => {

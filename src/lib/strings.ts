@@ -128,6 +128,7 @@ export const STRINGS = {
       breu: 'Breu',
     },
   },
+  tubo: { titulo: 'Tubo', cenario: 'Com cenário', agua: 'Só água' },
   peixes: {
     seuPeixe: 'Seu peixe',
     trocarPeixe: 'Trocar peixe',

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { TubeStylePicker } from '@/features/aquarium/TubeStylePicker'
 import { signOut } from '@/features/auth/api'
 import { useSession } from '@/features/auth/AuthProvider'
 import { useBootstrap } from '@/features/profile/useBootstrap'
@@ -111,6 +112,7 @@ export function Perfil() {
         </div>
 
         <ThemePicker />
+        <TubeStylePicker />
       </section>
 
       <BottleManager userId={userId} />
