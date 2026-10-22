@@ -52,6 +52,29 @@ export const UNLOCKS: Record<FishId, Unlock> = {
   whale: { kind: 'volume', ml: 60_000 },
 }
 
+/** Where the fish lives: it turns the member's tube water river green or reef blue as the day fills. */
+export type Habitat = 'fresh' | 'salt'
+
+export const HABITAT: Record<FishId, Habitat> = {
+  guppy: 'fresh',
+  betta: 'fresh',
+  goldfish: 'fresh',
+  neon: 'fresh',
+  pufferfish: 'salt',
+  clownfish: 'salt',
+  octopus: 'salt',
+  seahorse: 'salt',
+  tambaqui: 'fresh',
+  turtle: 'salt',
+  dolphin: 'salt',
+  shark: 'salt',
+  whale: 'salt',
+}
+
+export function habitatOf(id: FishId): Habitat {
+  return HABITAT[id]
+}
+
 export const STARTERS: readonly FishId[] = FISH_IDS.filter((id) => UNLOCKS[id].kind === 'starter')
 
 /**

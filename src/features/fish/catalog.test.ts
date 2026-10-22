@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ALL_FISH_AVAILABLE, FISH_IDS, STARTERS, STREAK_MILESTONES, UNLOCKS, fishName, fishOf, unlockLabel } from './catalog'
+import { ALL_FISH_AVAILABLE, FISH_IDS, STARTERS, STREAK_MILESTONES, UNLOCKS, fishName, fishOf, habitatOf, unlockLabel } from './catalog'
 
 describe('catalog', () => {
   it('has thirteen fish, four of them starters, and the gate is on', () => {
@@ -25,6 +25,11 @@ describe('catalog', () => {
 
   it('reads the streak milestones off the catalog', () => {
     expect(STREAK_MILESTONES).toEqual([3, 7, 14])
+  })
+
+  it('gives every fish a habitat: five in fresh water, eight in salt', () => {
+    const fresh = ['guppy', 'betta', 'goldfish', 'neon', 'tambaqui']
+    for (const id of FISH_IDS) expect(habitatOf(id)).toBe(fresh.includes(id) ? 'fresh' : 'salt')
   })
 
   it('falls back to guppy for an unknown variant', () => {
