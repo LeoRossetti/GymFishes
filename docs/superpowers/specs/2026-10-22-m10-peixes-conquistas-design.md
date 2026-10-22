@@ -10,7 +10,8 @@ fracos?", "Peixes novos de água doce" and "Peixes novos · rodada 2".
 celebrations, §8 design system), the aquarium design `2026-10-20-m10-aquario-design.md` (§3.1 habitat), the
 handoffs `../plans/2026-10-21-m10-handoff.md` §2.2–2.3 and `../plans/2026-10-22-m10-handoff.md`, and `CLAUDE.md`.
 **Scope:** M10 items 2.2 (fish) and 2.3 (achievements). The aquarium (2.1) has its own approved design; this
-document only changes its habitat list.
+document only changes its habitat list. One plan builds all three:
+`../plans/2026-10-22-m10-aquario-peixes-conquistas.md`.
 
 ## 1. Intent
 
@@ -106,6 +107,13 @@ them into `src/features/fish/svg/`).
 - Each drawing is checked beside its reference photo, at 900 px, at the tube's 56 px, the gallery's 140 px on
   the card and on the water, and as the locked silhouette.
 
+**Who draws, and when it counts as done.** The agent draws the thirteen remaining fish through drawing agents,
+one per species, each following `.tmp/m10/fish/BRIEF.md` (research, anatomy notes, at least three look-and-fix
+rounds against photos) and writing only `.tmp/m10/fish/<id>.ts`. Acceptance is the agent's own review of each
+drawing beside its reference photos at every size, with fix rounds until it meets the bar; Leo reviews the whole set
+on the canvas at the end, the way he asked ("I'll review the fish once everything is done"). The build ports the
+accepted files.
+
 **Who is drawn**
 - Kept as is: the tambaqui.
 - Approved and ported: pintado, dourado, tucunaré, pirarucu.
@@ -118,8 +126,8 @@ them into `src/features/fish/svg/`).
   innesi*), baleia (humpback, *Megaptera novaeangliae*, the jubarte of Abrolhos).
 
 **Habitats.** Every fish carries `habitat: 'fresh' | 'salt'` in the catalog. The aquarium (its design §3.1)
-reads it; its habitat list becomes the table above. Every fish is checked once in its full habitat tube (the
-canvas row "Todos os peixes" was the pattern) before the build is called done.
+reads it; its habitat list becomes the table above. Every fish is checked once in its full habitat tube in the
+built app (the canvas row "Todos os peixes" was the pattern) before the build is called done.
 
 ## 5. Achievements
 
@@ -153,6 +161,10 @@ happen.
   text and a slim bar: "12 de 30". Volumes in litres: records with one decimal ("2,8 de 3,5"), accumulated
   litres whole ("84 de 250"); everything else whole numbers. The number never exceeds the target; an unlocked
   fish shows no progress.
+- **Streak fish show the current run**, not the longest ever: the target needs that many days in a row, so
+  "4 de 30" (on day 4 of a new run, after a best of 20) is honest about what is left. It is the one number that can
+  go down, like the streak chip on Hoje. The unlock itself still reads the longest run ever (§5.1), so a fish once
+  earned never re-locks.
 - **The gallery shows the collection**: "9 de 18 peixes" above the grid. The worn fish counts, as in the
   gallery's own rule that the fish you wear is always yours.
 - **Streak milestones** for the full-screen streak celebration are read off the streak fish, so they become 3,
@@ -207,7 +219,8 @@ That is the welcome to the new collection, not a storm.
   `goalDays`, `days`); 2 L as the "good day" and 3,5 L as the one stretch day, chosen so a moderate drinker can
   still finish; no achievement before day 3.
 - **Re-lock accepted** (§5.3) instead of storing unlocks; the welcome unlock screens after the update.
-- **Progress in the gallery** ("12 de 30" with a slim bar) and the collection count, the only new UI.
+- **Progress in the gallery** ("12 de 30" with a slim bar) and the collection count, the only new UI; streak fish
+  count the current run (§5.2).
 - **Names:** "Espadarte" (the Brazilian name for the swordfish; "peixe-espada" is a different fish),
   "Mahi-mahi" as Leo wrote it (its other Brazilian name, dourado-do-mar, would clash with the river Dourado),
   "Garoupa", "Atum", "Barracuda", "Pirarucu" (for the arapaima).

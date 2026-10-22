@@ -270,10 +270,13 @@ comes from a `ResizeObserver` on the tube (fallback 156). The `prefix` is unique
   `{ kind: 'mornings'; before: number; days: number }`, `{ kind: 'goalDays'; ml: number; days: number }`,
   `{ kind: 'days'; days: number }`; `record` now meets at `bestDayMl >= ml` (was `>`).
   `UnlockFacts` gains `registeredDays: number`, `dayTotalsMl: readonly number[]` (one total per registered day) and
-  `firstHours: readonly number[]` (per registered day, the earliest São Paulo hour of a live register).
+  `firstHours: readonly number[]` (per registered day, the earliest São Paulo hour of a live register) and
+  `currentStreak: number` (`streakOf(registered days, today).days`, so yesterday's run still counts while today
+  is empty); `unlockFacts` takes `today: DayKey = dayKey(new Date())` as a third parameter.
   `type Progress = { current: number; target: number }`;
   `unlockProgress(u: Unlock, f: UnlockFacts): Progress | null` (`null` for `starter` and the old boolean kinds;
-  `current` capped at `target`; volumes in ml, so the UI formats them).
+  `current` capped at `target`; volumes in ml, so the UI formats them; `streak` progress is the **current** run —
+  spec §5.2 — while `meets` keeps reading the longest run ever).
 
 - [ ] **Step 1: Write the failing tests** (build entries with explicit UTC `drank_at`):
   - `mornings {before 9, days 5}`: five different days with a register at 08:59 São Paulo (`11:59Z`) meet; a
@@ -283,7 +286,8 @@ comes from a `ResizeObserver` on the tube (fallback 156). The `prefix` is unique
     toward a day's total; a day reaching 2000 only in UTC-day terms but split across two São Paulo days does not.
   - `days {days 60}`: counts distinct São Paulo days with a live register.
   - `record {ml 3500}`: a best day of exactly 3500 meets.
-  - `unlockProgress`: streak 12 of 30 → `{ current: 12, target: 30 }`; volume 84 L of 250 L →
+  - `unlockProgress`: a current run of 12 (longest ever 20) toward 30 → `{ current: 12, target: 30 }`; with today
+    empty and a run of 5 ending yesterday → 5; volume 84 L of 250 L →
     `{ current: 84000, target: 250000 }`; a value past the target is capped; `starter` → `null`.
   - The pacing fixture (spec §9), a reusable generator in `src/features/fish/regularUser.fixture.ts`: a synthetic
     "regular user" over 150 days — a register-free day every tenth day (days 10, 20, 30 …) except none between days
@@ -366,7 +370,7 @@ existing achievement label of a locked fish: the text (same style as the label b
 ("9 de 18 peixes", 12 px, `text-ink-2`) sits above the grid inside the open gallery. The worn fish counts as owned.
 Onboarding passes no `progress`, so it renders exactly as today.
 
-- [ ] **Step 1: Write the failing tests** — a locked `pirarucu` with longest streak 12 shows "12 de 30" and a
+- [ ] **Step 1: Write the failing tests** — a locked `pirarucu` with a current run of 12 shows "12 de 30" and a
   progressbar with `aria-valuenow` 12 and max 30; a locked `shark` with 84,5 L shows "84 de 200"; a locked
   `mahimahi` with a best day of 2,8 L shows "2,8 de 3,5"; an unlocked fish shows no progress; the onboarding grid
   (no `progress` prop) shows none; FishGallery open shows "N de 18 peixes" counting the worn fish (wearing a
