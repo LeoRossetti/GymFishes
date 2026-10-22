@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { FISH_IDS, fishName, fishOf, type FishId } from '@/features/fish/catalog'
+import { FISH_IDS, fishName, fishOf, UNLOCKS, type FishId } from '@/features/fish/catalog'
 import { Fish } from '@/features/fish/Fish'
 import { FishGrid } from '@/features/fish/FishGrid'
-import { availableFish } from '@/features/fish/unlocks'
+import { availableFish, unlockFacts, unlockProgress } from '@/features/fish/unlocks'
 import { useGroupData } from '@/features/group/useGroupData'
 import { STRINGS } from '@/lib/strings'
 
@@ -17,6 +17,7 @@ export function FishGallery({ userId, current, busy, onSelect }: Props) {
   const [open, setOpen] = useState(false)
   const fish = fishOf(current)
   const unlocked = new Set([...availableFish(entries, userId), fish])
+  const facts = unlockFacts(entries, userId)
 
   return (
     <section className="mb-3 rounded-card border border-line bg-surface p-4">
@@ -35,7 +36,15 @@ export function FishGallery({ userId, current, busy, onSelect }: Props) {
       </button>
       {open ? (
         <div className="mt-3">
-          <FishGrid variants={FISH_IDS} unlocked={unlocked} selected={fish} disabled={busy} onSelect={onSelect} />
+          <p className="mb-2 text-[12px] text-ink-2">{STRINGS.peixes.colecao(unlocked.size, FISH_IDS.length)}</p>
+          <FishGrid
+            variants={FISH_IDS}
+            unlocked={unlocked}
+            selected={fish}
+            disabled={busy}
+            onSelect={onSelect}
+            progress={(id) => unlockProgress(UNLOCKS[id], facts)}
+          />
         </div>
       ) : null}
     </section>

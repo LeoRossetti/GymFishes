@@ -162,6 +162,8 @@ export const STRINGS = {
     antesDasEmDias: (hora: number, dias: number) => `Antes das ${hora}h em ${dias} dias`,
     diasCom: (dias: number, volume: string) => `${dias} dias com ${volume}`,
     diasComRegistro: (dias: number) => `${dias} dias com registro`,
+    progressoDe: (atual: string, alvo: string) => `${atual} de ${alvo}`,
+    colecao: (n: number, total: number) => `${n} de ${total} peixes`,
   },
   celebracoes: {
     novoPeixe: 'Novo peixe!',
