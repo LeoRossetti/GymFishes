@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { addDays, dayKey } from '@/lib/dates'
-import type { Unlock } from './catalog'
-import { regularUserFacts, regularUserMl } from './regularUser.fixture'
+import { FISH_IDS, type Unlock } from './catalog'
+import { regularUser, regularUserFacts, regularUserMl } from './regularUser.fixture'
 import { availableFish, meets, unlockFacts, unlockProgress, unlockedFish, type UnlockEntry } from './unlocks'
 
 const STARTERS = ['guppy', 'betta', 'goldfish', 'neon']
@@ -10,7 +10,7 @@ const e = (
   profile_id: string,
   total_ml: number,
   drank_on: string,
-  extra: Partial<Pick<UnlockEntry, 'deleted_at' | 'drank_at' | 'note' | 'composition'>> = {},
+  extra: Partial<Pick<UnlockEntry, 'deleted_at' | 'drank_at'>> = {},
 ): UnlockEntry => ({ profile_id, total_ml, drank_on, deleted_at: null, ...extra })
 
 /** `n` consecutive 500 ml days for member `a`, starting at `from`. */
@@ -34,64 +34,73 @@ describe('unlockedFish', () => {
     expect([...unlockedFish([], 'a')]).toEqual(STARTERS)
   })
 
-  it('unlocks the pufferfish with the first register that used a bottle', () => {
-    const loose = e('a', 500, '2026-06-01', { composition: [{ kind: 'loose', amount_ml: 500 }] })
-    const bottle = e('a', 500, '2026-06-01', { composition: [{ kind: 'bottle', name: 'Azul', volume_ml: 500, qty: 1 }] })
-    expect(unlockedFish([loose], 'a').has('pufferfish')).toBe(false)
-    expect(unlockedFish([bottle], 'a').has('pufferfish')).toBe(true)
-  })
-
-  it('unlocks the clownfish with a register that carries a note', () => {
-    expect(unlockedFish([e('a', 500, '2026-06-01', { note: '   ' })], 'a').has('clownfish')).toBe(false)
-    expect(unlockedFish([e('a', 500, '2026-06-01', { note: 'pós-treino' })], 'a').has('clownfish')).toBe(true)
-  })
-
-  it('unlocks the octopus with a register before 9h in Sao Paulo', () => {
-    // 12:00Z is 9:00 in Sao Paulo — not before 9h; 11:59Z is 8:59
-    expect(unlockedFish([e('a', 500, '2026-06-01', { drank_at: '2026-06-01T12:00:00Z' })], 'a').has('octopus')).toBe(false)
-    expect(unlockedFish([e('a', 500, '2026-06-01', { drank_at: '2026-06-01T11:59:00Z' })], 'a').has('octopus')).toBe(true)
-  })
-
-  it('unlocks the streak fish at exactly 3, 7 and 14 consecutive days', () => {
-    expect(unlockedFish(run(2), 'a').has('seahorse')).toBe(false)
-    expect(unlockedFish(run(3), 'a').has('seahorse')).toBe(true)
-    expect(unlockedFish(run(6), 'a').has('tambaqui')).toBe(false)
-    expect(unlockedFish(run(7), 'a').has('tambaqui')).toBe(true)
-    expect(unlockedFish(run(13), 'a').has('dolphin')).toBe(false)
-    expect(unlockedFish(run(14), 'a').has('dolphin')).toBe(true)
+  it('unlocks the streak fish at exactly 3, 7, 14 and 30 consecutive days', () => {
+    expect(unlockedFish(run(2), 'a').has('clownfish')).toBe(false)
+    expect(unlockedFish(run(3), 'a').has('clownfish')).toBe(true)
+    expect(unlockedFish(run(6), 'a').has('tucunare')).toBe(false)
+    expect(unlockedFish(run(7), 'a').has('tucunare')).toBe(true)
+    expect(unlockedFish(run(13), 'a').has('barracuda')).toBe(false)
+    expect(unlockedFish(run(14), 'a').has('barracuda')).toBe(true)
+    expect(unlockedFish(run(29), 'a').has('pirarucu')).toBe(false)
+    expect(unlockedFish(run(30), 'a').has('pirarucu')).toBe(true)
   })
 
   it('keeps a streak fish after the streak breaks — the longest run ever counts', () => {
-    expect(unlockedFish([...run(3), e('a', 500, '2026-06-20')], 'a').has('seahorse')).toBe(true)
+    expect(unlockedFish([...run(3), e('a', 500, '2026-06-20')], 'a').has('clownfish')).toBe(true)
   })
 
-  it('needs one day of at least 3 L for the turtle', () => {
-    expect(unlockedFish([e('a', 1500, '2026-06-01'), e('a', 1499, '2026-06-01')], 'a').has('turtle')).toBe(false)
-    expect(unlockedFish([e('a', 1500, '2026-06-01'), e('a', 1500, '2026-06-01')], 'a').has('turtle')).toBe(true)
+  it('unlocks the pufferfish on the fifth day with a register before 9h in São Paulo', () => {
+    const mornings = (n: number) => daily(n, '11:59:00') // 08:59 in São Paulo
+    expect(unlockedFish(mornings(4), 'a').has('pufferfish')).toBe(false)
+    expect(unlockedFish(mornings(5), 'a').has('pufferfish')).toBe(true)
   })
 
-  it('unlocks the shark at 50 registers, whatever their size', () => {
+  it('unlocks the tambaqui at ten days of 2 L and the tuna at forty-five', () => {
+    const goal = (n: number) => daily(n, '15:00:00', 2000)
+    expect(unlockedFish(goal(9), 'a').has('tambaqui')).toBe(false)
+    expect(unlockedFish(goal(10), 'a').has('tambaqui')).toBe(true)
+    expect(unlockedFish(goal(44), 'a').has('tuna')).toBe(false)
+    expect(unlockedFish(goal(45), 'a').has('tuna')).toBe(true)
+  })
+
+  it('needs one day of at least 3,5 L for the mahi-mahi', () => {
+    expect(unlockedFish([e('a', 2000, '2026-06-01'), e('a', 1499, '2026-06-01')], 'a').has('mahimahi')).toBe(false)
+    expect(unlockedFish([e('a', 2000, '2026-06-01'), e('a', 1500, '2026-06-01')], 'a').has('mahimahi')).toBe(true)
+  })
+
+  it('unlocks the dourado at 100 registers and the swordfish at 400, whatever their size', () => {
     const many = (n: number) => Array.from({ length: n }, (_, i) => e('a', 100, addDays('2026-06-01', i % 5)))
-    expect(unlockedFish(many(49), 'a').has('shark')).toBe(false)
-    expect(unlockedFish(many(50), 'a').has('shark')).toBe(true)
+    expect(unlockedFish(many(99), 'a').has('dourado')).toBe(false)
+    expect(unlockedFish(many(100), 'a').has('dourado')).toBe(true)
+    expect(unlockedFish(many(399), 'a').has('swordfish')).toBe(false)
+    expect(unlockedFish(many(400), 'a').has('swordfish')).toBe(true)
   })
 
-  it('unlocks the whale at 60 L accumulated', () => {
+  it('unlocks the grouper at 100 L accumulated and the shark at 200 L', () => {
     const litres = (l: number) => Array.from({ length: l }, (_, i) => e('a', 1000, addDays('2026-06-01', i)))
-    expect(unlockedFish(litres(59), 'a').has('whale')).toBe(false)
-    expect(unlockedFish(litres(60), 'a').has('whale')).toBe(true)
+    expect(unlockedFish(litres(99), 'a').has('grouper')).toBe(false)
+    expect(unlockedFish(litres(100), 'a').has('grouper')).toBe(true)
+    expect(unlockedFish(litres(199), 'a').has('shark')).toBe(false)
+    expect(unlockedFish(litres(200), 'a').has('shark')).toBe(true)
+  })
+
+  it('unlocks the pintado at 60 days with a register and the whale at 120, in a row or not', () => {
+    const days = (n: number) => Array.from({ length: n }, (_, i) => e('a', 100, addDays('2026-06-01', 2 * i)))
+    expect(unlockedFish(days(59), 'a').has('pintado')).toBe(false)
+    expect(unlockedFish(days(60), 'a').has('pintado')).toBe(true)
+    expect(unlockedFish(days(119), 'a').has('whale')).toBe(false)
+    expect(unlockedFish(days(120), 'a').has('whale')).toBe(true)
   })
 
   it('ignores deleted rows and other members', () => {
     const noise = [
       ...run(3).map((r) => ({ ...r, deleted_at: '2026-06-09T00:00:00Z' })),
       ...run(3).map((r) => ({ ...r, profile_id: 'b' })),
-      e('a', 500, '2026-06-01', { deleted_at: '2026-06-09T00:00:00Z', note: 'x', composition: [{ kind: 'bottle' }] }),
+      e('a', 3500, '2026-06-01', { deleted_at: '2026-06-09T00:00:00Z' }),
     ]
     const set = unlockedFish(noise, 'a')
-    expect(set.has('seahorse')).toBe(false)
-    expect(set.has('pufferfish')).toBe(false)
     expect(set.has('clownfish')).toBe(false)
+    expect(set.has('mahimahi')).toBe(false)
   })
 })
 
@@ -100,8 +109,8 @@ describe('unlockFacts', () => {
     const facts = unlockFacts(
       [
         ...run(3),
-        e('a', 4000, '2026-06-02', { note: 'treino', drank_at: '2026-06-02T10:30:00Z' }),
-        e('a', 100, '2026-05-01', { composition: [{ kind: 'bottle', name: 'Azul', volume_ml: 100, qty: 1 }] }),
+        e('a', 4000, '2026-06-02', { drank_at: '2026-06-02T10:30:00Z' }),
+        e('a', 100, '2026-05-01'),
       ],
       'a',
       '2026-06-03',
@@ -115,9 +124,6 @@ describe('unlockFacts', () => {
       bestDayMl: 4500,
       totalMl: 5600,
       registers: 5,
-      usedBottle: true,
-      wroteNote: true,
-      earliestHour: 7,
     })
   })
 
@@ -131,9 +137,6 @@ describe('unlockFacts', () => {
       bestDayMl: 0,
       totalMl: 0,
       registers: 0,
-      usedBottle: false,
-      wroteNote: false,
-      earliestHour: 24,
     })
   })
 })
@@ -231,12 +234,8 @@ describe('unlockProgress', () => {
     expect(unlockProgress({ kind: 'record', ml: 400 }, facts)).toEqual({ current: 400, target: 400 })
   })
 
-  it('shows no progress for the starters and the one-off kinds', () => {
-    const facts = unlockFacts(run(3), 'a', TODAY)
-    expect(unlockProgress({ kind: 'starter' }, facts)).toBeNull()
-    expect(unlockProgress({ kind: 'bottle' }, facts)).toBeNull()
-    expect(unlockProgress({ kind: 'note' }, facts)).toBeNull()
-    expect(unlockProgress({ kind: 'morning', before: 9 }, facts)).toBeNull()
+  it('shows no progress for the starters', () => {
+    expect(unlockProgress({ kind: 'starter' }, unlockFacts(run(3), 'a', TODAY))).toBeNull()
   })
 })
 
@@ -277,5 +276,23 @@ describe('the regular user (pacing fixture)', () => {
     expect(f.registers).toBe(4 * 129)
     expect(f.totalMl).toBe(days.reduce((sum, d) => sum + regularUserMl(d), 0))
     expect(f.bestDayMl).toBe(3600)
+  })
+})
+
+describe('the ladder, for the regular user', () => {
+  const earned = (n: number) => unlockedFish(regularUser(n, 'a'), 'a')
+
+  it('gives only the four starters on days 1 and 2', () => {
+    expect([...earned(1)]).toEqual(STARTERS)
+    expect([...earned(2)]).toEqual(STARTERS)
+  })
+
+  it('gives at most three fish besides the starters by day 10', () => {
+    expect(earned(10).size - STARTERS.length).toBeLessThanOrEqual(3)
+  })
+
+  it('lands the whale after day 99, and every fish by day 150', () => {
+    expect(earned(99).has('whale')).toBe(false)
+    expect(earned(150)).toEqual(new Set(FISH_IDS))
   })
 })

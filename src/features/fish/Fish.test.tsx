@@ -5,7 +5,8 @@ import { Fish } from './Fish'
 import { ART } from './svg'
 
 describe('Fish', () => {
-  it('has art for all thirteen fish', () => {
+  it('has art for all eighteen fish', () => {
+    expect(Object.keys(ART)).toHaveLength(18)
     for (const id of FISH_IDS) {
       expect(ART[id].body, id).toMatch(/^M/)
       expect(ART[id].tail.length, id).toBeGreaterThan(0)
@@ -61,6 +62,11 @@ describe('Fish', () => {
   it('renders an old profile value the catalog dropped as the default fish', () => {
     const { container } = render(<Fish variant={fishOf('angelfish')} />)
     expect(container.querySelector('svg')).toHaveAttribute('data-fish', 'guppy')
+  })
+
+  it('renders a fish dropped in M10 as its replacement', () => {
+    const { container } = render(<Fish variant={fishOf('dolphin')} />)
+    expect(container.querySelector('svg')).toHaveAttribute('data-fish', 'grouper')
   })
 
   it('every fish renders in every state (spec M7 §11)', () => {

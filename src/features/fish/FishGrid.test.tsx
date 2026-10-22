@@ -9,7 +9,7 @@ const unlocked: ReadonlySet<FishId> = new Set<FishId>(['guppy', 'betta', 'goldfi
 describe('FishGrid', () => {
   it('lists every fish by name, marking the selected one', () => {
     render(<FishGrid variants={FISH_IDS} unlocked={unlocked} selected="betta" onSelect={vi.fn()} />)
-    expect(screen.getAllByRole('listitem')).toHaveLength(13)
+    expect(screen.getAllByRole('listitem')).toHaveLength(18)
     expect(screen.getByRole('button', { name: 'Betta' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: 'Guppy' })).toHaveAttribute('aria-pressed', 'false')
   })
@@ -18,7 +18,7 @@ describe('FishGrid', () => {
     render(<FishGrid variants={FISH_IDS} unlocked={unlocked} selected={null} onSelect={vi.fn()} />)
     const shark = screen.getByRole('button', { name: 'Tubarão' })
     expect(shark).toHaveAttribute('aria-disabled', 'true')
-    expect(shark).toHaveTextContent('50 registros')
+    expect(shark).toHaveTextContent('200 L acumulados')
     expect(shark.querySelector('svg')).toHaveAttribute('data-state', 'locked')
     expect(screen.getByRole('button', { name: 'Baiacu' })).toBeEnabled()
   })
@@ -37,10 +37,12 @@ describe('FishGrid', () => {
     expect(onSelect).not.toHaveBeenCalled()
   })
 
-  it('the 7-day fish is the tambaqui; the angelfish is gone', () => {
+  it('the 7-day fish is the tucunaré; the fish M10 dropped are gone', () => {
     render(<FishGrid variants={FISH_IDS} unlocked={unlocked} selected={null} onSelect={vi.fn()} />)
-    expect(screen.getByRole('button', { name: 'Tambaqui' })).toHaveTextContent('Sequência de 7 dias')
-    expect(screen.queryByRole('button', { name: 'Peixe-anjo' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Tucunaré' })).toHaveTextContent('Sequência de 7 dias')
+    for (const name of ['Peixe-anjo', 'Polvo', 'Cavalo-marinho', 'Tartaruga', 'Golfinho']) {
+      expect(screen.queryByRole('button', { name })).toBeNull()
+    }
   })
 
   it('shows the fish large in two columns so the drawing can be seen (spec M7 §9.4)', () => {

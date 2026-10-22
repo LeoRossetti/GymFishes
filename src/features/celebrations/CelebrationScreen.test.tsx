@@ -38,7 +38,7 @@ describe('CelebrationScreen', () => {
     const onClose = vi.fn()
     const onChoose = vi.fn()
     render(<CelebrationScreen celebration={{ kind: 'unlock', fish: 'pufferfish' }} onClose={onClose} onChoose={onChoose} />)
-    expect(screen.getByText(/Registre com uma garrafa/)).toHaveTextContent('Conquista: Registre com uma garrafa')
+    expect(screen.getByText(/Antes das 9h em 5 dias/)).toHaveTextContent('Conquista: Antes das 9h em 5 dias')
     expect(screen.getByText('Novo peixe!')).toBeInTheDocument()
     expect(screen.getByText('Baiacu')).toBeInTheDocument()
     expect(document.querySelector('svg[data-fish="pufferfish"]')).not.toBeNull()

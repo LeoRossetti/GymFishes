@@ -38,7 +38,9 @@ describe('celebrationsFor', () => {
     expect(celebrationsFor(state({ streakDays: 6 }), state({ streakDays: 7 }))).toEqual([{ kind: 'streak', days: 7 }])
     expect(celebrationsFor(state({ streakDays: 7 }), state({ streakDays: 7 }))).toEqual([])
     expect(celebrationsFor(state({ streakDays: 2 }), state({ streakDays: 3 }))).toEqual([{ kind: 'streak', days: 3 }])
-    expect(celebrationsFor(state({ streakDays: 5 }), state({ streakDays: 31 }))).toEqual([{ kind: 'streak', days: 14 }])
+    expect(celebrationsFor(state({ streakDays: 5 }), state({ streakDays: 20 }))).toEqual([{ kind: 'streak', days: 14 }])
+    expect(celebrationsFor(state({ streakDays: 29 }), state({ streakDays: 30 }))).toEqual([{ kind: 'streak', days: 30 }])
+    expect(celebrationsFor(state({ streakDays: 5 }), state({ streakDays: 31 }))).toEqual([{ kind: 'streak', days: 30 }])
   })
 
   it('fires the lead only on the transition', () => {

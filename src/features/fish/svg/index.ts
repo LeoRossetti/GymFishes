@@ -1,17 +1,22 @@
 import type { FishId } from '../catalog'
+import { barracuda } from './barracuda'
 import { betta } from './betta'
 import { clownfish } from './clownfish'
-import { dolphin } from './dolphin'
+import { dourado } from './dourado'
 import { goldfish } from './goldfish'
+import { grouper } from './grouper'
 import { guppy } from './guppy'
+import { mahimahi } from './mahimahi'
 import { neon } from './neon'
-import { octopus } from './octopus'
+import { pintado } from './pintado'
+import { pirarucu } from './pirarucu'
 import { pufferfish } from './pufferfish'
-import { seahorse } from './seahorse'
 import { shark } from './shark'
+import { swordfish } from './swordfish'
 import { tambaqui } from './tambaqui'
+import { tucunare } from './tucunare'
+import { tuna } from './tuna'
 import type { FishArt } from './types'
-import { turtle } from './turtle'
 import { whale } from './whale'
 
 export type { FishArt } from './types'
@@ -21,13 +26,18 @@ export const ART: Record<FishId, FishArt> = {
   betta,
   goldfish,
   neon,
-  pufferfish,
   clownfish,
+  pufferfish,
+  tucunare,
   tambaqui,
-  octopus,
-  seahorse,
-  turtle,
-  dolphin,
+  dourado,
+  barracuda,
+  mahimahi,
+  grouper,
+  pintado,
+  pirarucu,
+  tuna,
+  swordfish,
   shark,
   whale,
 }

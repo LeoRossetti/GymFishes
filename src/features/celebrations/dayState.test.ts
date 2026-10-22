@@ -45,8 +45,8 @@ describe('dayStateOf', () => {
   it('derives the unlocked fish from the registers', () => {
     const week = Array.from({ length: 7 }, (_, i) => e('a', 500, addDays(today, -i)))
     const unlocked = dayStateOf(week, ids, 'a', today).unlocked
-    expect(unlocked.has('seahorse')).toBe(true)
-    expect(unlocked.has('tambaqui')).toBe(true)
-    expect(unlocked.has('dolphin')).toBe(false)
+    expect(unlocked.has('clownfish')).toBe(true)
+    expect(unlocked.has('tucunare')).toBe(true)
+    expect(unlocked.has('barracuda')).toBe(false)
   })
 })
