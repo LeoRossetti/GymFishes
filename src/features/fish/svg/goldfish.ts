@@ -1,130 +1,119 @@
-import { dots, OUTLINE, part, rays, shade, stroke } from './helpers'
+import { dots, part, rays, shade, stroke } from './helpers'
 import type { FishArt, Layer } from './types'
 
 const K = {
-  orange: '#FF8A1C',
-  back: '#EE6216',
-  belly: '#FFCB6E',
-  scale: '#EA741A',
-  scaleFaint: '#F5811C',
-  plate: '#C9500E',
-  fin: '#FFA040',
-  finTip: '#FFD8A2',
-  farFin: '#EE9443',
-  finRay: '#D8641C',
-  pec: '#FFB457',
-  ring: '#F6CB5A',
-  line: '#4A1D07',
+  body: '#FA5C20',
+  back: '#E2421C',
+  glint: '#FF8E3E',
+  belly: '#FFDAC0',
+  plate: '#C93512',
+  fin: '#F95E28',
+  tip: '#FFC6B0',
+  farMid: '#E4502A',
+  farTip: '#F2A68E',
+  finRay: '#D2431C',
+  ring: '#F2BE4A',
+  line: '#4C1207',
 }
 
 /**
- * Traced from side photos of fantails (and the head close-ups): an egg about 1.45:1, the back climbing in one
- * convex curve to the dorsal origin, a short deep peduncle, a short head with a blunt rounded snout and the small
- * mouth at its tip (the upper lip a rounded pucker over the lower), a round deep belly.
+ * Traced from side photos of ryukins (the red one at Yatomi first, with head close-ups of others): snout to tail
+ * base about 1.35 times the depth, the back climbing steeply from the small pointed head to the shoulder hump at
+ * the dorsal's origin, then falling to a short, deep tail stock; a round, deep belly lowest under the pelvic fins.
+ * The mouth is small and at the tip: the upper lip a rounded pucker over the lower, the notch where they meet.
  */
-const BODY =
-  'M72 40 C80 32.6 92 24.6 104 21.4 C110 20 116 19.8 121 20.8 C131 22.8 141 28.6 148 35.8 ' +
-  'C153.2 41.2 156.4 43.6 157.4 47.6 C157.9 49.6 157.7 51.2 156.4 51.9 L155.6 52.3 C157 52.9 157.7 54.1 157.4 55.6 ' +
-  'C156.8 58.4 154.4 61.6 150.2 64.8 C141 71.4 129 76.6 116 78.4 C104 79.6 93 77 85 71.8 C80 68.4 76 64.4 72 61 ' +
-  'C70.6 54 70.6 47 72 40 Z'
+const EDGE =
+  'M80.6 26.4 C84 23.6 88 20.8 93 18.6 C99 16.2 105 15.4 111 15.4 C117 15.5 122 17 126.6 19.8 C131.4 22.2 136 25.6 140.2 29.8 ' +
+  'C144.6 34.2 149.6 39.8 152.8 43.6 C154.6 45.4 156.6 47 157.2 48.6 C157.6 50 157.2 51 156.4 51.4 L155.2 51.7 ' +
+  'C156 52.2 156.3 53.2 155.9 54.2 C155.2 55.6 153.8 56.6 152 57.4 C146.6 60.4 141 63.6 134.4 66.6 C127 70 118 73.4 108 74.2 ' +
+  'C100 74.8 93 73.6 87.6 70.4 C84.4 68 82.2 64.6 80.8 61.2'
 
-/** The body's top and bottom edges, sampled: the scale rows follow them and shrink toward the peduncle. */
-const EDGE: readonly (readonly [number, number, number])[] = [
-  [72, 40, 61], [80, 33.4, 67.6], [90, 27, 73.6], [100, 22.6, 77.6], [110, 20.6, 79], [120, 20.6, 78.4], [130, 23.6, 75.6],
-]
-function edgeAt(x: number): [number, number] {
-  for (let i = 1; i < EDGE.length; i++) {
-    const a = EDGE[i - 1]!
-    const b = EDGE[i]!
-    if (x <= b[0]) {
-      const t = (x - a[0]) / (b[0] - a[0])
-      return [a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]
-    }
-  }
-  const last = EDGE[EDGE.length - 1]!
-  return [last[1], last[2]]
-}
+/** The silhouette and clip: the outline closed by the round end of the tail stock, which carries no outline so the stock flows into the tail. */
+const BODY = `${EDGE} C79.2 57 78.6 52 78.6 44 C78.6 36 79.2 30 80.6 26.4 Z`
 
 const r2 = (v: number) => Math.round(v * 100) / 100
-const ROWS = 8
-/**
- * Big scales as thin arcs open toward the head, in rows that follow the body, only a step darker than the flank.
- * They sit in an oval on the mid-flank and fade (lighter, then none) toward the back, belly, gill cover and tail stock.
- */
-function scales(): Layer[] {
-  const strong: string[] = []
-  const faint: string[] = []
-  for (let row = 0; row < ROWS; row++) {
-    for (let x = 82 + (row % 2) * 2.8; x <= 126; ) {
-      const [top, bottom] = edgeAt(x)
-      const step = (bottom - top) / ROWS
-      const y = top + step * (row + 0.5)
-      const w = 1 - ((x - 104) / 21) ** 2 - ((y - 47) / 14) ** 2
-      const r = step * 0.55
-      const arc = `M${r2(x)} ${r2(y - r)} a${r2(r * 0.72)} ${r2(r)} 0 0 0 0 ${r2(r * 2)}`
-      if (w > 0.4) strong.push(arc)
-      else if (w > 0) faint.push(arc)
-      x += step * 1.1
+
+/** Big scales as short glints on the free edge of each one, in rows across the upper flank where the light falls, fading out. */
+function scales(): Layer {
+  const arcs: string[] = []
+  for (let row = 0; row < 6; row++) {
+    const y = 29.6 + row * 4.4
+    for (let x = 88 + (row % 2) * 2.3; x <= 130; x += 4.6) {
+      const w = 1 - ((x - 110) / 22) ** 2 - ((y - 39) / 14) ** 2
+      const r = 2 * Math.min(1, w + 0.45)
+      if (w > 0.1) arcs.push(`M${r2(x - r * 0.4)} ${r2(y - r * 0.87)} A${r2(r * 0.8)} ${r2(r)} 0 0 0 ${r2(x - r * 0.4)} ${r2(y + r * 0.87)}`)
     }
   }
-  return [
-    { d: strong.join(' '), fill: 'none', stroke: K.scale, strokeWidth: 0.6, clip: true },
-    { d: faint.join(' '), fill: 'none', stroke: K.scaleFaint, strokeWidth: 0.6, clip: true },
-  ]
+  return { d: arcs.join(' '), fill: 'none', stroke: K.glint, strokeWidth: 0.6, clip: true }
 }
 
-/** One half of the double tail: two broad lobes and a deep fork. The far half is the same fin turned 8° down. */
+/**
+ * The double tail: body red at the base, fading to pale see-through lobe ends; a long, narrow upper lobe, a rounded
+ * fork, the broad lower lobe hanging down and back. The far half lies behind the near one, its lower lobe drooping
+ * further (the same lobe turned 9° down), so its end shows under the near lobe.
+ */
 const NEAR_TAIL =
-  'M80 41.6 C72 36.4 62 29 50 22.6 C40 17.4 26 12.6 12 11.6 C6 11.2 3.6 13.4 5.6 16.4 C10 23 17 28.6 24 33.2 ' +
-  'C30 37.2 34.4 41.4 37.6 46.4 C38.6 47.8 38.6 49.4 37.6 50.6 C33 56.4 27 62.6 21 68.6 C16.4 74 12.6 80 11.6 84.6 ' +
-  'C11 87.6 13 89 15.6 88 C28 83 42 75 54 68.4 C64 63 72 60.4 80 59.4 Z'
-const FAR_TAIL =
-  'M81.8 41.7 C73.2 37.6 62.3 31.7 49.5 27 C38.9 23.3 24.3 20.5 10.3 21.4 C4.3 21.9 2.2 24.4 4.6 27.1 C9.9 33 17.6 37.6 25.2 41.2 ' +
-  'C31.7 44.3 36.6 47.8 40.5 52.3 C41.7 53.6 41.9 55.2 41.1 56.5 C37.3 62.9 32.3 69.9 27.2 76.6 C23.4 82.6 20.4 89.1 20.1 93.8 ' +
-  'C19.9 96.8 22.1 97.9 24.5 96.6 C36.1 89.9 48.8 80 59.8 71.8 C69 65.1 76.5 61.4 84.3 59.3 Z'
-/** The near half without its pale, see-through lobe tips (split off the same curves). */
+  'M86 27.4 L80.6 26.4 C72 23.4 62 20.8 50 19.2 C38 17.6 24 16.8 13 17.2 C8 17.4 4.8 18.6 4.6 20.4 C4.4 22 6.6 23.4 10.4 24.6 ' +
+  'C18 27 28 29.6 38 31.8 C42.6 32.8 47.4 34 50.2 36.2 C48.6 41.6 45.6 47.6 41.6 53.4 C35.6 61.8 28 70 20.6 76.6 ' +
+  'C17.6 79.2 15.4 81 15.4 82.2 C15.4 83.4 17.6 83.6 20.8 82.6 C30 79.8 42 75.6 54 70.6 C64 66.6 72.6 63 80.8 61.2 L86 60.6 Z'
 const NEAR_BASE =
-  'M80 41.6 C72 36.4 62 29 50 22.6 C45.5 20.3 40.2 18 34.4 16.1 C30.4 20.2 14.8 25.5 18.8 29.6 C20.5 30.8 22.2 32.1 24 33.2 ' +
-  'C30 37.2 34.4 41.4 37.6 46.4 C38.6 47.8 38.6 49.4 37.6 50.6 C34.1 55 29.9 59.5 25.5 64.1 C21.5 69.4 25.1 76.5 29.1 81.8 ' +
-  'C37.6 77.6 46.2 72.7 54 68.4 C64 63 72 60.4 80 59.4 Z'
+  'M86 27.4 L80.6 26.4 C72 23.4 62 20.8 52 19.4 C48 21.4 41 21.6 40 24.6 C39.2 27.4 42 31.2 46 33.4 C47.6 34.2 49 35 50.2 36.2 ' +
+  'C49.6 38.4 49 40.6 48.2 42.8 C46 47 44.6 50.4 44.2 52.8 C43.8 55.4 46 56.6 48.4 55.8 C44 59.6 40.6 62.4 40 64.6 ' +
+  'C39.4 67 42.6 68 45.4 67 C41 70.6 37.4 71.4 37.6 73 C37.8 74.6 41 75.4 46.4 74 C49 72.6 51.4 71.6 54 70.6 ' +
+  'C64 66.6 72.6 63 80.8 61.2 L86 60.6 Z'
+const FAR_LOBE =
+  'M88.7 35.7 L53.4 41.3 C52.6 46.9 50.6 53.2 47.6 59.6 C43 68.8 36.7 78.1 30.5 85.8 C27.9 88.8 26 91 26.2 92.1 C26.4 93.3 28.6 93.2 31.6 91.7 ' +
+  'C40.2 87.5 51.4 81.5 62.5 74.7 C71.8 69.1 79.7 64.2 87.5 61.2 L92.5 59.8 Z'
+const FAR_BASE =
+  'M88.7 35.7 L53.4 41.3 C52.6 46.9 51.4 51.6 49.6 55.4 C48 59.4 45.4 63.6 46.6 66 C47.6 67.8 50 67.8 51.8 67.2 C48.6 70.4 44.4 73.6 45.2 76.2 ' +
+  'C46 78.4 49.6 79.4 53 80.4 C56.4 78.6 59.4 76.6 62.5 74.7 C71.8 69.1 79.7 64.2 87.5 61.2 L92.5 59.8 Z'
+
+/** The tail's rays, fanning from the base: they start a little way out, so the tail stock stays clean. */
+const TAIL_RAYS = (
+  [[8, 19.6], [15, 22.6], [25, 26.2], [36, 29.8], [45.6, 41], [40.6, 55], [32.4, 65.4], [24, 74.2], [18.6, 80.4], [30, 79.2]] as const
+)
+  .map(([x, y]) => `M${r2(82 + (x - 82) * 0.2)} ${r2(44 + (y - 44) * 0.2)} L${r2(82 + (x - 82) * 0.88)} ${r2(44 + (y - 44) * 0.88)}`)
+  .join(' ')
 
 /**
- * Kinguio — the aquarium goldfish, fantail form. Orange with a deeper back and a gold-cream belly and throat, big
- * scales in rows, a tall dorsal, long pelvic fins, the double anal fin and the double forked tail: the far half shows
- * through the near half's fork and below it. Small terminal mouth, no barbels, nostril ahead of the gold-ringed eye.
+ * Kinguio — the fancy goldfish as Brazilian pet shops sell it, the ryukin form: red-orange with the glint of big
+ * scales on the flank, a cream throat and belly, the shoulder hump behind the small pointed head, a tall dorsal
+ * leaning back, the long double tail, long pelvic fins, the double anal fin (its front showing under the tail
+ * stock), a fan of a pectoral. Small mouth at the tip, no barbels, the nostril ahead of the big gold-ringed eye.
  */
 export const goldfish: FishArt = {
   body: BODY,
-  tailPivot: [74, 50],
+  tailPivot: [80, 44],
   tail: [
-    part(FAR_TAIL, K.farFin, K.line),
-    part(NEAR_TAIL, K.finTip),
-    part(NEAR_BASE, K.fin),
-    rays([80, 50], [[8, 13.4], [16, 22.6], [27, 34], [25, 65], [16.6, 77], [13.4, 86.4]], K.finRay, 0.9, 0.8),
-    stroke(NEAR_TAIL, K.line, OUTLINE),
+    part(FAR_LOBE, K.farTip, K.line),
+    part(FAR_BASE, K.farMid),
+    part('M92 63.4 C88.6 68.6 84.4 73.6 79.4 77.6 C78 78.6 76.8 78 77 76.6 C77.8 72.8 80 68.4 83.6 63.8 Z', K.farMid, K.line, 1.2),
+    part(NEAR_TAIL, K.tip),
+    part(NEAR_BASE, K.body),
+    stroke(TAIL_RAYS, K.finRay, 0.6),
+    stroke(NEAR_TAIL, K.line, 1.6),
   ],
   layers: [
-    // dorsal (tall, front rays longest), the double anal fin, the long pelvic fin
-    part('M118.4 25.4 C114.6 17.4 110 9.6 104.4 4 C102.6 2.2 100 1.8 97.8 2.8 C91.4 5.8 85.4 11.6 81.2 18.4 C79.8 20.6 79 22.8 78.6 25 C78.2 28.4 78.2 31.6 78.4 35 Z', K.fin, K.line),
-    stroke('M113.6 25.6 L103 5 M108 26.4 L96.8 5.8 M102 27.4 L90.6 9.2 M96 29 L85.6 14 M90 31 L82.2 19.6', K.finRay, 0.8),
-    part('M86.4 70.8 C83.4 76.4 78.4 82 71.4 86.4 C69.4 87.6 67.4 87.2 67 85.4 C66.6 83.4 67.4 80.4 68.4 77.4 C69.8 73 72.4 68.4 76.4 63.6 Z', K.farFin, K.line, 1.2),
-    part('M90.6 73.4 C87.6 79 82.6 84.6 75.6 89 C73.6 90.2 71.6 89.8 71.2 88 C70.8 86 71.6 83 72.6 80 C74 75.6 76.4 71.4 79.6 67 Z', K.fin, K.line),
-    part('M113.6 76.6 C110.6 83 105.6 89.4 98.6 94.2 C96.6 95.6 94.4 95.2 94 93.4 C93.6 91.4 94.6 88.2 95.8 85 C97.2 81.6 99 78.6 101 76.6 Z', K.fin, K.line),
-    stroke('M108 79 L97.6 92.6 M103.6 79 L95.6 91.2 M86.4 74.8 L74.6 87.4 M82.4 72 L73 85.4', K.finRay, 0.7),
-    part(BODY, K.orange, K.line),
-    // body: the deeper back and crown, the gold belly running forward into the throat, the scale rows
-    shade('M60 0 L160 0 L160 44 C156 40.6 151 37.4 145.6 35 C138 30.6 128 28.4 118 28 C104 27.8 90 31.4 78 38 C72 41 66 43.6 60 45.6 Z', K.back),
-    shade('M60 61 C72 66.6 86 71 100 72 C114 72.6 128 69.6 140 64 C146 61.2 152 58 160 54 L160 100 L60 100 Z', K.belly),
-    ...scales(),
-    // head: the gill-cover edge, the softer preopercle groove under the eye, pectoral fin
-    stroke('M140.4 41 C137.6 47 138.2 55 143 61', K.plate, 0.7),
-    stroke('M131.4 26.4 C125 37.4 124.6 56 131.2 68', K.plate, 1.3),
-    part('M133.6 61.4 C129 61 123.6 62.6 120.2 65.6 C118.2 67.4 118.4 70.6 120.6 72 C122.6 73.2 125.4 72.6 127.4 70.8 C129.8 68.6 132 66.2 133.6 64.4 C134.4 63.4 134.4 62 133.6 61.4 Z', K.pec, K.line, 1.1),
-    stroke('M132.6 61.8 L120.6 67.6 M132.8 62.6 L122.4 71 M133 63.2 L126 72', K.finRay, 0.6),
+    // dorsal (tall, leaning back over the tail stock), the two long pelvic fins
+    part('M116 19.6 L114.4 16.2 C112 10.4 106.6 5.6 99.6 3.4 C92 2.4 82 3.6 73.4 8.8 C76.6 13.6 80 19.4 83.4 24.2 L86 26 Z', K.fin, K.line),
+    stroke('M112.6 16.8 L100.6 4.6 M108 16.4 L93.6 3.6 M103 16.8 L87.4 3.8 M98 17.6 L81.6 5.2 M93 19 L77 7.4 M88.6 21 L75 10', K.finRay, 0.6),
+    part('M104 73.4 C102.6 79.8 98.4 87 91.8 92.4 C90.4 93.4 89 92.8 89.2 91.2 C89.4 85.6 90.2 79.6 92.4 74 Z', K.farMid, K.line, 1.2),
+    part('M109.6 72.8 C108 79.6 103.4 87.6 96 93.6 C94.6 94.6 93.2 94 93.4 92.4 C93.4 86.6 94.2 80.2 96.6 74 Z', K.fin, K.line),
+    rays([104.4, 74], [[95, 92.4], [98.6, 88.6], [102.6, 84]], K.finRay, 0.88, 0.6),
+    part(BODY, K.body),
+    stroke(EDGE, K.line, 1.6),
+    // body: the deeper red back, the scale glints on the flank, the cream throat and belly
+    shade('M86.4 22.2 C92 23.4 97 22.2 103 21.4 C111 20.6 118 21.4 125 23.8 C128.4 25 131 26.2 133.6 24.6 L133.6 0 L86.4 0 Z', K.back),
+    scales(),
+    shade('M157 53.6 C153 54.4 148.6 55.2 144.6 56.2 C140 57.4 134 60 128 62.6 C121 65.4 113 67.4 104 67.6 C97 67.6 92 68 88.4 69.4 C87.4 69.8 86.6 70.4 86 71.2 L86 100 L160 100 L160 53.6 Z', K.belly),
+    // head: the gill-cover arc, the fan of the pectoral just behind it
+    stroke('M134.4 27.6 C128.6 36.2 128 47.2 132.2 56.4', K.plate, 1.2),
+    part('M135.6 51.2 C131 48.2 125 47 120.4 48.4 C118.2 49.2 117.4 52 118 54.6 C118.8 58 121 60.8 124 61.6 C127.4 62.4 131.4 59 134.4 55.8 C135.8 54.4 136.4 52 135.6 51.2 Z', K.fin, K.line, 1),
+    rays([135, 53], [[120.8, 49.2], [118.8, 53.2], [120, 57.6], [123.4, 60.6]], K.finRay, 0.86, 0.55),
     // mouth: the short cleft back from the notch; nostril; the gold iris ring
-    stroke('M155.6 52.3 C154.6 52.6 153.6 52.8 152.6 52.9', K.line, 1.1),
-    dots([[153, 43.6, 0.85]], K.line),
-    part('M143.1 47 A4.3 4.3 0 1 0 151.7 47 A4.3 4.3 0 1 0 143.1 47 Z', K.ring),
+    stroke('M155.2 51.7 C154.4 52 153.6 52.3 152.8 52.5', K.line, 1),
+    dots([[151.4, 44.4, 0.85]], K.line),
+    part('M140.4 48.4 A4.6 4.6 0 1 0 149.6 48.4 A4.6 4.6 0 1 0 140.4 48.4 Z', K.ring),
   ],
-  eyes: [{ cx: 147.4, cy: 47, r: 3.4 }],
+  eyes: [{ cx: 145, cy: 48.4, r: 3.6 }],
 }
