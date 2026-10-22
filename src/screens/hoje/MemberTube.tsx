@@ -25,7 +25,7 @@ export const FISH_H = FISH_W * 0.625
 
 export function MemberTube({ name, isSelf, accent, fishVariant, totalMl, scaleMl }: Props) {
   const pct = Math.min(100, (totalMl / scaleMl) * 100)
-  // the water is a share of the tube's inner box (220 px less the 2 px border), where the scene is drawn too
+  // the water is a share of the tube's inner box (220 px less a 2 px border on each side), where the scene is drawn too
   const waterPx = (pct / 100) * SCENE_H
   const fish = fishOf(fishVariant)
   const aquarium = useAquarium(fish, totalMl, scaleMl)

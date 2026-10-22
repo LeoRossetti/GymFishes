@@ -90,8 +90,9 @@ nav a {
 .fish-bob { animation: fish-bob 2.4s ease-in-out infinite alternate; }
 [data-waves='paused'] .fish-tail,
 [data-waves='paused'] .fish-bob { animation-play-state: paused; }
+/* !important: each bubble sets its `animation` shorthand inline, which would reset the play state to running. */
 [data-waves='paused'] .aq-bubble,
-[data-waves='paused'] .aq-bubble > g { animation-play-state: paused; }
+[data-waves='paused'] .aq-bubble > g { animation-play-state: paused !important; }
 /* A piece a drink brings fades in (M10 §3.6); each tube's <style> names its new pieces. */
 @keyframes aq-fade {
   from { opacity: 0; }

@@ -61,7 +61,7 @@ export function Aquarium({ habitat, markup, prefix }: Props) {
   // stable: a new __html object would make React rewrite the markup on every render.
   const scene = useMemo(() => ({ __html: reduced ? markup.scene : markup.scene + markup.bubbles }), [markup, reduced])
   const air = useMemo(() => ({ __html: markup.air }), [markup])
-  const css = (reduced ? '' : markup.css) + fadeCss(prefix, fade.fresh)
+  const css = reduced ? '' : markup.css + fadeCss(prefix, fade.fresh)
 
   return (
     <>

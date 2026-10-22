@@ -200,10 +200,10 @@ strip of member columns, left-aligned (M7). Each column is a tube: flat dark bas
 border, and a flat blue fill whose height is that member's total for today. The top of the
 fill is a **live wave surface**, not a straight edge — see [Water surface](#water-surface).
 The member's fish (56px) swims just under that surface, and, once the water covers it, stays 6px
-under the crest (the fish is not drawn before; between 480 and 560 ml its belly is clipped by the
-floor by a few pixels, M9b). Below the tube: the total ("1,8 L") and the name
+under the crest (the fish is not drawn before; M9b noted its belly clipped by the floor between
+480 and 560 ml, which M10's lift ends, below). Below the tube: the total ("1,8 L") and the name
 ("VOCÊ", "ELA"). Rising bubbles were tried in M7 and removed the same day at Leo's request. (M9) The fish is drawn only
-once the water covers it (35px of the 220px tube, 480 ml at 3 L); below that the tube shows water alone. (M9b) The fish lives inside the water block, 6px under the crest, so it follows the level's own spring; an empty tube shows no crest, and the first drink still rises.
+once the water covers it: 35px of the tube's inner 216px, 487 ml at 3 L (M10; M9 measured the outer 220px, 480 ml); below that the tube shows water alone. (M9b) The fish lives inside the water block, 6px under the crest, so it follows the level's own spring; an empty tube shows no crest, and the first drink still rises.
 
 (M10) **The tube is a small aquarium** (aquarium spec `2026-10-20-m10-aquario-design.md`). Under "Com
 cenário" (§5.5) the tube's water moves in OKLab from the theme's water to river green (`#2A9C80`,
@@ -218,7 +218,7 @@ water (clipped to the air, 1,5 px into the water so no seam shows), the fish. A 
 irregular bursts from up to five sources (they return, few and irregular, at Leo's request). "Só
 água" is the plain tube above. With either choice the fish rides up in shallow water: its top sits
 `min(6, water − 35)` px under the crest, so it never sinks into the floor, and the water is measured
-in the tube's inner 216px, so the fish shows from 486 ml at 3 L.
+in the tube's inner 216px, so the fish shows from 487 ml at 3 L.
 
 The tube's full height is scaled to `max(3000, highestTotalToday)` ml, so the columns stay
 comparable and nobody's ever pinned at 100%. Since there are no goals, the scale is

@@ -25,10 +25,12 @@ describe('MemberTube', () => {
     expect(container.querySelector('svg[data-fish="betta"]')).not.toBeNull()
   })
 
-  it("measures the water in the tube's inner 216 px: 480 ml is still shallower than the fish", () => {
-    // 480 / 3000 of 216 px is 34,6 px, under the fish's 35 px
-    const { container } = render(<MemberTube {...base} totalMl={480} />)
+  it("measures the water in the tube's inner 216 px: the fish shows from 487 ml at 3 L", () => {
+    // 486 / 3000 of 216 px is 34,99 px, just under the fish's 35 px (on the outer 220 px it would show)
+    const { container, rerender } = render(<MemberTube {...base} totalMl={486} />)
     expect(container.querySelector('svg[data-fish]')).toBeNull()
+    rerender(<MemberTube {...base} totalMl={487} />)
+    expect(container.querySelector('svg[data-fish]')).not.toBeNull()
   })
 
   it('lifts the fish in shallow water so its belly is not clipped', () => {
@@ -61,6 +63,15 @@ describe('MemberTube', () => {
     const root = tubeRoot(container)
     expect(root?.querySelector('[data-aquarium="salt"]')).not.toBeNull()
     expect(root?.style.getPropertyValue('--color-water')).toBe('#1769C2')
+  })
+
+  it('paints the fish after every aquarium layer, so nothing covers it', () => {
+    const { container } = render(<MemberTube {...base} totalMl={3000} />)
+    const fish = container.querySelector('svg[data-fish]')
+    const layers = [...container.querySelectorAll('[data-aquarium], [data-piece]')]
+    expect(fish).not.toBeNull()
+    expect(layers.length).toBeGreaterThan(0)
+    for (const el of layers) expect(el.compareDocumentPosition(fish as Node) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it("Só água keeps today's plain tube: no scene, the theme water", () => {

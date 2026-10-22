@@ -82,6 +82,15 @@ describe('Aquarium', () => {
     expect(styleText(container)).not.toContain('aq-fade')
   })
 
+  it('never replays a fade once reduced motion is on', () => {
+    const { container, rerender } = render(<Tube fish="betta" ml={1500} />)
+    rerender(<Tube fish="betta" ml={2000} />)
+    expect(styleText(container)).toContain('aq-fade')
+    motionPrefs.reduced = true
+    rerender(<Tube fish="betta" ml={2000} />)
+    expect(styleText(container)).not.toContain('aq-fade')
+  })
+
   it('draws nothing under Só água', () => {
     localStorage.setItem(TUBE_STYLE_KEY, 'agua')
     const { container } = render(<Tube fish="betta" ml={3000} />)
