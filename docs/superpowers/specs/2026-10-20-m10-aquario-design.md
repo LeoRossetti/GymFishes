@@ -234,7 +234,7 @@ Ruling: **the ladder is approved.** At 0,5 L the agent recommended, and the canv
   plain tube: at 0,5 L (36 px of water for a 35 px fish) the fish's belly was clipped by the floor.
   Applies with decorations on and off.
 
-## 11. The reef (proposed 2026-10-22, awaiting Leo)
+## 11. The reef (2026-10-22)
 
 Leo, asked what he sees in a full saltwater tube:
 
@@ -267,3 +267,18 @@ piece for piece, so both habitats grow the same way.
 - **All thirteen fish checked** in their full habitat tube (canvas row "Todos os peixes"): every one
   stays legible. The whale is the weakest case, blue on blue, held by its dark outline and pale belly.
 - A member wearing the seahorse will see two seahorses: theirs and the small decor one on the kelp.
+
+Leo on the reef: "I think its fine". **Ruling: the reef is approved as drawn.**
+
+## 12. The switch (proposed 2026-10-22, awaiting Leo)
+
+Leo's ruling from §2 stands: one switch for "decorations and colour changes", on by default. The
+agent's proposal, on the canvas as "A escolha do tubo" (the real Perfil card, real size):
+
+- **Place:** the Perfil card, right under Tema. A view setting, stored per device like the theme
+  (`localStorage`); no schema change.
+- **Control:** the app's existing two-option selector (`src/ui/Segmented.tsx`, the one in Ranking and
+  Histórico), so no new kind of control.
+- **Words:** heading "Tubo" (same style as "Cor" and "Tema"), options **"Com cenário"** (default) and
+  **"Só água"**. "Só água" is today's plain blue tube with no decoration. "Aquário" was avoided because
+  it is already the name of a theme right above, in the same card.
