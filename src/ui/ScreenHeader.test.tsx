@@ -16,10 +16,12 @@ describe('ScreenHeader', () => {
     expect(screen.queryByText('quinta, 22 de outubro')).toBeNull()
   })
 
-  it('puts the status on the title row, inside the header', () => {
+  it('puts the status on its own line under the title, inside the header', () => {
     render(<ScreenHeader title="Histórico" status={<span role="status">Sem conexão</span>} />)
     const status = screen.getByRole('status')
+    const heading = screen.getByRole('heading')
     expect(screen.getByRole('banner')).toContainElement(status)
-    expect(status.parentElement).toBe(screen.getByRole('heading').parentElement)
+    expect(status.parentElement).not.toBe(heading.parentElement)
+    expect(heading.compareDocumentPosition(status) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 })
