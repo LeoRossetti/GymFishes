@@ -85,7 +85,7 @@ against screenshots of the production build on a WebKit iPhone viewport (2026-09
 │                           overscroll-behavior: contain; -webkit-overflow-scrolling: touch
 │   └── the active screen (header scrolls with its content — no sticky headers)
 ├── update bar              a static row above the tab bar, only while an update waits
-└── tab bar                 56px + env(safe-area-inset-bottom); never position: fixed;
+└── tab bar                 48px + env(safe-area-inset-bottom) − 10px (2026-10-23); never position: fixed;
                             relative z-10 (2026-10-22) so the raised plus paints over the scroll region
 ```
 
@@ -112,25 +112,33 @@ against screenshots of the production build on a WebKit iPhone viewport (2026-09
 
 - Top: `#root` padding, as today.
 - Bottom: the tab bar's `padding-bottom: env(safe-area-inset-bottom)` with no extra 10px.
+  (2026-10-23) Now `max(0px, calc(env(safe-area-inset-bottom, 0px) - 10px))`: the inset is taken
+  once, by the bar only (`#root` pads the top alone, a test pins it), and 10px short. On an iPhone
+  that is 24px instead of 34px, which keeps the labels 15px clear of the home indicator (5px tall,
+  8px off the edge) without the empty band the full inset left under them. Leo found the bar too
+  high; it went from 91px to 73px on an iPhone 14. With no indicator the padding is 0.
 - The register sheet keeps its own bottom inset.
 
 ## 5. Tab bar
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│  [drop]   [trophy]     ( + )     [calendar]  [fish]  │   56px of content
+│  [drop]   [trophy]     ( + )     [calendar]  [fish]  │   48px of content
 │   Hoje    Ranking               Histórico   Perfil   │
-│                                                      │   + safe-area-inset-bottom
+│                                                      │   + safe-area-inset-bottom − 10px
 └──────────────────────────────────────────────────────┘
 ```
 
-- Five equal slots. Each tab is a `NavLink` with a 24px icon over an 11px / 700 label,
-  `min-height: 56px`, `aria-current="page"` when active.
+- Five equal slots. Each tab is a `NavLink` with a 24px icon, 2px over an 11px / 700 label on a
+  14px line, `min-height: 48px` (56px until 2026-10-23), `aria-current="page"` when active.
 - Active: icon filled and label in `--water`. Inactive: outline icon and label in `--ink-2`.
   Press state: `--line` background for 100ms, as today.
-- The plus: a 52px circle, `--water` fill, 3px `--water-edge` bottom edge, `--ink-on-water`
-  plus glyph at 26px, raised 14px above the bar's top border, `aria-label` "Registrar água".
-- (2026-10-22) The raised 14px sit over the scroll region, so the bar carries `relative z-10`.
+- The plus: a 48px circle, `--water` fill, over a 3px `--water-edge` bottom edge (51px in all),
+  `--ink-on-water` plus glyph at 24px, raised 10px above the bar's top border, `aria-label`
+  "Registrar água". Pressed, the face sinks onto the edge: it drops 3px and the edge goes, so the
+  circle keeps its size and its bottom stays put, like the primary button. (Until 2026-10-23: 52px
+  with the edge inside, 26px glyph, raised 14px, a 2px press that pushed it below its own edge.)
+- (2026-10-22) The raised part sits over the scroll region, so the bar carries `relative z-10`.
   Without it the screen scrolling behind covered that part: all of it in WebKit, where the scroll
   region is its own composited layer, and positioned pieces (segmented thumbs, theme tiles) in
   Chromium. Sheets (z-40) and celebrations (z-50) stay above the bar.
@@ -265,11 +273,11 @@ Any value tuned during implementation stays inside these bounds; the test is the
 
 ### 8.1 Header
 
-"Hoje" at 24px / 800, the date at 13px / 500 `--ink-2` beneath it. On the right there was the
+"Hoje" at 24px / 800, the date at 15px / 500 `--ink-2` beneath it (13px until 2026-10-23). On the right there was the
 avatar: a 44px circle, `--surface-2` fill, 2px border in the member's accent, the fish at 30px
 inside, tap → Perfil. It was removed on 2026-10-22 at Leo's request, since Perfil is a tab. All
 four tabs now share one header (main spec §5): the title, Hoje's date, and the sync pill at the
-right end of the title row while it shows.
+right end of the title row while it shows, flush with the cards' edges.
 
 ### 8.2 Hero card
 
