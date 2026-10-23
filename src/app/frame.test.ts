@@ -24,4 +24,9 @@ describe('app frame (spec M7 §4)', () => {
   it('double-tap zoom is off for the whole page', () => {
     expect(css).toMatch(/html\s*{[^}]*touch-action:\s*manipulation/)
   })
+
+  it('the home-indicator inset is taken once, by the tab bar, never again by the frame', () => {
+    expect(css).not.toMatch(/safe-area-inset-bottom/)
+    expect(read('./TabBar.tsx').match(/safe-area-inset-bottom/g)).toHaveLength(1)
+  })
 })

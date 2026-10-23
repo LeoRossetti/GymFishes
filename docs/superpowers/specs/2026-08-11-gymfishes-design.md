@@ -187,15 +187,19 @@ center "+" is not a tab but a button.
 └─────────────────────────────────────────────┘
 ```
 
-The "+" rises 14px above the bar's top border, over the screen. The bar stacks above the scroll
+The "+" rises 10px above the bar's top border, over the screen (14px until 2026-10-23, when the bar
+was slimmed; M7 spec §5). The bar stacks above the scroll
 region (`relative z-10`), so content scrolling behind never covers the raised part, in WebKit or
 Chromium, in any theme (2026-10-22: in WebKit the whole cap was hidden behind the scroll region).
 
 **Header** — every tab opens with the same one (`ui/ScreenHeader`): the screen's name at 24px on
-the left, an optional 13px `--ink-2` line under it (only Hoje has one, the date), and the sync
-pill (§14) at the right end of the title row while it shows, so a dropped connection never pushes
-the screen down. Nothing else lives up there: no avatar, no shortcut to Perfil, which is a tab
-(2026-10-22, Leo).
+the left, an optional 15px / 500 `--ink-2` line under it (only Hoje has one, the date), and the
+sync pill (§14) at the right end of the title row while it shows, so a dropped connection never
+pushes the screen down. Nothing else lives up there: no avatar, no shortcut to Perfil, which is a
+tab (2026-10-22, Leo). (2026-10-23) The header sits flush with the cards' edges on both sides (the
+title at the 12px gutter, the pill's right edge on the cards' right edge), the title row is 28px
+tall and the date line 20px, 16px above the first card; the sync pill is the streak chip's 24px
+pill (12px / 800), so the row never grows. The date went from 13px to 15px to read at a glance.
 
 ### 5.1 Hoje
 
