@@ -84,8 +84,8 @@ describe('AppShell', () => {
     )
     const main = screen.getByRole('main')
     expect(main).toHaveClass('scroll-region')
-    // pb-6 clears the raised plus (rises 14px) so it never covers the last line at scroll end.
-    expect(main).toHaveClass('pb-6')
+    // pb-9 clears the raised plus (rises 21px) so it never covers the last line at scroll end.
+    expect(main).toHaveClass('pb-9')
     expect(main).toContainElement(screen.getByText('hoje ok'))
     const nav = screen.getByRole('navigation', { name: 'Abas' })
     expect(nav).not.toHaveClass('fixed')

@@ -60,6 +60,11 @@ nav a {
   outline-offset: 2px;
 }
 
+/* A tab runs to the screen's bottom edge, which would cut a ring drawn outside it. */
+nav a:focus-visible {
+  outline-offset: -2px;
+}
+
 @keyframes wave-back-drift {
   to { transform: translateX(-260px); }
 }
