@@ -60,7 +60,7 @@ against screenshots of the production build on a WebKit iPhone viewport (2026-09
 |---|---|---|
 | Scroll model | A fixed frame the height of the screen; each screen scrolls inside it | The only reliable way to stop iOS document rubber-band in standalone mode; also clips any horizontal overflow |
 | Zoom | `maximum-scale=1, user-scalable=no` in the viewport meta, `touch-action: manipulation` on the page, inputs at 16px or larger | Installed home-screen apps honour the meta; Safari in the browser ignores it, which is fine. Accepted WCAG 1.4.4 trade-off for a two-person app whose type sizes are fixed by the spec |
-| Tab bar | SVG icons at 24px, 11px labels, the floating round plus kept | Chosen on the mockup canvas over an inline square plus |
+| Tab bar | SVG icons at 24px, 11px labels, the floating round plus kept. (2026-10-23) Icons only, the names kept for screen readers | Chosen on the mockup canvas over an inline square plus. Leo found the bar too tall twice; only icons bring it about a third lower with every target still 44px or more, and the centred title already names the screen |
 | Themes | Five, as token sets under `data-theme` on `<html>`, per device in `localStorage`, no database column | Leo asked for a theme option explicitly. This is the leanest form: no sync, no schema, no new screen; a section in Perfil |
 | Default theme | Fundo do mar | Continuity with today's look on first open after the update |
 | Breu | Soft black `#0D0F12`, not `#000000` | Pure black was judged too much on the canvas |
@@ -85,7 +85,8 @@ against screenshots of the production build on a WebKit iPhone viewport (2026-09
 │                           overscroll-behavior: contain; -webkit-overflow-scrolling: touch
 │   └── the active screen (header scrolls with its content — no sticky headers)
 ├── update bar              a static row above the tab bar, only while an update waits
-└── tab bar                 48px + env(safe-area-inset-bottom) − 10px (2026-10-23); never position: fixed;
+└── tab bar                 1px border + tabs that run to the screen edge: 52px on an iPhone 14, 45px with
+                            no home indicator (2026-10-23); never position: fixed;
                             relative z-10 (2026-10-22) so the raised plus paints over the scroll region
 ```
 
@@ -117,31 +118,44 @@ against screenshots of the production build on a WebKit iPhone viewport (2026-09
   that is 24px instead of 34px, which keeps the labels 15px clear of the home indicator (5px tall,
   8px off the edge) without the empty band the full inset left under them. Leo found the bar too
   high; it went from 91px to 73px on an iPhone 14. With no indicator the padding is 0.
+  (2026-10-23, second pass) Leo still found 73px too tall. The bar has no padding of its own now:
+  each tab carries `padding-bottom: max(15px, calc(env(safe-area-inset-bottom, 0px) - 12px))`, so
+  its target runs to the screen's edge while its icon sits 22px off it, clear of the indicator's
+  ~21px swipe zone. 52px on an iPhone 14. Checked in WebKit and Chromium with the insets simulated:
+  `#root` is the full screen height, nothing sits under the bar, the body has no padding and the
+  frame adds no height of its own; the 73px was all bar. Two things only a device shows: the iOS
+  standalone bug that leaves the viewport short after the keyboard closes (a band under the bar),
+  and the update bar, a whole row on top of the tab bar while a new build waits.
 - The register sheet keeps its own bottom inset.
 
 ## 5. Tab bar
 
 ```
 ┌──────────────────────────────────────────────────────┐
-│  [drop]   [trophy]     ( + )     [calendar]  [fish]  │   48px of content
-│   Hoje    Ranking               Histórico   Perfil   │
-│                                                      │   + safe-area-inset-bottom − 10px
+│  [drop]   [trophy]     ( + )     [calendar]  [fish]  │   5px + 24px icons
+│                                                      │   + max(15px, safe-area-inset-bottom − 12px)
 └──────────────────────────────────────────────────────┘
 ```
 
-- Five equal slots. Each tab is a `NavLink` with a 24px icon, 2px over an 11px / 700 label on a
-  14px line, `min-height: 48px` (56px until 2026-10-23), `aria-current="page"` when active.
-- Active: icon filled and label in `--water`. Inactive: outline icon and label in `--ink-2`.
-  Press state: `--line` background for 100ms, as today.
+- Five equal slots. Each tab is a `NavLink` with a 24px icon 5px under the border and its name
+  in an `sr-only` span, `aria-current="page"` when active. The tab runs to the screen's bottom
+  edge: a 51px target on an iPhone 14 (44px with no indicator), the icon 22px off the edge. The
+  header's centred title names the screen, so the bar no longer repeats it. (Until 2026-10-23,
+  second pass: the icon 2px over an 11px / 700 label on a 14px line in a 48px row, 56px before.)
+- Active: icon filled, in `--water`. Inactive: outline icon in `--ink-2`. Press state: `--line`
+  background for 100ms, as today. The keyboard focus ring is drawn inside a tab (offset −2px),
+  since the screen edge would cut one drawn outside.
 - The plus: a 48px circle, `--water` fill, over a 3px `--water-edge` bottom edge (51px in all),
-  `--ink-on-water` plus glyph at 24px, raised 10px above the bar's top border, `aria-label`
+  `--ink-on-water` plus glyph at 24px, raised 21px above the bar's top border (10px until the
+  second pass of 2026-10-23), its bottom 22px off the screen edge like the icons, `aria-label`
   "Registrar água". Pressed, the face sinks onto the edge: it drops 3px and the edge goes, so the
   circle keeps its size and its bottom stays put, like the primary button. (Until 2026-10-23: 52px
   with the edge inside, 26px glyph, raised 14px, a 2px press that pushed it below its own edge.)
 - (2026-10-22) The raised part sits over the scroll region, so the bar carries `relative z-10`.
   Without it the screen scrolling behind covered that part: all of it in WebKit, where the scroll
   region is its own composited layer, and positioned pieces (segmented thumbs, theme tiles) in
-  Chromium. Sheets (z-40) and celebrations (z-50) stay above the bar.
+  Chromium. Sheets (z-40) and celebrations (z-50) stay above the bar. The scroll region ends
+  with 36px of padding (`pb-9`, 24px until 2026-10-23), so the last card stops 15px clear of it.
 - `TabRoute.icon` changes from `string` to a component `(props: { active: boolean }) =>
   ReactNode`. The route table stays the single source of truth for both routing and the bar.
 
@@ -273,11 +287,11 @@ Any value tuned during implementation stays inside these bounds; the test is the
 
 ### 8.1 Header
 
-"Hoje" at 24px / 800, the date at 15px / 500 `--ink-2` beneath it (13px until 2026-10-23). On the right there was the
+"Hoje" at 28px / 800, centred (24px, left-aligned, until 2026-10-23), the date at 15px / 500 `--ink-2` centred beneath it (13px until 2026-10-23). On the right there was the
 avatar: a 44px circle, `--surface-2` fill, 2px border in the member's accent, the fish at 30px
 inside, tap → Perfil. It was removed on 2026-10-22 at Leo's request, since Perfil is a tab. All
-four tabs now share one header (main spec §5): the title, Hoje's date, and the sync pill at the
-right end of the title row while it shows, flush with the cards' edges.
+four tabs now share one header (main spec §5): the centred title, Hoje's date, and the sync pill
+centred on its own line under them while it shows (on the title row's right end until 2026-10-23).
 
 ### 8.2 Hero card
 
@@ -441,7 +455,8 @@ Manual, on both installed iPhones after deploy:
 4. Focus the note field in the register sheet and the name field in Perfil, then dismiss the
    keyboard: the tab bar returns flush to the home indicator and the page is not left shifted.
 5. Try to pan sideways on every tab: nothing moves.
-6. Tab bar flush with the home indicator; the plus centred on the border.
+6. Tab bar flush with the home indicator, its icons clear of the indicator; the plus seated on
+   the border, its bottom level with the icons (2026-10-23).
 7. Switch through all five themes in Perfil; force-quit and reopen: the choice survives and
    the status bar colour matches.
 8. Both fish visible in the tubes; the gallery shows 13 with Tambaqui at 7 dias (M8 moved it).

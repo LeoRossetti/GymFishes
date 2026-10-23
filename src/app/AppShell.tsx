@@ -35,8 +35,9 @@ export function AppShell() {
     <ToastProvider>
       <CelebrationProvider>
         <div className="flex min-h-0 flex-1 flex-col">
-          {/* Keyed by route: a tab opens at the top (M9). The remount also resets the error boundary. */}
-          <main key={location.pathname} className="scroll-region pb-6">
+          {/* Keyed by route: a tab opens at the top (M9). The remount also resets the error boundary.
+              pb-9: the plus rises 21px over the region, so the last card ends 15px clear of it. */}
+          <main key={location.pathname} className="scroll-region pb-9">
             <ErrorBoundary>
               <Outlet
                 context={{ openRegister: (entry?: Entry) => setSheet({ entry, id: ++counter.current }) } satisfies ShellContext}

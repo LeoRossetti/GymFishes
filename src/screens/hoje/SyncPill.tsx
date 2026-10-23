@@ -2,8 +2,9 @@ import { useSyncStatus } from '@/features/entries/queries'
 import { STRINGS } from '@/lib/strings'
 
 /**
- * Yellow = attention without alarm; red stays reserved for delete (spec §8). Sits at the right of
- * the screen title, the same 24px pill as the streak chip, so it never makes the title row taller.
+ * Yellow = attention without alarm; red stays reserved for delete (spec §8). Sits centred on its
+ * own line under the screen title, the same 24px pill as the streak chip, so the centred title
+ * never moves for it.
  */
 export function SyncPill({ groupId }: { groupId: string | null | undefined }) {
   const { offline, stale } = useSyncStatus(groupId)

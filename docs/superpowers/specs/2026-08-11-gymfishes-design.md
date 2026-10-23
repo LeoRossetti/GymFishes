@@ -187,25 +187,28 @@ center "+" is not a tab but a button.
 └─────────────────────────────────────────────┘
 ```
 
-The "+" rises 10px above the bar's top border, over the screen (14px until 2026-10-23, when the bar
-was slimmed; M7 spec §5). The bar stacks above the scroll
+The "+" rises 21px above the bar's top border, over the screen (14px, then 10px, until the bar went
+to icons only on 2026-10-23; M7 spec §5). The tabs show icons only, their names kept for screen
+readers; the bar is 52px on an iPhone 14 (73px before, 91px before that). The bar stacks above the scroll
 region (`relative z-10`), so content scrolling behind never covers the raised part, in WebKit or
 Chromium, in any theme (2026-10-22: in WebKit the whole cap was hidden behind the scroll region).
 
-**Header** — every tab opens with the same one (`ui/ScreenHeader`): the screen's name at 24px on
-the left, an optional 15px / 500 `--ink-2` line under it (only Hoje has one, the date), and the
-sync pill (§14) at the right end of the title row while it shows, so a dropped connection never
-pushes the screen down. Nothing else lives up there: no avatar, no shortcut to Perfil, which is a
-tab (2026-10-22, Leo). (2026-10-23) The header sits flush with the cards' edges on both sides (the
-title at the 12px gutter, the pill's right edge on the cards' right edge), the title row is 28px
-tall and the date line 20px, 16px above the first card; the sync pill is the streak chip's 24px
-pill (12px / 800), so the row never grows. The date went from 13px to 15px to read at a glance.
+**Header** — every tab opens with the same one (`ui/ScreenHeader`): the screen's name at 28px / 800
+centred on a 32px line, an optional 15px / 500 `--ink-2` line centred under it (only Hoje has one,
+the date), and the sync pill (§14), the streak chip's 24px pill, centred on its own line 8px below
+while it shows. The header ends 16px above the first card. Nothing else lives up there: no avatar,
+no shortcut to Perfil, which is a tab (2026-10-22, Leo). The tab bar shows only icons, so this title
+is where the screen's name is read. (2026-10-23, second pass, Leo: "bolder and centred") Until
+then the title was 24px, left-aligned with the cards, and the pill sat at the title row's right
+end. Centred, a side slot cannot hold "Pode estar desatualizado" at 320px, so the pill takes its
+own line and pushes the screen down 32px while it shows instead of crowding the title. The date
+went from 13px to 15px to read at a glance.
 
 ### 5.1 Hoje
 
 The default screen. Answers *how are we doing right now*.
 
-**Header** — "Hoje" at 24px, the date in full pt-BR ("segunda, 10 de agosto") beneath it. The fish
+**Header** — "Hoje" at 28px / 800, centred, the date in full pt-BR ("segunda, 10 de agosto") centred beneath it. The fish
 avatar that sat on the right (a 44px circle ringed in your accent, tap → Perfil) was removed on
 2026-10-22 at Leo's request: the Perfil tab already goes there.
 
@@ -607,11 +610,12 @@ remain distinguishable from each other in the tubes; unaffected by the theme.
   text on one line up to the screen width.
 - **Spacing:** 4px scale; 13px screen gutter; 11px between cards.
 - **Type:** Nunito, self-hosted (Fontsource), weights 500 / 700 / 800, falling back to
-  the system stack. Rounded and friendly — the Duolingo feel. Scale: 38 / 24 / 20 / 17 /
+  the system stack. Rounded and friendly — the Duolingo feel. Scale: 38 / 28 / 24 / 20 / 17 /
   15 / 13 / 11 / 10. Tight tracking (`-0.4px` and below) on large numbers only. Screen
-  titles sit at 24px (M7, up from 20px).
+  titles sit at 28px, centred (2026-10-23; 24px from M7, 20px before).
 - **Labels** are 10px (M7, up from 9px), uppercase, `letter-spacing: 1px`, `--ink-3`,
-  weight 800. Tab bar labels are the exception, at 11px / 700.
+  weight 800. The tab bar has no visible labels since 2026-10-23 (its names are screen-reader
+  text); until then they were the exception, at 11px / 700.
 - **Icons** (M7): one shared SVG set in `src/ui/icons.tsx` — stroke 2, round caps and
   joins, 24×24 viewBox, `currentColor` — replaces every emoji used as a UI icon: the tab
   bar, the register row's water-drop tile, the streak chip's flame, the register sheet's

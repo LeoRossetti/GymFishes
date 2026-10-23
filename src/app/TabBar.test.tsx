@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 import { TabBar } from './TabBar'
@@ -32,6 +32,14 @@ describe('TabBar', () => {
       expect(link.querySelector('svg[data-icon]')).not.toBeNull()
     }
     expect(screen.getByRole('button', { name: 'Registrar água' }).querySelector('svg[data-icon="plus"]')).not.toBeNull()
+  })
+
+  it('shows only icons, and each tab keeps its name for screen readers', () => {
+    renderAt('/hoje')
+    for (const route of TAB_ROUTES) {
+      const link = screen.getByRole('link', { name: route.label })
+      expect(within(link).getByText(route.label)).toHaveClass('sr-only')
+    }
   })
 
   it('marks only the current tab as the current page', () => {
