@@ -187,9 +187,11 @@ center "+" is not a tab but a button.
 └─────────────────────────────────────────────┘
 ```
 
-The "+" rises 21px above the bar's top border, over the screen (14px, then 10px, until the bar went
-to icons only on 2026-10-23; M7 spec §5). The tabs show icons only, their names kept for screen
-readers; the bar is 52px on an iPhone 14 (73px before, 91px before that). The bar stacks above the scroll
+The "+" is a 52px round key raised 18px above the bar's top border, over the screen (M7 spec §5).
+Each tab shows a 26px icon over its name (2026-11-03; icons only from 2026-10-23). The bar is a 50px
+row over the home-indicator space, 76px on an iPhone and 58px without an indicator. Every earlier
+"too tall" (91px, 73px, 52px) was the bar plus a 59px band iOS 26 left under installed apps; the
+frame now asks for the whole screen (M7 spec §4.3). The bar stacks above the scroll
 region (`relative z-10`), so content scrolling behind never covers the raised part, in WebKit or
 Chromium, in any theme (2026-10-22: in WebKit the whole cap was hidden behind the scroll region).
 
@@ -197,8 +199,7 @@ Chromium, in any theme (2026-10-22: in WebKit the whole cap was hidden behind th
 centred on a 32px line, an optional 15px / 500 `--ink-2` line centred under it (only Hoje has one,
 the date), and the sync pill (§14), the streak chip's 24px pill, centred on its own line 8px below
 while it shows. The header ends 16px above the first card. Nothing else lives up there: no avatar,
-no shortcut to Perfil, which is a tab (2026-10-22, Leo). The tab bar shows only icons, so this title
-is where the screen's name is read. (2026-10-23, second pass, Leo: "bolder and centred") Until
+no shortcut to Perfil, which is a tab (2026-10-22, Leo). (2026-10-23, second pass, Leo: "bolder and centred") Until
 then the title was 24px, left-aligned with the cards, and the pill sat at the title row's right
 end. Centred, a side slot cannot hold "Pode estar desatualizado" at 320px, so the pill takes its
 own line and pushes the screen down 32px while it shows instead of crowding the title. The date
@@ -614,8 +615,8 @@ remain distinguishable from each other in the tubes; unaffected by the theme.
   15 / 13 / 11 / 10. Tight tracking (`-0.4px` and below) on large numbers only. Screen
   titles sit at 28px, centred (2026-10-23; 24px from M7, 20px before).
 - **Labels** are 10px (M7, up from 9px), uppercase, `letter-spacing: 1px`, `--ink-3`,
-  weight 800. The tab bar has no visible labels since 2026-10-23 (its names are screen-reader
-  text); until then they were the exception, at 11px / 700.
+  weight 800. The tab bar's names are the exception: 11px / 700, sentence case, in the tab's
+  colour (screen-reader text only from 2026-10-23 to 2026-11-03).
 - **Icons** (M7): one shared SVG set in `src/ui/icons.tsx` — stroke 2, round caps and
   joins, 24×24 viewBox, `currentColor` — replaces every emoji used as a UI icon: the tab
   bar, the register row's water-drop tile, the streak chip's flame, the register sheet's
