@@ -18,6 +18,16 @@ html {
   touch-action: manipulation;
 }
 
+/* iOS 26 installed app (WebKit bug 301108): with viewport-fit=cover and the translucent status bar,
+   the viewport comes up short by the status bar's height, and WebKit paints nothing below it: the
+   tab bar ended 59px above the glass on an iPhone. A root at least as tall as the screen makes it
+   give the full height back. min() keeps a phone without the bug from growing past the screen. */
+@media (display-mode: standalone) {
+  html {
+    min-height: min(100lvh, calc(100% + env(safe-area-inset-top)));
+  }
+}
+
 #root {
   height: 100%;
   height: 100dvh;

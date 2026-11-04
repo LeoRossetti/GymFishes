@@ -25,6 +25,12 @@ describe('app frame (spec M7 §4)', () => {
     expect(css).toMatch(/html\s*{[^}]*touch-action:\s*manipulation/)
   })
 
+  it('the installed app asks for the whole screen, so iOS 26 cannot leave a band under the tab bar', () => {
+    expect(css).toMatch(
+      /@media \(display-mode: standalone\)\s*{\s*html\s*{\s*min-height:\s*min\(100lvh, calc\(100% \+ env\(safe-area-inset-top\)\)\);/,
+    )
+  })
+
   it('the home-indicator inset is taken once, by the tab bar, never again by the frame', () => {
     expect(css).not.toMatch(/safe-area-inset-bottom/)
     expect(read('./TabBar.tsx').match(/safe-area-inset-bottom/g)).toHaveLength(1)
