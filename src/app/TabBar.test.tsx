@@ -34,11 +34,11 @@ describe('TabBar', () => {
     expect(screen.getByRole('button', { name: 'Registrar água' }).querySelector('svg[data-icon="plus"]')).not.toBeNull()
   })
 
-  it('shows only icons, and each tab keeps its name for screen readers', () => {
+  it('shows each tab its name under the icon', () => {
     renderAt('/hoje')
     for (const route of TAB_ROUTES) {
       const link = screen.getByRole('link', { name: route.label })
-      expect(within(link).getByText(route.label)).toHaveClass('sr-only')
+      expect(within(link).getByText(route.label)).not.toHaveClass('sr-only')
     }
   })
 
