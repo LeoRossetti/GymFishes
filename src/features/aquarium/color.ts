@@ -1,11 +1,11 @@
 import type { Habitat } from '@/features/fish/catalog'
 
 /** The day's water that fills the tube completely. */
-export const FULL_ML = 3000
+export const FULL_ML = 2000
 
 export type TubeWater = { fill: string; hi: string }
 
-/** The tube's water at a full 3 L, per habitat: river green and reef blue. */
+/** The tube's water at a full 2 L, per habitat: river green and reef blue. */
 export const HABITAT_WATER: Record<Habitat, TubeWater> = {
   fresh: { fill: '#2A9C80', hi: '#6ACDB2' },
   salt: { fill: '#1769C2', hi: '#4F98E6' },
@@ -60,7 +60,7 @@ export function mixOklab(a: string, b: string, t: number): string {
   return toHex(fromLab([a0 + (b0 - a0) * t, a1 + (b1 - a1) * t, a2 + (b2 - a2) * t]))
 }
 
-/** The tube's water at `ml`: from the theme's water to the habitat colour, linear up to 3 L. */
+/** The tube's water at `ml`: from the theme's water to the habitat colour, linear up to 2 L. */
 export function tubeWater(ml: number, habitat: Habitat, start: TubeWater): TubeWater {
   const t = Math.min(1, Math.max(0, ml / FULL_ML))
   const end = HABITAT_WATER[habitat]

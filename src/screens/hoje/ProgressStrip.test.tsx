@@ -48,6 +48,15 @@ describe('ProgressStrip', () => {
     expect(screen.queryByText('Ana está 500 ml na frente')).toBeNull()
   })
 
+  it('measures a quiet day against a 2 L tube: the fish shows from 325 ml', () => {
+    inline.value = null
+    const { container } = render(
+      <ProgressStrip userId="u1" members={members} entries={[row('e1', 'u1', 325), row('e2', 'u2', 324)]} />,
+    )
+    expect(container.querySelector('svg[data-fish="guppy"]')).not.toBeNull()
+    expect(container.querySelector('svg[data-fish="betta"]')).toBeNull()
+  })
+
   it('two members sit side by side with no strip scroll (spec M7 §8.2)', () => {
     inline.value = null
     render(<ProgressStrip userId="u1" members={members} entries={entries} />)

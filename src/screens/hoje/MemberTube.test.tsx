@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import { TUBE_STYLE_KEY } from '@/features/aquarium/tubeStyle'
 import { MemberTube } from './MemberTube'
 
-const base = { name: 'Ana', isSelf: false, accent: 'pink', fishVariant: 'betta', scaleMl: 3000 }
+const base = { name: 'Ana', isSelf: false, accent: 'pink', fishVariant: 'betta', scaleMl: 2000 }
 /** The tube's root: the only element that carries the mixed water as inline custom properties. */
 const tubeRoot = (c: HTMLElement) => c.querySelector<HTMLElement>('[style*="--color-water"]')
 
@@ -25,19 +25,19 @@ describe('MemberTube', () => {
     expect(container.querySelector('svg[data-fish="betta"]')).not.toBeNull()
   })
 
-  it("measures the water in the tube's inner 216 px: the fish shows from 487 ml at 3 L", () => {
-    // 486 / 3000 of 216 px is 34,99 px, just under the fish's 35 px (on the outer 220 px it would show)
-    const { container, rerender } = render(<MemberTube {...base} totalMl={486} />)
+  it("measures the water in the tube's inner 216 px: the fish shows from 325 ml at 2 L", () => {
+    // 324 / 2000 of 216 px is 34,99 px, just under the fish's 35 px (on the outer 220 px it would show)
+    const { container, rerender } = render(<MemberTube {...base} totalMl={324} />)
     expect(container.querySelector('svg[data-fish]')).toBeNull()
-    rerender(<MemberTube {...base} totalMl={487} />)
+    rerender(<MemberTube {...base} totalMl={325} />)
     expect(container.querySelector('svg[data-fish]')).not.toBeNull()
   })
 
   it('lifts the fish in shallow water so its belly is not clipped', () => {
-    // 500 ml fills 36 px of the inner 216: the 35 px fish sits 1 px under the crest
-    const { container } = render(<MemberTube {...base} totalMl={500} />)
+    // 350 ml fills 37,8 px of the inner 216: the 35 px fish sits 2,8 px under the crest
+    const { container } = render(<MemberTube {...base} totalMl={350} />)
     const wrapper = container.querySelector('svg[data-fish]')?.parentElement
-    expect(parseFloat(wrapper?.style.top ?? '')).toBeCloseTo(1, 5)
+    expect(parseFloat(wrapper?.style.top ?? '')).toBeCloseTo(2.8, 5)
   })
 
   it('an empty tube has no fish', () => {
@@ -51,7 +51,7 @@ describe('MemberTube', () => {
   })
 
   it('turns a full tube river green for a freshwater fish', () => {
-    const { container } = render(<MemberTube {...base} totalMl={3000} />)
+    const { container } = render(<MemberTube {...base} totalMl={2000} />)
     const root = tubeRoot(container)
     expect(root?.querySelector('[data-aquarium="fresh"]')).not.toBeNull()
     expect(root?.style.getPropertyValue('--color-water')).toBe('#2A9C80')
@@ -59,14 +59,14 @@ describe('MemberTube', () => {
   })
 
   it('turns a full tube reef blue for a saltwater fish', () => {
-    const { container } = render(<MemberTube {...base} fishVariant="clownfish" totalMl={3000} />)
+    const { container } = render(<MemberTube {...base} fishVariant="clownfish" totalMl={2000} />)
     const root = tubeRoot(container)
     expect(root?.querySelector('[data-aquarium="salt"]')).not.toBeNull()
     expect(root?.style.getPropertyValue('--color-water')).toBe('#1769C2')
   })
 
   it('paints the fish after every aquarium layer, so nothing covers it', () => {
-    const { container } = render(<MemberTube {...base} totalMl={3000} />)
+    const { container } = render(<MemberTube {...base} totalMl={2000} />)
     const fish = container.querySelector('svg[data-fish]')
     const layers = [...container.querySelectorAll('[data-aquarium], [data-piece]')]
     expect(fish).not.toBeNull()
@@ -76,7 +76,7 @@ describe('MemberTube', () => {
 
   it("Só água keeps today's plain tube: no scene, the theme water", () => {
     localStorage.setItem(TUBE_STYLE_KEY, 'agua')
-    const { container } = render(<MemberTube {...base} totalMl={3000} />)
+    const { container } = render(<MemberTube {...base} totalMl={2000} />)
     expect(container.querySelector('[data-aquarium]')).toBeNull()
     expect(tubeRoot(container)).toBeNull()
     expect(container.querySelector('svg[data-fish="betta"]')).not.toBeNull()
@@ -85,8 +85,8 @@ describe('MemberTube', () => {
   it('two tubes on one page share no id', () => {
     const { container } = render(
       <>
-        <MemberTube {...base} totalMl={3000} />
-        <MemberTube {...base} name="Leo" isSelf totalMl={3000} />
+        <MemberTube {...base} totalMl={2000} />
+        <MemberTube {...base} name="Leo" isSelf totalMl={2000} />
       </>,
     )
     const ids = [...container.querySelectorAll('[id]')].map((el) => el.id)

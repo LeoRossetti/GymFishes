@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { FULL_ML } from '@/features/aquarium/color'
 import { useCelebrations } from '@/features/celebrations/CelebrationProvider'
 import type { Member } from '@/features/group/queries'
 import { selfFirst } from '@/features/group/useGroupData'
@@ -15,7 +16,7 @@ export function ProgressStrip({ userId, members, entries }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const paused = useWavePause(ref)
   const totals = totalsForDay(entries, dayKey(new Date()))
-  const scale = Math.max(3000, ...members.map((m) => totals.get(m.id) ?? 0))
+  const scale = Math.max(FULL_ML, ...members.map((m) => totals.get(m.id) ?? 0))
   const ordered = selfFirst(members, userId)
   const partner = ordered.find((m) => m.id !== userId)
   const { inline } = useCelebrations()

@@ -20,17 +20,17 @@ describe('tubeWater', () => {
     expect(tubeWater(-100, 'salt', START)).toEqual(START)
   })
 
-  it('reaches the habitat water at 3 L and stays there', () => {
-    expect(FULL_ML).toBe(3000)
+  it('reaches the habitat water at 2 L and stays there', () => {
+    expect(FULL_ML).toBe(2000)
     for (const h of ['fresh', 'salt'] as const) {
-      expect(tubeWater(3000, h, START)).toEqual(HABITAT_WATER[h])
+      expect(tubeWater(2000, h, START)).toEqual(HABITAT_WATER[h])
       expect(tubeWater(5000, h, START)).toEqual(HABITAT_WATER[h])
     }
   })
 
-  it('is halfway at 1,5 L, for fill and highlight', () => {
+  it('is halfway at 1 L, for fill and highlight', () => {
     for (const h of ['fresh', 'salt'] as const) {
-      expect(tubeWater(1500, h, START)).toEqual({
+      expect(tubeWater(1000, h, START)).toEqual({
         fill: mixOklab(START.fill, HABITAT_WATER[h].fill, 0.5),
         hi: mixOklab(START.hi, HABITAT_WATER[h].hi, 0.5),
       })
