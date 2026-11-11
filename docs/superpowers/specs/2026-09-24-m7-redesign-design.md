@@ -330,7 +330,7 @@ centred on its own line under them while it shows (on the title row's right end 
 
 - Two members: both tubes inside the card, centred, 16px apart, no scroll. Three or more:
   the horizontal strip of today returns, left-aligned.
-- Tube scale rule unchanged: `max(3000, highestTotalToday)` ml.
+- Tube scale rule unchanged: `max(3000, highestTotalToday)` ml (2026-11-10: `max(2000, …)`, full at 2 L).
 - Fish width 56px (from 44). `fishBottomPx` keeps its contract with the new height.
 - Wave amplitudes 4px back / 3px front (from 3 / 2); drift speeds unchanged.
 - No bubbles: three rising discs per tube shipped in M7 and were removed the same day at

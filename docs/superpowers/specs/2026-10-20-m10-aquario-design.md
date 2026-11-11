@@ -64,10 +64,10 @@ river (canvas "Recife · 3 L, ao lado do rio da Ana"). Changing fish changes the
 ### 3.2 Water colour
 
 The tube's water moves from the **active theme's** water and crest colours (`THEMES[theme].water`,
-`.waterHi` in `src/features/theme/themes.ts`) at 0 ml to the habitat's colours at 3 L, mixed in OKLab,
-linear in millilitres, capped at 3 L:
+`.waterHi` in `src/features/theme/themes.ts`) at 0 ml to the habitat's colours at 2 L, mixed in OKLab,
+linear in millilitres, capped at 2 L (the full tube; 3 L until 2026-11-10):
 
-| Habitat | Water at 3 L | Crest at 3 L |
+| Habitat | Water at 2 L | Crest at 2 L |
 |---|---|---|
 | River | `#2A9C80` | `#6ACDB2` |
 | Reef | `#1769C2` | `#4F98E6` |
@@ -80,17 +80,19 @@ the builder.)
 
 ### 3.3 The ladder
 
-One step every 0,5 L, the same steps for both habitats. The river builds from the bottom up: floor
+One step every ⅓ L up to the full 2 L tube, the same steps for both habitats. (2026-11-10: the tube
+was full at 3 L with a step every 0,5 L; every mark moved to two thirds of its old value, 667, 1000,
+1333, 1667 and 2000 ml, so each step still meets the water at the height it was drawn for.) The river builds from the bottom up: floor
 pieces first, mid-water pieces last, once the member's fish has risen above them.
 
 | Water | River | Reef |
 |---|---|---|
-| 0,5 L | plain water | plain water |
-| 1 L | riverbed, a boulder and rocks, short grass, first bubble source | sand, reef rock with small encrusting corals, a brain coral, yellow finger corals, first bubble source |
-| 1,5 L | a sunken log, an Amazon sword plant, second source | a branching (staghorn) coral, a purple sea fan, second source |
-| 2 L | shrimp on the log, a crab, a leaf on the log and one on the riverbed, moss on the boulder and the log, the first two mangrove roots, third source | starfish, sea urchin, two shells, an anemone on the rock, the anchor with its chain, third source |
-| 2,5 L | the whole root fan, tall grass, the far bank, fourth source | kelp, a small seahorse holding it, the far reef, fourth source |
-| 3 L | a school of fish shadows, two drifting leaves, fifth source | a school of fish shadows, two small moon jellyfish, fifth source |
+| below 0,67 L | plain water | plain water |
+| 0,67 L | riverbed, a boulder and rocks, short grass, first bubble source | sand, reef rock with small encrusting corals, a brain coral, yellow finger corals, first bubble source |
+| 1 L | a sunken log, an Amazon sword plant, second source | a branching (staghorn) coral, a purple sea fan, second source |
+| 1,33 L | shrimp on the log, a crab, a leaf on the log and one on the riverbed, moss on the boulder and the log, the first two mangrove roots, third source | starfish, sea urchin, two shells, an anemone on the rock, the anchor with its chain, third source |
+| 1,67 L | the whole root fan, tall grass, the far bank, fourth source | kelp, a small seahorse holding it, the far reef, fourth source |
+| 2 L | a school of fish shadows, two drifting leaves, fifth source | a school of fish shadows, two small moon jellyfish, fifth source |
 
 The art reference tags every piece and bubble source with its mark (`at`) in this order.
 
@@ -106,7 +108,7 @@ The art reference tags every piece and bubble source with its mark (`at`) in thi
   13 % in the strip.
 - **A piece shows once its mark is reached.** A mid-water piece (school, drifting leaves, jellyfish)
   also waits until the water covers it entirely; this matters only when the tube's scale grows past
-  3 L because someone drank more and every tube's water sits lower.
+  2 L because someone drank more and every tube's water sits lower.
 - **The roots and the chain come from above.** Once they arrive they run from the top of the tube,
   through the air above the water and into it, like a mangrove's tree or a boat above the water. Their
   part above the water is drawn too, and overlaps the underwater part by about 1,5 px so no seam shows.
@@ -118,7 +120,7 @@ The art reference tags every piece and bubble source with its mark (`at`) in thi
   `water height − fish height`, so it is never cut by the tube's floor (today at 0,5 L the fish's belly
   is clipped). This applies with the switch on and off. The fish still appears only once the water is
   as tall as the fish, as today.
-- **Past 3 L** the scene stays full and the water stays at the habitat colour.
+- **Past 2 L** the scene stays full and the water stays at the habitat colour.
 
 ### 3.5 Bubbles
 
@@ -196,6 +198,7 @@ Every visual decision was taken on the canvas; his words are in the appendix.
 - The mangrove roots' shape and placement as in round 3 (their colour was always fine).
 - The school as one flowing curved shape.
 - The ladder, one step every 0,5 L, with plain water at 0,5 L and the fish riding up in shallow water.
+  (2026-11-10, at Leo's request: the tube is full at 2 L and the same ladder runs every ⅓ L, §3.3.)
 - Gradual water colour toward river green and ocean blue, in the tube only.
 - One switch, on by default, "Tubo: Com cenário / Só água", in Perfil.
 - Shrimp and a crab as the river's critters (he loved the drawing that has them; tiny fish live on as
@@ -205,7 +208,7 @@ Every visual decision was taken on the canvas; his words are in the appendix.
 ## 7. The agent's calls, for Leo to check
 
 - The colour shift starts from the active theme's water, not from one fixed blue.
-- Mid-water pieces wait until the water covers them (only visible when the scale passes 3 L).
+- Mid-water pieces wait until the water covers them (only visible when the scale passes 2 L).
 - New pieces fade in over 400 ms when a drink crosses a mark; no fade on opening Hoje. This is the one
   mechanism nobody asked for: without it a piece pops in mid-rise.
 - The switch applies to every tube on the device, including the partner's.
