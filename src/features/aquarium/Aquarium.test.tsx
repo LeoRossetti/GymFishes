@@ -10,7 +10,7 @@ vi.mock('motion/react', async (importOriginal) => ({
   useReducedMotion: () => motionPrefs.reduced,
 }))
 
-function Tube({ fish, ml, scaleMl = 3000 }: { fish: FishId; ml: number; scaleMl?: number }) {
+function Tube({ fish, ml, scaleMl = 2000 }: { fish: FishId; ml: number; scaleMl?: number }) {
   const aquarium = useAquarium(fish, ml, scaleMl)
   return aquarium ? <Aquarium {...aquarium} /> : null
 }
@@ -25,13 +25,13 @@ afterEach(() => {
 
 describe('Aquarium', () => {
   it('draws the river for a freshwater fish', () => {
-    const { container } = render(<Tube fish="betta" ml={3000} />)
+    const { container } = render(<Tube fish="betta" ml={2000} />)
     expect(container.querySelector('[data-aquarium="fresh"]')).not.toBeNull()
     expect(pieces(container)).toContain('log')
   })
 
   it('draws the reef for a saltwater fish', () => {
-    const { container } = render(<Tube fish="clownfish" ml={3000} />)
+    const { container } = render(<Tube fish="clownfish" ml={2000} />)
     expect(container.querySelector('[data-aquarium="salt"]')).not.toBeNull()
     expect(pieces(container)).toContain('anchor')
   })
@@ -43,39 +43,39 @@ describe('Aquarium', () => {
   })
 
   it('lets the bubbles rise in a full tube', () => {
-    const { container } = render(<Tube fish="betta" ml={3000} />)
+    const { container } = render(<Tube fish="betta" ml={2000} />)
     expect(container.querySelectorAll('.aq-bubble').length).toBeGreaterThan(0)
   })
 
   it('keeps the school away until the water covers it', () => {
-    // 3 L on a 5 L day: the surface sits at 86 px, under the school's top edge (55 px)
-    const { container } = render(<Tube fish="betta" ml={3000} scaleMl={5000} />)
+    // 2 L on a 4 L day: the surface sits at 108 px, under the school's top edge (55 px)
+    const { container } = render(<Tube fish="betta" ml={2000} scaleMl={4000} />)
     expect(pieces(container)).toContain('bed')
     expect(pieces(container)).not.toContain('school')
   })
 
   it('draws the roots in the air above the water as well as under it', () => {
-    const { container } = render(<Tube fish="betta" ml={2000} />)
+    const { container } = render(<Tube fish="betta" ml={1333} />)
     expect(pieces(container).filter((p) => p === 'roots')).toHaveLength(2)
   })
 
   it('fades nothing in when Hoje opens', () => {
-    const { container } = render(<Tube fish="betta" ml={3000} />)
+    const { container } = render(<Tube fish="betta" ml={2000} />)
     expect(styleText(container)).not.toContain('aq-fade')
   })
 
   it('fades in only the pieces a drink brings', () => {
-    const { container, rerender } = render(<Tube fish="betta" ml={1500} />)
-    rerender(<Tube fish="betta" ml={2000} />)
+    const { container, rerender } = render(<Tube fish="betta" ml={1000} />)
+    rerender(<Tube fish="betta" ml={1333} />)
     const css = styleText(container)
     expect(css).toContain('aq-fade 400ms ease-out')
     expect(css).toContain('[data-piece="shrimp"]')
     expect(css).not.toContain('[data-piece="bed"]')
   })
 
-  it('at 2,5 L fades in the rest of the root fan, not the roots already there', () => {
-    const { container, rerender } = render(<Tube fish="betta" ml={2000} />)
-    rerender(<Tube fish="betta" ml={2500} />)
+  it('at 1,67 L fades in the rest of the root fan, not the roots already there', () => {
+    const { container, rerender } = render(<Tube fish="betta" ml={1333} />)
+    rerender(<Tube fish="betta" ml={1667} />)
     const css = styleText(container)
     expect(css).toContain('[data-piece="roots-fan"]')
     expect(css).not.toContain('[data-piece="roots"]')
@@ -83,25 +83,25 @@ describe('Aquarium', () => {
 
   it('under reduced motion shows the scene still: no bubbles, no fade', () => {
     motionPrefs.reduced = true
-    const { container, rerender } = render(<Tube fish="betta" ml={1500} />)
-    rerender(<Tube fish="betta" ml={2000} />)
+    const { container, rerender } = render(<Tube fish="betta" ml={1000} />)
+    rerender(<Tube fish="betta" ml={1333} />)
     expect(pieces(container)).toContain('shrimp')
     expect(container.querySelector('.aq-bubble')).toBeNull()
     expect(styleText(container)).not.toContain('aq-fade')
   })
 
   it('never replays a fade once reduced motion is on', () => {
-    const { container, rerender } = render(<Tube fish="betta" ml={1500} />)
-    rerender(<Tube fish="betta" ml={2000} />)
+    const { container, rerender } = render(<Tube fish="betta" ml={1000} />)
+    rerender(<Tube fish="betta" ml={1333} />)
     expect(styleText(container)).toContain('aq-fade')
     motionPrefs.reduced = true
-    rerender(<Tube fish="betta" ml={2000} />)
+    rerender(<Tube fish="betta" ml={1333} />)
     expect(styleText(container)).not.toContain('aq-fade')
   })
 
   it('draws nothing under Só água', () => {
     localStorage.setItem(TUBE_STYLE_KEY, 'agua')
-    const { container } = render(<Tube fish="betta" ml={3000} />)
+    const { container } = render(<Tube fish="betta" ml={2000} />)
     expect(container.querySelector('[data-aquarium]')).toBeNull()
     expect(container.querySelector('style')).toBeNull()
   })

@@ -40,11 +40,11 @@ export type ReefPalette = typeof R
 
 /** Bubble sources spread across the floor, each joining at its litre mark, like the river's. */
 export const REEF_SOURCES: readonly BubbleSource[] = [
-  { at: 1000, x: 149, y: 176, n: 3, seed: 3 },
-  { at: 1500, x: 45, y: 140, n: 1, seed: 11 },
-  { at: 2000, x: 86, y: 183, n: 2, seed: 7 },
-  { at: 2500, x: 118, y: 194, n: 2, seed: 5 },
-  { at: 3000, x: 22, y: 150, n: 1, seed: 13 },
+  { at: 667, x: 149, y: 176, n: 3, seed: 3 },
+  { at: 1000, x: 45, y: 140, n: 1, seed: 11 },
+  { at: 1333, x: 86, y: 183, n: 2, seed: 7 },
+  { at: 1667, x: 118, y: 194, n: 2, seed: 5 },
+  { at: 2000, x: 22, y: 150, n: 1, seed: 13 },
 ]
 
 type Draw = (scene: { ids: IdSpace; water: TubeWater }) => string
@@ -55,24 +55,24 @@ type ReefPiece = PieceSpec & { name: string; draw: Draw }
  * `midTop` (mid-water pieces only) is the piece's top edge in scene px, measured from these coordinates.
  */
 const PIECES: readonly ReefPiece[] = [
-  { at: 2500, name: 'far-reef', draw: ({ water }) => farReef(water) },
-  { at: 3000, midTop: 55, name: 'school', draw: ({ water }) => school(water) },
-  { at: 2500, name: 'kelp', draw: ({ ids }) => kelp(ids, R) },
-  { at: 1000, name: 'sand', draw: ({ ids }) => sand(ids, R) },
-  { at: 1500, name: 'sea-fan', draw: ({ ids }) => seaFan(ids, R) },
-  { at: 1000, name: 'rocks', draw: ({ ids }) => rocks(ids, R) },
-  { at: 1000, name: 'brain-coral', draw: ({ ids }) => brainCoral(ids, R) },
-  { at: 1000, name: 'finger-coral', draw: ({ ids }) => fingerCoral(ids, R) },
-  { at: 1500, name: 'staghorn', draw: ({ ids }) => staghorn(ids, R) },
-  { at: 2000, name: 'chain', draw: () => chain(R) },
-  { at: 2000, name: 'anchor', draw: ({ ids }) => anchor(ids, R) },
-  { at: 2000, name: 'anemone', draw: ({ ids }) => anemone(ids, R) },
-  { at: 2000, name: 'shells', draw: ({ ids }) => shells(ids, R) },
-  { at: 2000, name: 'urchin', draw: ({ ids }) => urchin(ids, R, 42, 196, 4.4) },
-  { at: 2000, name: 'starfish', draw: ({ ids }) => starfish(ids, R, 64, 205.4, 7.4, 3, 14) },
-  { at: 2500, name: 'seahorse', draw: ({ ids }) => seahorse(ids, R, 9, 98, 1.15) },
-  { at: 3000, midTop: 117, name: 'jellyfish-1', draw: ({ water }) => jelly(62, 122, 1, -6, water) },
-  { at: 3000, midTop: 91, name: 'jellyfish-2', draw: ({ water }) => jelly(94, 96, 0.82, 10, water) },
+  { at: 1667, name: 'far-reef', draw: ({ water }) => farReef(water) },
+  { at: 2000, midTop: 55, name: 'school', draw: ({ water }) => school(water) },
+  { at: 1667, name: 'kelp', draw: ({ ids }) => kelp(ids, R) },
+  { at: 667, name: 'sand', draw: ({ ids }) => sand(ids, R) },
+  { at: 1000, name: 'sea-fan', draw: ({ ids }) => seaFan(ids, R) },
+  { at: 667, name: 'rocks', draw: ({ ids }) => rocks(ids, R) },
+  { at: 667, name: 'brain-coral', draw: ({ ids }) => brainCoral(ids, R) },
+  { at: 667, name: 'finger-coral', draw: ({ ids }) => fingerCoral(ids, R) },
+  { at: 1000, name: 'staghorn', draw: ({ ids }) => staghorn(ids, R) },
+  { at: 1333, name: 'chain', draw: () => chain(R) },
+  { at: 1333, name: 'anchor', draw: ({ ids }) => anchor(ids, R) },
+  { at: 1333, name: 'anemone', draw: ({ ids }) => anemone(ids, R) },
+  { at: 1333, name: 'shells', draw: ({ ids }) => shells(ids, R) },
+  { at: 1333, name: 'urchin', draw: ({ ids }) => urchin(ids, R, 42, 196, 4.4) },
+  { at: 1333, name: 'starfish', draw: ({ ids }) => starfish(ids, R, 64, 205.4, 7.4, 3, 14) },
+  { at: 1667, name: 'seahorse', draw: ({ ids }) => seahorse(ids, R, 9, 98, 1.15) },
+  { at: 2000, midTop: 117, name: 'jellyfish-1', draw: ({ water }) => jelly(62, 122, 1, -6, water) },
+  { at: 2000, midTop: 91, name: 'jellyfish-2', draw: ({ water }) => jelly(94, 96, 0.82, 10, water) },
 ]
 
 /**
@@ -93,6 +93,6 @@ export function reefScene(ml: number, water: TubeWater, surfaceY: number, ids: I
  * as the underwater part, so both halves fade in together.
  */
 export function reefInAir(ml: number, _water: TubeWater, _ids: IdSpace): string {
-  if (ml < 2000) return ''
+  if (ml < 1333) return ''
   return `<g data-piece="chain">${chain(R)}</g>`
 }

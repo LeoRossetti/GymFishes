@@ -5,61 +5,61 @@ import { RIVER_SOURCES } from './art/river'
 import { buildScene } from './scene'
 
 const START = { fill: '#1CB0F6', hi: '#62CDFF' }
-const WATER = tubeWater(3000, 'fresh', START)
+const WATER = tubeWater(2000, 'fresh', START)
 const idsIn = (s: string) => [...s.matchAll(/ id="([^"]*)"/g)].map((m) => m[1] ?? '')
 const keyframesIn = (s: string) => [...s.matchAll(/@keyframes ([\w-]+)/g)].map((m) => m[1] ?? '')
 const count = (s: string, needle: string) => s.split(needle).length - 1
 const field = (ml: number, surfaceY = 0, prefix = 't') => bubbleField(ml, WATER, surfaceY, RIVER_SOURCES, prefix)
 
 describe('bubbleField', () => {
-  it('has no bubbles below 1000 ml', () => {
-    expect(field(900)).toEqual({ css: '', svg: '' })
+  it('has no bubbles below 667 ml', () => {
+    expect(field(666)).toEqual({ css: '', svg: '' })
   })
 
   it('lets sources join at their marks', () => {
-    const at1000 = count(field(1000).svg, 'class="aq-bubble"')
-    const at3000 = count(field(3000).svg, 'class="aq-bubble"')
-    expect(at1000).toBe(3)
-    expect(at3000).toBe(9)
+    const at667 = count(field(667).svg, 'class="aq-bubble"')
+    const at2000 = count(field(2000).svg, 'class="aq-bubble"')
+    expect(at667).toBe(3)
+    expect(at2000).toBe(9)
   })
 
   it('draws no bubble when the rise is 6 px or less', () => {
-    // the 1 L source sits at y 189: a surface at 189 - 6 - 6 leaves a 6 px rise
-    expect(field(1000, 177)).toEqual({ css: '', svg: '' })
-    expect(count(field(1000, 176).svg, 'class="aq-bubble"')).toBe(3)
+    // the first source sits at y 189: a surface at 189 - 6 - 6 leaves a 6 px rise
+    expect(field(667, 177)).toEqual({ css: '', svg: '' })
+    expect(count(field(667, 176).svg, 'class="aq-bubble"')).toBe(3)
   })
 
   it('is deterministic and names its keyframes after the prefix', () => {
-    expect(field(3000)).toEqual(field(3000))
-    for (const name of keyframesIn(field(3000, 0, 'x').css)) expect(name.startsWith('xu') || name.startsWith('xs')).toBe(true)
+    expect(field(2000)).toEqual(field(2000))
+    for (const name of keyframesIn(field(2000, 0, 'x').css)) expect(name.startsWith('xu') || name.startsWith('xs')).toBe(true)
   })
 
   it('prints no NaN or undefined', () => {
-    expect(field(3000).css + field(3000).svg).not.toMatch(/NaN|undefined/)
+    expect(field(2000).css + field(2000).svg).not.toMatch(/NaN|undefined/)
   })
 })
 
 describe('buildScene', () => {
   it('returns the same object for the same arguments', () => {
-    expect(buildScene('fresh', 2000, 3000, START, 't')).toBe(buildScene('fresh', 2000, 3000, START, 't'))
-    expect(buildScene('fresh', 2000, 3000, START, 't')).not.toBe(buildScene('fresh', 2500, 3000, START, 't'))
+    expect(buildScene('fresh', 1333, 2000, START, 't')).toBe(buildScene('fresh', 1333, 2000, START, 't'))
+    expect(buildScene('fresh', 1333, 2000, START, 't')).not.toBe(buildScene('fresh', 1667, 2000, START, 't'))
   })
 
   it('uses the tube water for the habitat and amount', () => {
-    expect(buildScene('salt', 1500, 3000, START, 't').water).toEqual(tubeWater(1500, 'salt', START))
+    expect(buildScene('salt', 1000, 2000, START, 't').water).toEqual(tubeWater(1000, 'salt', START))
   })
 
-  it('has an empty air below 2000 ml and a bare tube below 1000 ml', () => {
-    expect(buildScene('fresh', 1500, 3000, START, 't').air).toBe('')
-    const plain = buildScene('fresh', 500, 3000, START, 't')
+  it('has an empty air below 1333 ml and a bare tube below 667 ml', () => {
+    expect(buildScene('fresh', 1000, 2000, START, 't').air).toBe('')
+    const plain = buildScene('fresh', 500, 2000, START, 't')
     expect(plain.scene).toBe('')
     expect(plain.bubbles).toBe('')
     expect(plain.css).toBe('')
   })
 
   it.each(['fresh', 'salt'] as const)('shares no id or keyframe name between prefixes (%s)', (habitat) => {
-    const a = buildScene(habitat, 3000, 3000, START, 'a')
-    const b = buildScene(habitat, 3000, 3000, START, 'b')
+    const a = buildScene(habitat, 2000, 2000, START, 'a')
+    const b = buildScene(habitat, 2000, 2000, START, 'b')
     const idsA = [...idsIn(a.scene), ...idsIn(a.air)]
     const idsB = [...idsIn(b.scene), ...idsIn(b.air)]
     expect(idsA.length).toBeGreaterThan(0)
@@ -70,13 +70,13 @@ describe('buildScene', () => {
   })
 
   it('keeps the scene and the air apart within one call', () => {
-    const s = buildScene('fresh', 3000, 3000, START, 'a')
+    const s = buildScene('fresh', 2000, 2000, START, 'a')
     expect(s.air).not.toBe('')
     expect(idsIn(s.scene).filter((id) => idsIn(s.air).includes(id))).toEqual([])
   })
 
   it('keeps the bubbles apart from the pieces, so reduced motion can leave them out', () => {
-    const s = buildScene('fresh', 3000, 3000, START, 'a')
+    const s = buildScene('fresh', 2000, 2000, START, 'a')
     expect(count(s.bubbles, 'aq-bubble')).toBeGreaterThan(0)
     expect(count(s.scene, 'aq-bubble')).toBe(0)
   })

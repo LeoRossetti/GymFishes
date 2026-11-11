@@ -76,8 +76,8 @@ export function roots(ids: IdSpace, C: RiverPalette, water: TubeWater, ml = FULL
   const wE: Profile = (t) => 7.4 - 3.6 * t + node(0.36, 0.8)(t) + wob(0.3, 11, 4)(t) + foot(t)
   const wC: Profile = (t) => 6.4 - 3 * t + node(0.55, 0.6)(t) + foot(t)
   const wFork: Profile = (t) => 4.2 - 1.8 * t + foot(t)
-  const all = ml >= 2500
-  /** The rest of the fan, from 2,5 L: its own piece name, so it fades in over the two roots already there. */
+  const all = ml >= 1667
+  /** The rest of the fan, from 1,67 L: its own piece name, so it fades in over the two roots already there. */
   const fan = (draw: () => string) => (all ? `<g data-piece="roots-fan">${draw()}</g>` : '')
   return fan(() => piece(ids, { body: ribbonPath(Cb, wC, { tip: 'flat' }), fill: back.base, line: back.line, width: 0.7 }) + feet(133, 200, back)) +
     fan(() => front(E, wE, [0.3, 0.55, 0.8], [0.2, 0.34, 0.5, 0.7]) + feet(144, 200, c)) +

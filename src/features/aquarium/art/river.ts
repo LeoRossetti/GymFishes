@@ -29,42 +29,42 @@ export type RiverPalette = typeof C
  * seeded burst once per period, so the tube never shows a regular rhythm; few bubbles are up at once.
  */
 export const RIVER_SOURCES: readonly BubbleSource[] = [
-  { at: 1000, x: 131, y: 189, n: 3, seed: 3 },
-  { at: 1500, x: 85, y: 185, n: 1, seed: 11 },
-  { at: 2000, x: 62, y: 174, n: 2, seed: 7 },
-  { at: 2500, x: 119, y: 193, n: 2, seed: 5 },
-  { at: 3000, x: 37, y: 166, n: 1, seed: 13 },
+  { at: 667, x: 131, y: 189, n: 3, seed: 3 },
+  { at: 1000, x: 85, y: 185, n: 1, seed: 11 },
+  { at: 1333, x: 62, y: 174, n: 2, seed: 7 },
+  { at: 1667, x: 119, y: 193, n: 2, seed: 5 },
+  { at: 2000, x: 37, y: 166, n: 1, seed: 13 },
 ]
 
 type Draw = (scene: { ids: IdSpace; water: TubeWater; ml: number }) => string
 type RiverPiece = PieceSpec & { name: string; draw: Draw }
 
 /**
- * Every piece in paint order with the ml at which it joins the tube. The proposed ladder (one step every
- * 0,5 L) builds the river from the bottom up: floor pieces first, mid-water pieces last, once the
- * member's fish has risen above them.
- *   0,5 L plain water · 1 L riverbed, rocks, short grass, first bubbles · 1,5 L log, Amazon sword
- *   2 L shrimp, crab, leaves on the log and the floor, moss, the first two roots
- *   2,5 L the whole root fan, tall grass, the far bank · 3 L the school, drifting leaves
+ * Every piece in paint order with the ml at which it joins the tube. The ladder (one step every ⅓ L, up
+ * to the full 2 L tube) builds the river from the bottom up: floor pieces first, mid-water pieces last,
+ * once the member's fish has risen above them. Each step meets the water at the height it was drawn for.
+ *   below 0,67 L plain water · 0,67 L riverbed, rocks, short grass, first bubbles · 1 L log, Amazon sword
+ *   1,33 L shrimp, crab, leaves on the log and the floor, moss, the first two roots
+ *   1,67 L the whole root fan, tall grass, the far bank · 2 L the school, drifting leaves
  * `midTop` (mid-water pieces only) is the piece's top edge in scene px, measured from these coordinates.
  */
 const PIECES: readonly RiverPiece[] = [
-  { at: 2500, name: 'far-bank', draw: ({ ids, water }) => farPlane(ids, water) },
-  { at: 3000, midTop: 55, name: 'school', draw: ({ water }) => school(water) },
-  { at: 2000, name: 'roots', draw: ({ ids, water, ml }) => roots(ids, C, water, ml) },
-  { at: 2500, name: 'tall-grass', draw: ({ ids }) => tallBlades(ids, C) },
-  { at: 1000, name: 'bed', draw: ({ ids }) => bed(ids, C) },
-  { at: 1500, name: 'sword-plant', draw: ({ ids }) => swordPlant(ids, C) },
-  { at: 1000, name: 'rocks', draw: ({ ids }) => rocks(ids, C) },
-  { at: 1000, name: 'short-grass', draw: ({ ids }) => shortBlades(ids, C) },
-  { at: 1500, name: 'log', draw: ({ ids }) => log(ids, C) },
-  { at: 2000, name: 'moss', draw: ({ ids }) => moss(ids, C) },
-  { at: 2000, name: 'leaf-bed', draw: ({ ids }) => fallenLeaf(ids, 64, 208.5, -7, 13, 4.6, C.leafB) },
-  { at: 2000, name: 'leaf-log', draw: ({ ids }) => fallenLeaf(ids, 26, 181, -62, 13, 4.6, C.leafB) },
-  { at: 3000, midTop: 101, name: 'leaf-drift-1', draw: ({ ids }) => fallenLeaf(ids, 12, 106, 24, 16, 5.6, C.leafA) },
-  { at: 3000, midTop: 92, name: 'leaf-drift-2', draw: ({ ids }) => fallenLeaf(ids, 90, 98, 146, 12, 4.4, C.leafC) },
-  { at: 2000, name: 'shrimp', draw: ({ ids }) => shrimp(ids, C, 74, 176.6, 0.72) },
-  { at: 2000, name: 'crab', draw: ({ ids }) => crab(ids, C, 118.5, 191, 0.8) },
+  { at: 1667, name: 'far-bank', draw: ({ ids, water }) => farPlane(ids, water) },
+  { at: 2000, midTop: 55, name: 'school', draw: ({ water }) => school(water) },
+  { at: 1333, name: 'roots', draw: ({ ids, water, ml }) => roots(ids, C, water, ml) },
+  { at: 1667, name: 'tall-grass', draw: ({ ids }) => tallBlades(ids, C) },
+  { at: 667, name: 'bed', draw: ({ ids }) => bed(ids, C) },
+  { at: 1000, name: 'sword-plant', draw: ({ ids }) => swordPlant(ids, C) },
+  { at: 667, name: 'rocks', draw: ({ ids }) => rocks(ids, C) },
+  { at: 667, name: 'short-grass', draw: ({ ids }) => shortBlades(ids, C) },
+  { at: 1000, name: 'log', draw: ({ ids }) => log(ids, C) },
+  { at: 1333, name: 'moss', draw: ({ ids }) => moss(ids, C) },
+  { at: 1333, name: 'leaf-bed', draw: ({ ids }) => fallenLeaf(ids, 64, 208.5, -7, 13, 4.6, C.leafB) },
+  { at: 1333, name: 'leaf-log', draw: ({ ids }) => fallenLeaf(ids, 26, 181, -62, 13, 4.6, C.leafB) },
+  { at: 2000, midTop: 101, name: 'leaf-drift-1', draw: ({ ids }) => fallenLeaf(ids, 12, 106, 24, 16, 5.6, C.leafA) },
+  { at: 2000, midTop: 92, name: 'leaf-drift-2', draw: ({ ids }) => fallenLeaf(ids, 90, 98, 146, 12, 4.4, C.leafC) },
+  { at: 1333, name: 'shrimp', draw: ({ ids }) => shrimp(ids, C, 74, 176.6, 0.72) },
+  { at: 1333, name: 'crab', draw: ({ ids }) => crab(ids, C, 118.5, 191, 0.8) },
 ]
 
 /**
@@ -84,6 +84,6 @@ export function riverScene(ml: number, water: TubeWater, surfaceY: number, ids: 
  * underwater part, so both halves fade in together.
  */
 export function riverInAir(ml: number, water: TubeWater, ids: IdSpace): string {
-  if (ml < 2000) return ''
+  if (ml < 1333) return ''
   return `<g data-piece="roots">${roots(ids, C, water, ml)}</g>`
 }
