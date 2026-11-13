@@ -1,6 +1,7 @@
 # M10 — Peixes novos e conquistas mais difíceis (design)
 
-**Status:** built on branch `m10` (2026-10-22), not merged. The fish part was designed with Leo on the canvas on 2026-10-22 (rulings in §7, verbatim). The
+**Status:** built on branch `m10` (2026-10-22), not merged. **Eased 2026-11-13** (§3 table, §5.1, §7): same fish,
+same order, same kinds, lower targets, and the gallery cards all one size. The fish part was designed with Leo on the canvas on 2026-10-22 (rulings in §7, verbatim). The
 roster changes and the achievements came in one message the same night, ending: "You can build everything
 uninterrupted with this information. I'll review the fish once everything is done". So nothing below waits for
 another answer: what Leo did not decide is the agent's call, listed in §8 for him to check at the end.
@@ -65,19 +66,23 @@ species has a common English name, Portuguese for the Brazilian species (as `tam
 | – | `goldfish` | **Kinguio** | rio | Inicial | day 1 |
 | – | `neon` | Neon | rio | Inicial | day 1 |
 | 1 | `clownfish` | Peixe-palhaço | mar | Sequência de 3 dias | day 3 |
-| 2 | `pufferfish` | Baiacu | mar | Antes das 9h em 5 dias | ~1,5 weeks |
-| 3 | `tucunare` | Tucunaré | rio | Sequência de 7 dias | ~1–2 weeks |
-| 4 | `tambaqui` | Tambaqui | rio | 10 dias com 2 L | ~2–3 weeks |
-| 5 | `dourado` | Dourado | rio | 100 registros | ~3–4 weeks |
-| 6 | `barracuda` | Barracuda | mar | Sequência de 14 dias | ~3–5 weeks |
-| 7 | `mahimahi` | Mahi-mahi | mar | Um dia com 3,5 L | a stretch day, ~1–2 months |
-| 8 | `grouper` | Garoupa | mar | 100 L acumulados | ~7 weeks |
-| 9 | `pintado` | Pintado | rio | 60 dias com registro | ~2,3 months |
-| 10 | `pirarucu` | Pirarucu | rio | Sequência de 30 dias | ~1–3 months |
-| 11 | `tuna` | Atum | mar | 45 dias com 2 L | ~2,5 months |
-| 12 | `sailfish` | **Agulhão-bandeira** | mar | 400 registros | ~3,3 months |
-| 13 | `shark` | Tubarão | mar | 200 L acumulados | ~3,3 months |
-| 14 | `whale` | Baleia | mar | 120 dias com registro | ~4–4,5 months |
+| 2 | `pufferfish` | Baiacu | mar | Antes das 10h em 5 dias | ~1,5 weeks |
+| 3 | `tucunare` | Tucunaré | rio | Sequência de 5 dias | ~1–2 weeks |
+| 4 | `tambaqui` | Tambaqui | rio | 5 dias com 2 L | ~3–4 weeks |
+| 5 | `dourado` | Dourado | rio | 75 registros | ~4 weeks |
+| 6 | `barracuda` | Barracuda | mar | Sequência de 10 dias | ~5–8 weeks |
+| 7 | `mahimahi` | Mahi-mahi | mar | Um dia com 2,5 L | a stretch day, ~1–2 months |
+| 8 | `grouper` | Garoupa | mar | 60 L acumulados | ~6 weeks |
+| 9 | `pintado` | Pintado | rio | 50 dias com registro | ~2 months |
+| 10 | `pirarucu` | Pirarucu | rio | Sequência de 14 dias | ~2 months |
+| 11 | `tuna` | Atum | mar | 15 dias com 2 L | ~2,5 months |
+| 12 | `sailfish` | **Agulhão-bandeira** | mar | 250 registros | ~3,2 months |
+| 13 | `shark` | Tubarão | mar | 150 L acumulados | ~3,3 months |
+| 14 | `whale` | Baleia | mar | 100 dias com registro | ~3,8 months |
+
+The targets above are the 2026-11-13 ladder. The first M10 ladder asked for, in the same order: before 9h on 5
+days, a 7-day run, 10 days of 2 L, 100 registers, a 14-day run, a 3,5 L day, 100 L, 60 days, a 30-day run,
+45 days of 2 L, 400 registers, 200 L and 120 days.
 
 Gone: `octopus` (Polvo), `seahorse` (Cavalo-marinho), `turtle` (Tartaruga), `dolphin` (Golfinho). A profile
 that still stores one of them shows its replacement, the swap Leo named: seahorse → barracuda, octopus →
@@ -151,26 +156,28 @@ table, no write and no drift. The kinds:
 
 The old same-day kinds (`bottle`, `note`, `morning` once) leave: they were the "5 fish in just a day".
 
-**Pacing assumptions** (the "regular user" of the table's last column): registers on most days, about 2 L a day
-on average with some days below, about four registers a day, a morning register about every other day. Under
-those numbers the last fish lands around month four; a user who skips a day a week lands the whale around
-month 4,6. Nothing needs a perfect month except the pirarucu's 30-day run, which has the whole four months to
-happen.
+**Pacing assumptions** (the "regular user" of the table's last column, since 2026-11-13): registers on about six
+days in seven, about 1,7 L a day with one day in four at 2 L or more, three registers a day, the first one before
+10h about every other day, one 2,6 L day in the second month. Under those numbers (the fixture
+`regularUser.fixture.ts`) three fish land in the first ten days and the whale on day 114. The first M10 ladder
+assumed nine registered days in ten at about 2,2 L and four registers a day; in real use a member had only the
+clownfish after two weeks, and its 30-day run, 3,5 L day and 45 days of 2 L were out of reach for anyone who
+misses a day now and then (with one missed day a week at random, a 30-day run takes years).
 
 ### 5.2 Progress you can see (the gamification)
 
 - **Each locked fish in the gallery** shows, under its achievement, the current number against the target as
-  text and a slim bar: "12 de 30". Volumes in litres: records with one decimal ("2,8 de 3,5"), accumulated
-  litres whole ("84 de 250"); everything else whole numbers. The number never exceeds the target; an unlocked
+  text and a slim bar: "12 de 14". Volumes in litres: records with one decimal ("2,3 de 2,5"), accumulated
+  litres whole ("84 de 150"); everything else whole numbers. The number never exceeds the target; an unlocked
   fish shows no progress.
 - **Streak fish show the current run**, not the longest ever: the target needs that many days in a row, so
-  "4 de 30" (on day 4 of a new run, after a best of 20) is honest about what is left. It is the one number that can
+  "4 de 14" (on day 4 of a new run, after a best of 12) is honest about what is left. It is the one number that can
   go down, like the streak chip on Hoje. The unlock itself still reads the longest run ever (§5.1), so a fish once
   earned never re-locks.
 - **The gallery shows the collection**: "9 de 18 peixes" above the grid. The worn fish counts, as in the
   gallery's own rule that the fish you wear is always yours.
 - **Streak milestones** for the full-screen streak celebration are read off the streak fish, so they become 3,
-  7, 14 and 30 (the 30 is new).
+  7, 14 and 30 (the 30 is new); 3, 5, 10 and 14 since 2026-11-13.
 - The onboarding picker (starters only) shows no progress.
 
 ### 5.3 What happens to fish already earned
@@ -220,6 +227,11 @@ That is the welcome to the new collection, not a storm.
 - Kinguio, round 2: "yeah try again with the kinguio, idk go for a big eyed red and white kinguio". Redrawn as a
   red-and-white telescope goldfish.
 - The sailfish's name: "I prefer agulhão-bandeira" (over "Peixe-vela").
+- Easier targets (2026-11-13): "some blocks get reformatted in size and are different between locked and
+  unlocked fish, also some of the achievements are too hard or just impossible, like no one is going to drink
+  3.5 liters in a day, of course dont make too easy but just make them more achievable, my gf only got to the
+  clown fish and its been 2 weeks already." The new numbers (§3) and the regular user (§5.1) were the agent's
+  call; the gallery cards became one size (main spec §5.5).
 
 ## 8. The agent's calls, for Leo to check
 

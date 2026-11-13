@@ -379,12 +379,16 @@ Settings and identity. Nothing competitive lives here.
 
 - **Seu peixe** — your current fish, large. Tapping expands the fish gallery in place: a grid of all
   fish, unlocked ones in full colour and tappable, locked ones as a flat silhouette with
-  the unlock condition below ("Sequência de 30 dias"). Selecting one saves immediately and
+  the unlock condition below ("Sequência de 14 dias"). Selecting one saves immediately and
   the partner sees the change. (M10) A locked fish also shows how far you are under its condition:
-  the number against the target ("12 de 30") and a slim 4 px bar (`bg-line` track, `bg-water` fill).
-  Records show one decimal ("2,8 de 3,5"), accumulated litres whole ("84 de 250"), the rest whole
+  the number against the target ("12 de 14") and a slim 4 px bar (`bg-line` track, `bg-water` fill).
+  Records show one decimal ("2,3 de 2,5"), accumulated litres whole ("84 de 150"), the rest whole
   numbers; a streak fish shows the current run, not the longest. Above the grid, one line counts the
   collection, the worn fish included: "9 de 18 peixes". The onboarding picker shows no progress.
+  (2026-11-13) Every card in the grid is the same size, locked or not: the rows share one height, the
+  card fills its cell, the border is 2 px whether the fish is worn or not (only its colour changes, as
+  in the theme tiles), a locked card's progress sits at its bottom, an unlocked card's fish and name
+  sit in its middle, and the fish shrinks on a narrow phone instead of spilling past the card.
 - **Nome** — inline editable.
 - **Cor** — a row of six flat accent swatches used for your name label under the tube
   and in the ranking. The water itself is always `--water` blue — it's water. (M10: under "Com
@@ -417,7 +421,7 @@ Settings and identity. Nothing competitive lives here.
 Eighteen fish: four starters plus fourteen earned through achievements ("conquistas", M8,
 2026-09-24; reworked in M10). Every achievement is an all-time fact of your own registers, so
 nothing waits for a month to end and, once earned, a fish never re-locks. The ladder is paced so
-that nothing opens before day 3 and a regular user lands the whale around month four. The order
+that nothing opens before day 3 and a regular user (§ below) lands the whale around month four. The order
 below is the order of the ladder and of the gallery, quickest first, which is also the animals'
 real size, the whale last. Ids stay English; the pt-BR name is what the app shows.
 
@@ -428,25 +432,25 @@ real size, the whale last. Ids stay English; the pt-BR name is what the app show
 | Goldfish | Kinguio | Rio | Inicial |
 | Neon tetra | Neon | Rio | Inicial |
 | Clownfish | Peixe-palhaço | Mar | Sequência de 3 dias |
-| Pufferfish | Baiacu | Mar | Antes das 9h em 5 dias |
-| Peacock bass | Tucunaré | Rio | Sequência de 7 dias |
-| Tambaqui | Tambaqui | Rio | 10 dias com 2 L |
-| Dorado | Dourado | Rio | 100 registros |
-| Barracuda | Barracuda | Mar | Sequência de 14 dias |
-| Mahi-mahi | Mahi-mahi | Mar | Um dia com 3,5 L |
-| Grouper | Garoupa | Mar | 100 L acumulados |
-| Pintado catfish | Pintado | Rio | 60 dias com registro |
-| Pirarucu | Pirarucu | Rio | Sequência de 30 dias |
-| Tuna | Atum | Mar | 45 dias com 2 L |
-| Sailfish | Agulhão-bandeira | Mar | 400 registros |
-| Shark | Tubarão | Mar | 200 L acumulados |
-| Whale | Baleia | Mar | 120 dias com registro |
+| Pufferfish | Baiacu | Mar | Antes das 10h em 5 dias |
+| Peacock bass | Tucunaré | Rio | Sequência de 5 dias |
+| Tambaqui | Tambaqui | Rio | 5 dias com 2 L |
+| Dorado | Dourado | Rio | 75 registros |
+| Barracuda | Barracuda | Mar | Sequência de 10 dias |
+| Mahi-mahi | Mahi-mahi | Mar | Um dia com 2,5 L |
+| Grouper | Garoupa | Mar | 60 L acumulados |
+| Pintado catfish | Pintado | Rio | 50 dias com registro |
+| Pirarucu | Pirarucu | Rio | Sequência de 14 dias |
+| Tuna | Atum | Mar | 15 dias com 2 L |
+| Sailfish | Agulhão-bandeira | Mar | 250 registros |
+| Shark | Tubarão | Mar | 150 L acumulados |
+| Whale | Baleia | Mar | 100 dias com registro |
 
 The achievement kinds, all derived from registers and evaluated in one place (`UNLOCKS` in
 `catalog.ts`): a **streak** of N days in a row; **mornings**, registers before a given hour on N
 different days; **goal days**, N days at or above a given volume; **days**, N different days with
 any register; a **record**, one day at or above a volume; a **count** of registers; an accumulated
-**volume**. "Antes das 9h" is the São Paulo wall clock (`hourOf` in `dates.ts`). Photos and
+**volume**. "Antes das 10h" is the São Paulo wall clock (`hourOf` in `dates.ts`). Photos and
 notes are not conditions: the photo path only lands after the upload, which would delay the popup
 to the next register.
 
@@ -459,6 +463,15 @@ dropped, and `fishOf` shows a stored `fish_variant` of one of them as its replac
 barracuda, octopus as sailfish, turtle as mahi-mahi, dolphin as grouper (and `swordfish`, the first
 drawing for the octopus's slot, as the sailfish that replaced it); any other unknown value shows the
 guppy. The old condition "Registre com uma garrafa" went away with the fish it unlocked.
+
+(2026-11-13) The targets were eased, same fish, same order, same kinds. Leo: "some of the achievements
+are too hard or just impossible, like no one is going to drink 3.5 liters in a day … my gf only got to
+the clown fish and its been 2 weeks already." The M10 ladder had been paced for someone who logs nine
+days in ten at about 2,2 L; the regular user is now someone who misses about a day a week and drinks
+about 1,7 L, with one day in four at 2 L or more (the pacing fixture, `regularUser.fixture.ts`). They
+land three fish in the first ten days and the whale around day 114. A 30-day streak, a 3,5 L day and
+45 days of 2 L were out of their reach. Lowering targets re-locks nothing; fish that the old data now
+meets are each celebrated, one per register, as in the M10 update.
 
 Every fish has a **habitat** (`HABITAT` / `habitatOf` in `catalog.ts`), which picks its tube's
 scene and water colour (§5.1). Nine live in the river (freshwater): guppy, betta, kinguio, neon,
@@ -485,7 +498,7 @@ This means no extra table, no writes, no drift, and it self-heals if data change
 
 Every condition is an all-time fact — longest streak ever, best day ever, accumulated volume,
 number of registers, whether a bottle, a note or a morning register ever happened — so a fish
-never re-locks when a streak breaks. The streak milestones the celebrations use (3, 7, 14, 30) are
+never re-locks when a streak breaks. The streak milestones the celebrations use (3, 5, 10, 14) are
 read off the streak fish, so the two can never disagree.
 
 The only stored value is `profiles.fish_variant` — your current choice — because the
