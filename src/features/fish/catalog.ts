@@ -40,26 +40,29 @@ export type Unlock =
   | { kind: 'count'; registers: number }
   | { kind: 'volume'; ml: number }
 
-/** The ladder (M10 spec §3): nothing before day 3, and a regular user lands the whale around month four. */
+/**
+ * The ladder (M10 spec §3, eased 2026-11-13): nothing before day 3, and someone who misses about a day a
+ * week and drinks about 1,7 L lands the whale around month four.
+ */
 export const UNLOCKS: Record<FishId, Unlock> = {
   guppy: { kind: 'starter' },
   betta: { kind: 'starter' },
   goldfish: { kind: 'starter' },
   neon: { kind: 'starter' },
   clownfish: { kind: 'streak', days: 3 },
-  pufferfish: { kind: 'mornings', before: 9, days: 5 },
-  tucunare: { kind: 'streak', days: 7 },
-  tambaqui: { kind: 'goalDays', ml: 2000, days: 10 },
-  dourado: { kind: 'count', registers: 100 },
-  barracuda: { kind: 'streak', days: 14 },
-  mahimahi: { kind: 'record', ml: 3500 },
-  grouper: { kind: 'volume', ml: 100_000 },
-  pintado: { kind: 'days', days: 60 },
-  pirarucu: { kind: 'streak', days: 30 },
-  tuna: { kind: 'goalDays', ml: 2000, days: 45 },
-  sailfish: { kind: 'count', registers: 400 },
-  shark: { kind: 'volume', ml: 200_000 },
-  whale: { kind: 'days', days: 120 },
+  pufferfish: { kind: 'mornings', before: 10, days: 5 },
+  tucunare: { kind: 'streak', days: 5 },
+  tambaqui: { kind: 'goalDays', ml: 2000, days: 5 },
+  dourado: { kind: 'count', registers: 75 },
+  barracuda: { kind: 'streak', days: 10 },
+  mahimahi: { kind: 'record', ml: 2500 },
+  grouper: { kind: 'volume', ml: 60_000 },
+  pintado: { kind: 'days', days: 50 },
+  pirarucu: { kind: 'streak', days: 14 },
+  tuna: { kind: 'goalDays', ml: 2000, days: 15 },
+  sailfish: { kind: 'count', registers: 250 },
+  shark: { kind: 'volume', ml: 150_000 },
+  whale: { kind: 'days', days: 100 },
 }
 
 /** Where the fish lives: it turns the member's tube water river green or reef blue as the day fills. */
@@ -98,7 +101,7 @@ export const STARTERS: readonly FishId[] = FISH_IDS.filter((id) => UNLOCKS[id].k
  */
 export const ALL_FISH_AVAILABLE = false
 
-/** 3, 7, 14, 30 — read off the catalog so the streak celebration and the streak fish can never disagree. */
+/** 3, 5, 10, 14 — read off the catalog so the streak celebration and the streak fish can never disagree. */
 export const STREAK_MILESTONES: readonly number[] = FISH_IDS.flatMap((id) => {
   const u = UNLOCKS[id]
   return u.kind === 'streak' ? [u.days] : []

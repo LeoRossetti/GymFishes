@@ -32,11 +32,11 @@ describe('FishGallery', () => {
 
   it('shows how far each locked fish is', async () => {
     await open('guppy')
-    expect(screen.getByRole('button', { name: 'Pirarucu' })).toHaveTextContent('0 de 30')
-    expect(screen.getByRole('button', { name: 'Tubarão' })).toHaveTextContent('0 de 200')
+    expect(screen.getByRole('button', { name: 'Pirarucu' })).toHaveTextContent('0 de 14')
+    expect(screen.getByRole('button', { name: 'Tubarão' })).toHaveTextContent('0 de 150')
   })
 
-  it('a member on a 12-day run sees 12 de 30 under the pirarucu', async () => {
+  it('a member on a 12-day run sees 12 de 14 under the pirarucu', async () => {
     const today = dayKey(new Date())
     group.entries = Array.from({ length: 12 }, (_, i) => ({
       profile_id: 'u1',
@@ -45,6 +45,6 @@ describe('FishGallery', () => {
       deleted_at: null,
     }))
     await open('guppy')
-    expect(screen.getByRole('button', { name: 'Pirarucu' })).toHaveTextContent('12 de 30')
+    expect(screen.getByRole('button', { name: 'Pirarucu' })).toHaveTextContent('12 de 14')
   })
 })

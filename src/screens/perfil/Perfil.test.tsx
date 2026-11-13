@@ -129,8 +129,8 @@ describe('Perfil', () => {
     await userEvent.click(screen.getByRole('button', { name: /Trocar peixe/ }))
     expect(screen.getByRole('button', { name: 'Betta' })).not.toHaveAttribute('aria-disabled')
     expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveAttribute('aria-disabled', 'true')
-    expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveTextContent('Antes das 9h em 5 dias')
-    expect(screen.getByRole('button', { name: 'Tambaqui' })).toHaveTextContent('10 dias com 2 L')
+    expect(screen.getByRole('button', { name: 'Baiacu' })).toHaveTextContent('Antes das 10h em 5 dias')
+    expect(screen.getByRole('button', { name: 'Tambaqui' })).toHaveTextContent('5 dias com 2 L')
     expect(screen.getByRole('button', { name: 'Guppy' })).toHaveAttribute('aria-pressed', 'true')
   })
 

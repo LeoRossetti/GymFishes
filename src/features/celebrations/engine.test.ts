@@ -35,12 +35,13 @@ describe('celebrationsFor', () => {
   })
 
   it('fires the highest streak milestone crossed', () => {
-    expect(celebrationsFor(state({ streakDays: 6 }), state({ streakDays: 7 }))).toEqual([{ kind: 'streak', days: 7 }])
-    expect(celebrationsFor(state({ streakDays: 7 }), state({ streakDays: 7 }))).toEqual([])
+    expect(celebrationsFor(state({ streakDays: 4 }), state({ streakDays: 5 }))).toEqual([{ kind: 'streak', days: 5 }])
+    expect(celebrationsFor(state({ streakDays: 5 }), state({ streakDays: 5 }))).toEqual([])
+    expect(celebrationsFor(state({ streakDays: 6 }), state({ streakDays: 7 }))).toEqual([])
     expect(celebrationsFor(state({ streakDays: 2 }), state({ streakDays: 3 }))).toEqual([{ kind: 'streak', days: 3 }])
     expect(celebrationsFor(state({ streakDays: 5 }), state({ streakDays: 20 }))).toEqual([{ kind: 'streak', days: 14 }])
-    expect(celebrationsFor(state({ streakDays: 29 }), state({ streakDays: 30 }))).toEqual([{ kind: 'streak', days: 30 }])
-    expect(celebrationsFor(state({ streakDays: 5 }), state({ streakDays: 31 }))).toEqual([{ kind: 'streak', days: 30 }])
+    expect(celebrationsFor(state({ streakDays: 13 }), state({ streakDays: 14 }))).toEqual([{ kind: 'streak', days: 14 }])
+    expect(celebrationsFor(state({ streakDays: 29 }), state({ streakDays: 30 }))).toEqual([])
   })
 
   it('fires the lead only on the transition', () => {
@@ -54,11 +55,11 @@ describe('celebrationsFor', () => {
   })
 
   it('orders everything by spec priority: unlock > record > streak > lead > litre', () => {
-    const before = state({ todayMl: 900, bestOtherDayMl: 1500, streakDays: 6 })
+    const before = state({ todayMl: 900, bestOtherDayMl: 1500, streakDays: 4 })
     const after = state({
       todayMl: 2000,
       bestOtherDayMl: 1500,
-      streakDays: 7,
+      streakDays: 5,
       leading: true,
       unlocked: new Set<FishId>([...STARTERS, 'pufferfish']),
     })

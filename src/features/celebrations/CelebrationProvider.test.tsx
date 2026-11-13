@@ -45,7 +45,7 @@ const row = (id: string, profile_id: string, total_ml: number, drank_on: string)
   }) as Entry
 
 /** Six consecutive days ending yesterday — one register today makes seven. */
-const sixDays = () => Array.from({ length: 6 }, (_, i) => row(`d${i}`, 'u1', 500, addDays(today, -(i + 1))))
+const fourDays = () => Array.from({ length: 4 }, (_, i) => row(`d${i}`, 'u1', 500, addDays(today, -(i + 1))))
 
 const stored = () => JSON.parse(localStorage.getItem(SEEN_UNLOCKS_KEY) ?? '[]') as string[]
 
@@ -93,11 +93,11 @@ describe('CelebrationProvider', () => {
     expect(screen.getByTestId('inline')).toHaveTextContent('')
   })
 
-  it('a first day of 3,5 L earns the mahi-mahi in one register: a full screen that can pick it now', async () => {
-    renderTrigger([], [row('e1', 'u1', 3500, today)])
+  it('a first day of 2,5 L earns the mahi-mahi in one register: a full screen that can pick it now', async () => {
+    renderTrigger([], [row('e1', 'u1', 2500, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
     const dialog = screen.getByRole('dialog', { name: 'Novo peixe! Mahi-mahi' })
-    expect(dialog).toHaveTextContent('Um dia com 3,5 L')
+    expect(dialog).toHaveTextContent('Um dia com 2,5 L')
     expect(stored()).toEqual(['guppy', 'betta', 'goldfish', 'neon', 'mahimahi'])
     await userEvent.click(screen.getByRole('button', { name: 'Escolher agora' }))
     expect(updateProfile).toHaveBeenCalledWith('u1', { fish_variant: 'mahimahi' })
@@ -105,12 +105,12 @@ describe('CelebrationProvider', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  it('the 7-day streak earns the tucunaré: the fish takes the full screen and the streak is dropped', async () => {
-    const six = sixDays()
-    renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
+  it('the 5-day streak earns the tucunaré: the fish takes the full screen and the streak is dropped', async () => {
+    const four = fourDays()
+    renderTrigger(four, [...four, row('e7', 'u1', 500, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
     expect(screen.getByRole('dialog', { name: 'Novo peixe! Tucunaré' })).toBeInTheDocument()
-    const toast = screen.getAllByRole('status').find((s) => s.textContent?.includes('🔥 7 dias seguidos!'))
+    const toast = screen.getAllByRole('status').find((s) => s.textContent?.includes('🔥 5 dias seguidos!'))
     expect(toast).toBeUndefined()
     // the clownfish was earned on day 3 and is not new; the device now remembers both
     expect(screen.queryByText('Peixe-palhaço')).toBeNull()
@@ -120,7 +120,7 @@ describe('CelebrationProvider', () => {
 
   it('a register that unlocks a fish and takes the lead shows the trophy on the unlock screen, with no toast', async () => {
     const partner = row('e0', 'u2', 1000, today)
-    renderTrigger([partner], [partner, row('e1', 'u1', 3500, today)])
+    renderTrigger([partner], [partner, row('e1', 'u1', 2500, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
     const dialog = screen.getByRole('dialog', { name: 'Novo peixe! Mahi-mahi' })
     expect(within(dialog).getByRole('img', { name: 'Você está na frente' })).toBeInTheDocument()
@@ -129,8 +129,8 @@ describe('CelebrationProvider', () => {
 
   it('a device that stored every fish while all were open still celebrates the fish earned now', async () => {
     localStorage.setItem(SEEN_UNLOCKS_KEY, JSON.stringify(FISH_IDS))
-    const six = sixDays()
-    renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
+    const four = fourDays()
+    renderTrigger(four, [...four, row('e7', 'u1', 500, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
     expect(screen.getByRole('dialog', { name: 'Novo peixe! Tucunaré' })).toBeInTheDocument()
     expect(stored()).toEqual(['guppy', 'betta', 'goldfish', 'neon', 'clownfish', 'tucunare'])
@@ -139,8 +139,8 @@ describe('CelebrationProvider', () => {
   it('a fish earned on another device is announced at the next register, in catalog order, and the outranked fish is dropped', async () => {
     // the clownfish was earned on day 3 but this device never celebrated it
     localStorage.setItem(SEEN_UNLOCKS_KEY, JSON.stringify(['guppy', 'betta', 'goldfish', 'neon']))
-    const six = sixDays()
-    renderTrigger(six, [...six, row('e7', 'u1', 500, today)])
+    const four = fourDays()
+    renderTrigger(four, [...four, row('e7', 'u1', 500, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
     expect(screen.getByRole('dialog', { name: 'Novo peixe! Peixe-palhaço' })).toBeInTheDocument()
     const toast = screen.getAllByRole('status').find((s) => s.textContent?.includes('Novo peixe! Tucunaré'))
@@ -148,8 +148,8 @@ describe('CelebrationProvider', () => {
     // the outranked fish is not spent: it is celebrated at the next register
     expect(stored()).not.toContain('tucunare')
     cleanup()
-    const seven = [...six, row('e7', 'u1', 500, today)]
-    renderTrigger(seven, [...seven, row('e8', 'u1', 100, today)])
+    const five = [...four, row('e7', 'u1', 500, today)]
+    renderTrigger(five, [...five, row('e8', 'u1', 100, today)])
     await userEvent.click(screen.getByRole('button', { name: 'go' }))
     expect(screen.getByRole('dialog', { name: 'Novo peixe! Tucunaré' })).toBeInTheDocument()
     expect(stored()).toContain('tucunare')
@@ -159,8 +159,9 @@ describe('CelebrationProvider', () => {
     const OLD_THIRTEEN = ['guppy', 'betta', 'goldfish', 'neon', 'pufferfish', 'clownfish', 'octopus', 'seahorse', 'tambaqui', 'turtle', 'dolphin', 'shark', 'whale']
     localStorage.setItem(SEEN_UNLOCKS_KEY, JSON.stringify(OLD_THIRTEEN))
     // 20 days ending yesterday, five noon registers of 500 ml each: 100 registers, a 20-day run, 20 days of 2,5 L.
-    // Met already: clownfish and tambaqui (seen), tucunaré, dourado and barracuda (new). The puffer (no
-    // mornings), the shark (50 L of 200 L) and the whale (20 of 120 days) re-lock.
+    // Met already: clownfish and tambaqui (seen); tucunaré, dourado, barracuda, mahi-mahi, pirarucu and tuna
+    // (new, so the tucunaré shows first). The puffer (no mornings), the shark (50 L of 150 L) and the whale
+    // (20 of 100 days) re-lock.
     const history = Array.from({ length: 100 }, (_, i) => row(`h${i}`, 'u1', 500, addDays(today, -(Math.floor(i / 5) + 1))))
     const first = [...history, row('e1', 'u1', 500, today)]
     renderTrigger(history, first)

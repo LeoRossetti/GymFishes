@@ -18,7 +18,7 @@ describe('FishGrid', () => {
     render(<FishGrid variants={FISH_IDS} unlocked={unlocked} selected={null} onSelect={vi.fn()} />)
     const shark = screen.getByRole('button', { name: 'Tubarão' })
     expect(shark).toHaveAttribute('aria-disabled', 'true')
-    expect(shark).toHaveTextContent('200 L acumulados')
+    expect(shark).toHaveTextContent('150 L acumulados')
     expect(shark.querySelector('svg')).toHaveAttribute('data-state', 'locked')
     expect(screen.getByRole('button', { name: 'Baiacu' })).toBeEnabled()
   })
@@ -37,9 +37,9 @@ describe('FishGrid', () => {
     expect(onSelect).not.toHaveBeenCalled()
   })
 
-  it('the 7-day fish is the tucunaré; the fish M10 dropped are gone', () => {
+  it('the 5-day fish is the tucunaré; the fish M10 dropped are gone', () => {
     render(<FishGrid variants={FISH_IDS} unlocked={unlocked} selected={null} onSelect={vi.fn()} />)
-    expect(screen.getByRole('button', { name: 'Tucunaré' })).toHaveTextContent('Sequência de 7 dias')
+    expect(screen.getByRole('button', { name: 'Tucunaré' })).toHaveTextContent('Sequência de 5 dias')
     for (const name of ['Peixe-anjo', 'Polvo', 'Cavalo-marinho', 'Tartaruga', 'Golfinho']) {
       expect(screen.queryByRole('button', { name })).toBeNull()
     }
@@ -54,11 +54,11 @@ describe('FishGrid', () => {
   describe('progress', () => {
     const progress = (id: FishId) =>
       id === 'pirarucu'
-        ? { current: 12, target: 30 }
+        ? { current: 12, target: 14 }
         : id === 'shark'
-          ? { current: 84_500, target: 200_000 }
+          ? { current: 84_500, target: 150_000 }
           : id === 'mahimahi'
-            ? { current: 2800, target: 3500 }
+            ? { current: 2300, target: 2500 }
             : id === 'pufferfish'
               ? { current: 5, target: 5 }
               : null
@@ -70,8 +70,8 @@ describe('FishGrid', () => {
     it('a locked streak fish shows the run so far, and a screen reader hears the condition and the run', () => {
       renderWithProgress()
       const card = screen.getByRole('button', { name: 'Pirarucu' })
-      expect(card).toHaveTextContent('12 de 30')
-      expect(card).toHaveAccessibleDescription('Sequência de 30 dias 12 de 30')
+      expect(card).toHaveTextContent('12 de 14')
+      expect(card).toHaveAccessibleDescription('Sequência de 14 dias 12 de 14')
       // the bar only repeats the numbers: hidden from screen readers
       expect(within(card).queryByRole('progressbar')).toBeNull()
     })
@@ -79,15 +79,15 @@ describe('FishGrid', () => {
     it('volume shows whole litres', () => {
       renderWithProgress()
       const card = screen.getByRole('button', { name: 'Tubarão' })
-      expect(card).toHaveTextContent('84 de 200')
-      expect(card).toHaveAccessibleDescription('200 L acumulados 84 de 200')
+      expect(card).toHaveTextContent('84 de 150')
+      expect(card).toHaveAccessibleDescription('150 L acumulados 84 de 150')
     })
 
     it('a record shows litres with one decimal comma', () => {
       renderWithProgress()
       const card = screen.getByRole('button', { name: 'Mahi-mahi' })
-      expect(card).toHaveTextContent('2,8 de 3,5')
-      expect(card).toHaveAccessibleDescription('Um dia com 3,5 L 2,8 de 3,5')
+      expect(card).toHaveTextContent('2,3 de 2,5')
+      expect(card).toHaveAccessibleDescription('Um dia com 2,5 L 2,3 de 2,5')
     })
 
     it('an unlocked fish shows no progress', () => {
@@ -100,7 +100,7 @@ describe('FishGrid', () => {
     it('without a progress prop (onboarding) nothing is shown, and a locked fish is described by its condition', () => {
       render(<FishGrid variants={FISH_IDS} unlocked={unlocked} selected={null} onSelect={vi.fn()} />)
       expect(screen.queryByText(/^\d+ de \d+$/)).toBeNull()
-      expect(screen.getByRole('button', { name: 'Tubarão' })).toHaveAccessibleDescription('200 L acumulados')
+      expect(screen.getByRole('button', { name: 'Tubarão' })).toHaveAccessibleDescription('150 L acumulados')
     })
   })
 })

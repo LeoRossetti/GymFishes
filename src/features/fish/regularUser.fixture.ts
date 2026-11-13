@@ -3,18 +3,20 @@ import { unlockFacts, type UnlockEntry, type UnlockFacts } from './unlocks'
 
 /**
  * The "regular user" of the pacing table (M10 spec §5.1, §9), a synthetic history for the pacing tests.
+ * Since 2026-11-13 it is a moderate drinker, not a near-perfect one: the first ladder was tuned to someone
+ * who logged nine days in ten at about 2,2 L, and real use fell well short of that.
  * Day 1 is `REGULAR_USER_START`; the history is the same on every run, so tests can derive their numbers
  * from these rules:
- * - every tenth day (10, 20, 30 …) has no register, except none between days 41 and 75 (so days 41–79
- *   are one 39-day run);
- * - a registered day has four registers totalling a seeded 1800–2600 ml, and day 38 is one 3600 ml day;
- * - the first register is at 08:00 São Paulo on even days and 10:00 on odd days, the others at 12:00,
- *   16:00 and 20:00.
+ * - every seventh day (7, 14, 21 …) has no register, except days 56 and 63 (so days 50–69 are one
+ *   20-day run);
+ * - a registered day has three registers totalling a seeded 1200–2200 ml, and day 45 is one 2600 ml day;
+ * - the first register is at 09:00 São Paulo on even days and 11:00 on odd days, the others at 14:00
+ *   and 19:00.
  */
 export const REGULAR_USER_START: DayKey = '2026-03-02'
 
 const SEED = 2026
-const LATER_HOURS = [12, 16, 20] as const
+const LATER_HOURS = [14, 19] as const
 
 /** The n-th output of mulberry32(SEED), in 0…1: a fixed value per day, whatever range is generated. */
 function seeded(n: number): number {
@@ -31,9 +33,9 @@ export function regularUserDay(n: number): DayKey {
 
 /** Day n's total in ml under the rules above; 0 on a register-free day. */
 export function regularUserMl(n: number): number {
-  if (n % 10 === 0 && (n < 41 || n > 75)) return 0
-  if (n === 38) return 3600
-  return 1800 + Math.round(seeded(n) * 80) * 10
+  if (n % 7 === 0 && n !== 56 && n !== 63) return 0
+  if (n === 45) return 2600
+  return 1200 + Math.round(seeded(n) * 100) * 10
 }
 
 /** The registers of days 1…`days`, as member `profileId`. */
@@ -43,12 +45,12 @@ export function regularUser(days: number, profileId: string): UnlockEntry[] {
     const ml = regularUserMl(n)
     if (ml === 0) continue
     const day = regularUserDay(n)
-    const quarter = Math.floor(ml / 4)
-    const hours = [n % 2 === 0 ? 8 : 10, ...LATER_HOURS]
+    const third = Math.floor(ml / 3)
+    const hours = [n % 2 === 0 ? 9 : 11, ...LATER_HOURS]
     hours.forEach((hour, i) =>
       out.push({
         profile_id: profileId,
-        total_ml: i === hours.length - 1 ? ml - 3 * quarter : quarter,
+        total_ml: i === hours.length - 1 ? ml - 2 * third : third,
         drank_on: day,
         drank_at: fromDatetimeLocal(`${day}T${pad2(hour)}:00`).toISOString(),
         deleted_at: null,

@@ -27,31 +27,31 @@ describe('catalog', () => {
     ])
   })
 
-  it('sets the four-month ladder', () => {
+  it('sets the four-month ladder, eased for someone who misses a day a week', () => {
     expect(UNLOCKS).toEqual({
       guppy: { kind: 'starter' },
       betta: { kind: 'starter' },
       goldfish: { kind: 'starter' },
       neon: { kind: 'starter' },
       clownfish: { kind: 'streak', days: 3 },
-      pufferfish: { kind: 'mornings', before: 9, days: 5 },
-      tucunare: { kind: 'streak', days: 7 },
-      tambaqui: { kind: 'goalDays', ml: 2000, days: 10 },
-      dourado: { kind: 'count', registers: 100 },
-      barracuda: { kind: 'streak', days: 14 },
-      mahimahi: { kind: 'record', ml: 3500 },
-      grouper: { kind: 'volume', ml: 100_000 },
-      pintado: { kind: 'days', days: 60 },
-      pirarucu: { kind: 'streak', days: 30 },
-      tuna: { kind: 'goalDays', ml: 2000, days: 45 },
-      sailfish: { kind: 'count', registers: 400 },
-      shark: { kind: 'volume', ml: 200_000 },
-      whale: { kind: 'days', days: 120 },
+      pufferfish: { kind: 'mornings', before: 10, days: 5 },
+      tucunare: { kind: 'streak', days: 5 },
+      tambaqui: { kind: 'goalDays', ml: 2000, days: 5 },
+      dourado: { kind: 'count', registers: 75 },
+      barracuda: { kind: 'streak', days: 10 },
+      mahimahi: { kind: 'record', ml: 2500 },
+      grouper: { kind: 'volume', ml: 60_000 },
+      pintado: { kind: 'days', days: 50 },
+      pirarucu: { kind: 'streak', days: 14 },
+      tuna: { kind: 'goalDays', ml: 2000, days: 15 },
+      sailfish: { kind: 'count', registers: 250 },
+      shark: { kind: 'volume', ml: 150_000 },
+      whale: { kind: 'days', days: 100 },
     })
   })
 
   it('reads the streak milestones off the catalog', () => {
-    expect(STREAK_MILESTONES).toEqual([3, 7, 14, 30])
+    expect(STREAK_MILESTONES).toEqual([3, 5, 10, 14])
   })
 
   it('gives every fish a habitat: nine in the river, nine in the sea', () => {
@@ -92,18 +92,18 @@ describe('catalog', () => {
   it('names every achievement in pt-BR', () => {
     expect(unlockLabel(UNLOCKS.guppy)).toBe('Inicial')
     expect(unlockLabel(UNLOCKS.clownfish)).toBe('Sequência de 3 dias')
-    expect(unlockLabel(UNLOCKS.pufferfish)).toBe('Antes das 9h em 5 dias')
-    expect(unlockLabel(UNLOCKS.tucunare)).toBe('Sequência de 7 dias')
-    expect(unlockLabel(UNLOCKS.tambaqui)).toBe('10 dias com 2 L')
-    expect(unlockLabel(UNLOCKS.dourado)).toBe('100 registros')
-    expect(unlockLabel(UNLOCKS.barracuda)).toBe('Sequência de 14 dias')
-    expect(unlockLabel(UNLOCKS.mahimahi)).toBe('Um dia com 3,5 L')
-    expect(unlockLabel(UNLOCKS.grouper)).toBe('100 L acumulados')
-    expect(unlockLabel(UNLOCKS.pintado)).toBe('60 dias com registro')
-    expect(unlockLabel(UNLOCKS.pirarucu)).toBe('Sequência de 30 dias')
-    expect(unlockLabel(UNLOCKS.tuna)).toBe('45 dias com 2 L')
-    expect(unlockLabel(UNLOCKS.sailfish)).toBe('400 registros')
-    expect(unlockLabel(UNLOCKS.shark)).toBe('200 L acumulados')
-    expect(unlockLabel(UNLOCKS.whale)).toBe('120 dias com registro')
+    expect(unlockLabel(UNLOCKS.pufferfish)).toBe('Antes das 10h em 5 dias')
+    expect(unlockLabel(UNLOCKS.tucunare)).toBe('Sequência de 5 dias')
+    expect(unlockLabel(UNLOCKS.tambaqui)).toBe('5 dias com 2 L')
+    expect(unlockLabel(UNLOCKS.dourado)).toBe('75 registros')
+    expect(unlockLabel(UNLOCKS.barracuda)).toBe('Sequência de 10 dias')
+    expect(unlockLabel(UNLOCKS.mahimahi)).toBe('Um dia com 2,5 L')
+    expect(unlockLabel(UNLOCKS.grouper)).toBe('60 L acumulados')
+    expect(unlockLabel(UNLOCKS.pintado)).toBe('50 dias com registro')
+    expect(unlockLabel(UNLOCKS.pirarucu)).toBe('Sequência de 14 dias')
+    expect(unlockLabel(UNLOCKS.tuna)).toBe('15 dias com 2 L')
+    expect(unlockLabel(UNLOCKS.sailfish)).toBe('250 registros')
+    expect(unlockLabel(UNLOCKS.shark)).toBe('150 L acumulados')
+    expect(unlockLabel(UNLOCKS.whale)).toBe('100 dias com registro')
   })
 })

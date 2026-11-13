@@ -34,62 +34,62 @@ describe('unlockedFish', () => {
     expect([...unlockedFish([], 'a')]).toEqual(STARTERS)
   })
 
-  it('unlocks the streak fish at exactly 3, 7, 14 and 30 consecutive days', () => {
+  it('unlocks the streak fish at exactly 3, 5, 10 and 14 consecutive days', () => {
     expect(unlockedFish(run(2), 'a').has('clownfish')).toBe(false)
     expect(unlockedFish(run(3), 'a').has('clownfish')).toBe(true)
-    expect(unlockedFish(run(6), 'a').has('tucunare')).toBe(false)
-    expect(unlockedFish(run(7), 'a').has('tucunare')).toBe(true)
-    expect(unlockedFish(run(13), 'a').has('barracuda')).toBe(false)
-    expect(unlockedFish(run(14), 'a').has('barracuda')).toBe(true)
-    expect(unlockedFish(run(29), 'a').has('pirarucu')).toBe(false)
-    expect(unlockedFish(run(30), 'a').has('pirarucu')).toBe(true)
+    expect(unlockedFish(run(4), 'a').has('tucunare')).toBe(false)
+    expect(unlockedFish(run(5), 'a').has('tucunare')).toBe(true)
+    expect(unlockedFish(run(9), 'a').has('barracuda')).toBe(false)
+    expect(unlockedFish(run(10), 'a').has('barracuda')).toBe(true)
+    expect(unlockedFish(run(13), 'a').has('pirarucu')).toBe(false)
+    expect(unlockedFish(run(14), 'a').has('pirarucu')).toBe(true)
   })
 
   it('keeps a streak fish after the streak breaks — the longest run ever counts', () => {
     expect(unlockedFish([...run(3), e('a', 500, '2026-06-20')], 'a').has('clownfish')).toBe(true)
   })
 
-  it('unlocks the pufferfish on the fifth day with a register before 9h in São Paulo', () => {
-    const mornings = (n: number) => daily(n, '11:59:00') // 08:59 in São Paulo
+  it('unlocks the pufferfish on the fifth day with a register before 10h in São Paulo', () => {
+    const mornings = (n: number) => daily(n, '12:59:00') // 09:59 in São Paulo
     expect(unlockedFish(mornings(4), 'a').has('pufferfish')).toBe(false)
     expect(unlockedFish(mornings(5), 'a').has('pufferfish')).toBe(true)
   })
 
-  it('unlocks the tambaqui at ten days of 2 L and the tuna at forty-five', () => {
+  it('unlocks the tambaqui at five days of 2 L and the tuna at fifteen', () => {
     const goal = (n: number) => daily(n, '15:00:00', 2000)
-    expect(unlockedFish(goal(9), 'a').has('tambaqui')).toBe(false)
-    expect(unlockedFish(goal(10), 'a').has('tambaqui')).toBe(true)
-    expect(unlockedFish(goal(44), 'a').has('tuna')).toBe(false)
-    expect(unlockedFish(goal(45), 'a').has('tuna')).toBe(true)
+    expect(unlockedFish(goal(4), 'a').has('tambaqui')).toBe(false)
+    expect(unlockedFish(goal(5), 'a').has('tambaqui')).toBe(true)
+    expect(unlockedFish(goal(14), 'a').has('tuna')).toBe(false)
+    expect(unlockedFish(goal(15), 'a').has('tuna')).toBe(true)
   })
 
-  it('needs one day of at least 3,5 L for the mahi-mahi', () => {
-    expect(unlockedFish([e('a', 2000, '2026-06-01'), e('a', 1499, '2026-06-01')], 'a').has('mahimahi')).toBe(false)
-    expect(unlockedFish([e('a', 2000, '2026-06-01'), e('a', 1500, '2026-06-01')], 'a').has('mahimahi')).toBe(true)
+  it('needs one day of at least 2,5 L for the mahi-mahi', () => {
+    expect(unlockedFish([e('a', 2000, '2026-06-01'), e('a', 499, '2026-06-01')], 'a').has('mahimahi')).toBe(false)
+    expect(unlockedFish([e('a', 2000, '2026-06-01'), e('a', 500, '2026-06-01')], 'a').has('mahimahi')).toBe(true)
   })
 
-  it('unlocks the dourado at 100 registers and the sailfish at 400, whatever their size', () => {
+  it('unlocks the dourado at 75 registers and the sailfish at 250, whatever their size', () => {
     const many = (n: number) => Array.from({ length: n }, (_, i) => e('a', 100, addDays('2026-06-01', i % 5)))
-    expect(unlockedFish(many(99), 'a').has('dourado')).toBe(false)
-    expect(unlockedFish(many(100), 'a').has('dourado')).toBe(true)
-    expect(unlockedFish(many(399), 'a').has('sailfish')).toBe(false)
-    expect(unlockedFish(many(400), 'a').has('sailfish')).toBe(true)
+    expect(unlockedFish(many(74), 'a').has('dourado')).toBe(false)
+    expect(unlockedFish(many(75), 'a').has('dourado')).toBe(true)
+    expect(unlockedFish(many(249), 'a').has('sailfish')).toBe(false)
+    expect(unlockedFish(many(250), 'a').has('sailfish')).toBe(true)
   })
 
-  it('unlocks the grouper at 100 L accumulated and the shark at 200 L', () => {
+  it('unlocks the grouper at 60 L accumulated and the shark at 150 L', () => {
     const litres = (l: number) => Array.from({ length: l }, (_, i) => e('a', 1000, addDays('2026-06-01', i)))
-    expect(unlockedFish(litres(99), 'a').has('grouper')).toBe(false)
-    expect(unlockedFish(litres(100), 'a').has('grouper')).toBe(true)
-    expect(unlockedFish(litres(199), 'a').has('shark')).toBe(false)
-    expect(unlockedFish(litres(200), 'a').has('shark')).toBe(true)
+    expect(unlockedFish(litres(59), 'a').has('grouper')).toBe(false)
+    expect(unlockedFish(litres(60), 'a').has('grouper')).toBe(true)
+    expect(unlockedFish(litres(149), 'a').has('shark')).toBe(false)
+    expect(unlockedFish(litres(150), 'a').has('shark')).toBe(true)
   })
 
-  it('unlocks the pintado at 60 days with a register and the whale at 120, in a row or not', () => {
+  it('unlocks the pintado at 50 days with a register and the whale at 100, in a row or not', () => {
     const days = (n: number) => Array.from({ length: n }, (_, i) => e('a', 100, addDays('2026-06-01', 2 * i)))
-    expect(unlockedFish(days(59), 'a').has('pintado')).toBe(false)
-    expect(unlockedFish(days(60), 'a').has('pintado')).toBe(true)
-    expect(unlockedFish(days(119), 'a').has('whale')).toBe(false)
-    expect(unlockedFish(days(120), 'a').has('whale')).toBe(true)
+    expect(unlockedFish(days(49), 'a').has('pintado')).toBe(false)
+    expect(unlockedFish(days(50), 'a').has('pintado')).toBe(true)
+    expect(unlockedFish(days(99), 'a').has('whale')).toBe(false)
+    expect(unlockedFish(days(100), 'a').has('whale')).toBe(true)
   })
 
   it('ignores deleted rows and other members', () => {
@@ -242,40 +242,40 @@ describe('unlockProgress', () => {
 describe('the regular user (pacing fixture)', () => {
   /** Days 1…n with registers, by the fixture's rules. */
   const registered = (n: number) => Array.from({ length: n }, (_, i) => i + 1).filter((d) => regularUserMl(d) > 0)
-  const mornings = (hours: readonly number[]) => hours.filter((h) => h < 9).length
+  const mornings = (hours: readonly number[]) => hours.filter((h) => h < 10).length
   const goalDays = (totals: readonly number[]) => totals.filter((ml) => ml >= 2000).length
 
-  it('drinks a seeded 1,8–2,6 L on every registered day but day 38, which is 3,6 L', () => {
+  it('drinks a seeded 1,2–2,2 L on every registered day but day 45, which is 2,6 L', () => {
     for (const d of registered(150)) {
-      if (d === 38) continue
-      expect(regularUserMl(d)).toBeGreaterThanOrEqual(1800)
-      expect(regularUserMl(d)).toBeLessThanOrEqual(2600)
+      if (d === 45) continue
+      expect(regularUserMl(d)).toBeGreaterThanOrEqual(1200)
+      expect(regularUserMl(d)).toBeLessThanOrEqual(2200)
     }
-    expect(regularUserMl(38)).toBe(3600)
+    expect(regularUserMl(45)).toBe(2600)
   })
 
-  it('on day 1: one day of four registers, the first at 10:00', () => {
+  it('on day 1: one day of three registers, the first at 11:00', () => {
     const f = regularUserFacts(1, 'a')
     expect(f.registeredDays).toBe(1)
     expect(f.longestStreak).toBe(1)
     expect(mornings(f.firstHours)).toBe(0)
     expect(goalDays(f.dayTotalsMl)).toBe(regularUserMl(1) >= 2000 ? 1 : 0)
-    expect(f.registers).toBe(4)
+    expect(f.registers).toBe(3)
     expect(f.totalMl).toBe(regularUserMl(1))
   })
 
-  it('on day 140: eleven rest days so far (10, 20, 30, 40, 80 … 140) and the 39-day run of days 41–79', () => {
+  it('on day 140: eighteen rest days so far (7, 14 … 140 but 56 and 63) and the 20-day run of days 50–69', () => {
     const f = regularUserFacts(140, 'a')
     const days = registered(140)
-    expect(days).toHaveLength(129)
-    expect(f.registeredDays).toBe(129)
-    expect(f.longestStreak).toBe(39)
-    expect(f.currentStreak).toBe(9) // days 131–139; day 140 is a rest day
-    expect(mornings(f.firstHours)).toBe(59) // the 70 even days but the eleven rest days, all even
+    expect(days).toHaveLength(122)
+    expect(f.registeredDays).toBe(122)
+    expect(f.longestStreak).toBe(20)
+    expect(f.currentStreak).toBe(6) // days 134–139; day 140 is a rest day
+    expect(mornings(f.firstHours)).toBe(61) // the 70 even days but the nine even rest days (14, 28 … 140 but 56)
     expect(goalDays(f.dayTotalsMl)).toBe(days.filter((d) => regularUserMl(d) >= 2000).length)
-    expect(f.registers).toBe(4 * 129)
+    expect(f.registers).toBe(3 * 122)
     expect(f.totalMl).toBe(days.reduce((sum, d) => sum + regularUserMl(d), 0))
-    expect(f.bestDayMl).toBe(3600)
+    expect(f.bestDayMl).toBe(2600)
   })
 })
 
@@ -287,8 +287,9 @@ describe('the ladder, for the regular user', () => {
     expect([...earned(2)]).toEqual(STARTERS)
   })
 
-  it('gives at most three fish besides the starters by day 10', () => {
+  it('gives at most three fish besides the starters by day 10, and at least two by day 14', () => {
     expect(earned(10).size - STARTERS.length).toBeLessThanOrEqual(3)
+    expect(earned(14).size - STARTERS.length).toBeGreaterThanOrEqual(2)
   })
 
   it('lands the whale after day 99, and every fish by day 150', () => {
